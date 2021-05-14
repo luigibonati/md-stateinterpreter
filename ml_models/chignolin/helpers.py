@@ -1,7 +1,5 @@
 import numpy as np
 from scipy.sparse import csr_matrix, data
-from scipy.optimize import minimize
-from adaptive import Runner, Learner2D #https://github.com/python-adaptive/adaptive
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
