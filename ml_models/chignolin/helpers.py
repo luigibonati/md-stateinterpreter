@@ -49,15 +49,24 @@ def get_features(data_path, regex_filter = 'ca|cphi|sphi|cpsi|spsi|cchi|schi|o-n
     features = df.filter(regex=regex_filter).columns
     return features
 
-def enet_path(dataset, C_range, l1_ratio, **kwargs):
+def enet_path(dataset, C_range, l1_ratio=None, **kwargs):
     coeffs = []
     train_in, train_out = dataset
+    _is_lasso = kwargs.get('LASSO', False)
+    del kwargs['LASSO']
 
-    def _train_model(C):
-        model = LogisticRegression(penalty='elasticnet', C=C, solver='saga', l1_ratio=l1_ratio, fit_intercept=False, **kwargs) 
-        #Model Fit
-        model.fit(train_in,train_out)
-        return (C, model.coef_)
+    if _is_lasso:
+        def _train_model(C):
+            model = LogisticRegression(penalty='l1', C=C, solver='saga', fit_intercept=False, **kwargs) 
+            #Model Fit
+            model.fit(train_in,train_out)
+            return (C, model.coef_)
+    else:
+        def _train_model(C):
+            model = LogisticRegression(penalty='elasticnet', C=C, solver='saga', l1_ratio=l1_ratio, fit_intercept=False, **kwargs) 
+            #Model Fit
+            model.fit(train_in,train_out)
+            return (C, model.coef_)
     
     with concurrent.futures.ThreadPoolExecutor() as executor:
         fut = [executor.submit(_train_model, C) for C in C_range]
@@ -79,8 +88,13 @@ def enet_path(dataset, C_range, l1_ratio, **kwargs):
 def reverse_scaling(train_in, mean, var):
     return train_in*var + mean
 
-def train_model(dataset, C, l1_ratio, features, **kwargs):
-    model = LogisticRegression(penalty='elasticnet', C=C, solver='saga', l1_ratio=l1_ratio, fit_intercept=False, **kwargs)
+def train_model(dataset, C, features, l1_ratio=None, **kwargs):
+    _is_lasso = kwargs.get('LASSO', False)
+    del kwargs['LASSO']
+    if _is_lasso:
+        model = LogisticRegression(penalty='l1', C=C, solver='saga', fit_intercept=False, **kwargs)
+    else:
+        model = LogisticRegression(penalty='elasticnet', C=C, solver='saga', l1_ratio=l1_ratio, fit_intercept=False, **kwargs)
     train_in, train_out = dataset
     model.fit(train_in, train_out)
     model.sparse_coef_ = csr_matrix(model.coef_)
@@ -132,7 +146,7 @@ def plot_model(trained_model, test_dataset, features):
         _, ax = plt.subplots()
         ax.hist(light_data[0], bins=200, color='navy', alpha=0.5, density=True);
         ax.hist(light_data[1], bins= 200, color='r', alpha=0.5, density=True);
-        val = -trained_model.scaled_intercept_/trained_model.scaled_coef_.data[0]
+        val = 0
         ax.plot([val,val] ,[0,1], 'k-', lw=0.5)
         ax.text(val, 1.1, 'Decision bound', ha='center')
         ax.set_title(r'Accuracy on $\mathcal{D}_{{\rm test}}$: ' +f'{accuracy}')
