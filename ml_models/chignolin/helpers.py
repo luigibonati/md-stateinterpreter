@@ -40,7 +40,9 @@ def load_chignolin_dataset(data_path, regex_filter = 'ca|cphi|sphi|cpsi|spsi|cch
     if scaling:
         scaler = StandardScaler(with_mean=True)
         scaler.fit(inputs)
-        inputs = (scaler.transform(inputs), scaler.mean_, scaler.var_)
+        inputs = (scaler.transform(inputs), scaler.mean_, scaler.scale_)
+    else:
+        inputs = (inputs, np.zeros(inputs.shape[1]), np.ones(inputs.shape[1]))
     return inputs, outputs, perm
 
 def get_features(data_path, regex_filter = 'ca|cphi|sphi|cpsi|spsi|cchi|schi|o-n'):
@@ -53,14 +55,17 @@ def enet_path(dataset, C_range, l1_ratio=None, **kwargs):
     coeffs = []
     train_in, train_out = dataset
     _is_lasso = kwargs.get('LASSO', False)
-    del kwargs['LASSO']
+    try:
+        del kwargs['LASSO']
+    except:
+        pass
 
     if _is_lasso:
         def _train_model(C):
             model = LogisticRegression(penalty='l1', C=C, solver='saga', fit_intercept=False, **kwargs) 
             #Model Fit
             model.fit(train_in,train_out)
-            return (C, model.coef_)
+            return (C, model.coef_,)
     else:
         def _train_model(C):
             model = LogisticRegression(penalty='elasticnet', C=C, solver='saga', l1_ratio=l1_ratio, fit_intercept=False, **kwargs) 
@@ -85,12 +90,60 @@ def enet_path(dataset, C_range, l1_ratio=None, **kwargs):
 
     return C_arr[sort_perm], np.squeeze(coeff_arr[sort_perm])
 
+def enet_CV_path(dataset, C_range, l1_ratio=None, **kwargs):
+    coeffs = []
+    (train_in, train_out), (val_in, val_out) = dataset
+    _is_lasso = kwargs.get('LASSO', False)
+    try:
+        del kwargs['LASSO']
+    except:
+        pass
+
+    if _is_lasso:
+        def _train_model(C):
+            model = LogisticRegression(penalty='l1', C=C, solver='saga', fit_intercept=False, **kwargs) 
+            #Model Fit
+            model.fit(train_in,train_out)
+            score = model.score(val_in,val_out)
+            return (C, model.coef_,score)
+    else:
+        def _train_model(C):
+            model = LogisticRegression(penalty='elasticnet', C=C, solver='saga', l1_ratio=l1_ratio, fit_intercept=False, **kwargs) 
+            #Model Fit
+            model.fit(train_in,train_out)
+            score = model.score(val_in,val_out)
+            return (C, model.coef_, score)
+    
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        fut = [executor.submit(_train_model, C) for C in C_range]
+        for fut_result in concurrent.futures.as_completed(fut):
+            coeffs.append(fut_result.result())
+
+    C_arr = []
+    coeff_arr = []
+    CV_arr = []
+    for data in coeffs:
+        C_arr.append(data[0])
+        coeff_arr.append(data[1])
+        CV_arr.append(data[2])
+
+    C_arr = np.array(C_arr)
+    coeff_arr = np.array(coeff_arr)
+    CV_arr = np.array(CV_arr)
+    sort_perm = np.argsort(C_arr)
+
+    return C_arr[sort_perm], np.squeeze(coeff_arr[sort_perm]), CV_arr[sort_perm]
+
 def reverse_scaling(train_in, mean, var):
     return train_in*var + mean
 
 def train_model(dataset, C, features, l1_ratio=None, **kwargs):
     _is_lasso = kwargs.get('LASSO', False)
-    del kwargs['LASSO']
+    try:
+        del kwargs['LASSO']
+    except:
+        pass
+
     if _is_lasso:
         model = LogisticRegression(penalty='l1', C=C, solver='saga', fit_intercept=False, **kwargs)
     else:
