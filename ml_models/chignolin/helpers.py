@@ -244,4 +244,3 @@ def plot_model(trained_model, test_dataset, features):
         ax_feat.set_yticklabels(names)
         ax_feat.invert_yaxis()  # labels read top-to-bottom
         ax_feat.set_xlabel('Feature Importance (sum to 1)')
-    
