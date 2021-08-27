@@ -2,8 +2,8 @@ import pandas as pd
 import mdtraj as md
 import numpy as np
 
-class Loader():
-    def __init__(data_path, file_dict, stride=10):
+class Loader:
+    def __init__(self, data_path, file_dict, stride=10):
         '''
             file_dict = {'trajectory': '**.dcd', 'topology': '**.pdb', 'collective_vars': 'COLVAR' }
         '''
