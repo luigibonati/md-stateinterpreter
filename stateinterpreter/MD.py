@@ -19,6 +19,7 @@ class Loader:
         self.colvar = self.colvar.iloc[::stride, :]
         self.colvar.index = np.arange(len(self.colvar))
         assert len(self.traj) == len(self.colvar)
+        
     def approximate_FES(self, collective_vars, bounds, num=100):
         ndims = len(collective_vars)
         positions = np.array(self.colvar[collective_vars]).T
@@ -29,5 +30,5 @@ class Loader:
         f = np.reshape(_FES.logpdf(sampled_positions).T, (num,)*ndims)
         f *= -self.kbt
         f -= np.min(f)
-
-        return f
+        self.FES = (sampled_positions, f)
+        return self.FES
