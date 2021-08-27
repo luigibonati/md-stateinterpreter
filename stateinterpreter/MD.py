@@ -2,6 +2,7 @@ import pandas as pd
 import mdtraj as md
 import numpy as np
 import scipy.stats as st
+import matplotlib.pyplot as plt
 
 class Loader:
     def __init__(self, data_path, file_dict, stride=10):
@@ -32,3 +33,44 @@ class Loader:
         f -= np.min(f)
         self.FES = (sampled_positions, f)
         return self.FES
+
+    def plot_FES(self, bounds= None, names = ['Variable 1', 'Variable 2']):
+        try:
+            self.FES
+        except NameError:
+            print("Free energy surface hasn't been computed. Use approximate_FES function.")
+        else:
+            pass
+        sampled_positions, f = self.FES
+        FES_dims = f.ndim
+        if FES_dims == 1:
+            fig,ax = plt.subplots(dpi=100)
+            xx = sampled_positions[0]
+            ax.plot(xx, f)
+            ax.set_xlabel(names[0])
+            ax.set_ylabel('FES [kJ/mol]')
+            return (fig, ax)
+        elif FES_dims == 2:          
+            xx = sampled_positions[0]
+            yy = sampled_positions[1]
+
+            if not bounds:
+                levels = np.linspace(1,30,10)
+            else:
+                levels = np.linspace(bounds[0], bounds[1], 10)
+
+            fig,ax = plt.subplots(dpi=100)
+            cfset = ax.contourf(xx, yy, f, levels=levels, cmap='Blues')
+            # Contour plot
+            cset = ax.contour(xx, yy, f, levels=levels, colors='k', lw=0.77)
+            # Label plot
+            ax.clabel(cset, inline=1, fontsize=10)
+
+            cbar = plt.colorbar(cfset)
+            
+            ax.set_xlabel(names[0])
+            ax.set_ylabel(names[1])
+            cbar.set_label('FES [kJ/mol]')
+            return (fig, ax)
+        else:
+            raise ValueError("Maximum number of dimensions over which to plot is 2")
