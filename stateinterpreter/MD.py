@@ -31,7 +31,7 @@ class Loader:
         f = np.reshape(_FES.logpdf(sampled_positions).T, (num,)*ndims)
         f *= -self.kbt
         f -= np.min(f)
-        self.FES = (sampled_positions, f)
+        self.FES = (meshgrids, f)
         return self.FES
 
     def plot_FES(self, bounds= None, names = ['Variable 1', 'Variable 2']):
