@@ -129,7 +129,7 @@ class Loader:
         real_minima = np.array(real_minima)
         
         if _DEV:
-            print("True\t Approx\t Delta"):
+            print("True\t Approx\t Delta")
             for i in range(len(real_minima)):
                 print(f"{np.around(real_minima[i], decimals=2)}\t {np.around(presumed_minima[i], decimals=2)}\t {np.abs(np.around(real_minima[i] - presumed_minima, decimals=2))}\t")
         return real_minima
