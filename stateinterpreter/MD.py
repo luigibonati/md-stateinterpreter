@@ -121,7 +121,7 @@ class Loader:
             
             res = minimize(obj_fun, minima)
             if res.success:
-                real_minima.append(res)
+                real_minima.append(res.x)
             else:
                 real_minima.append(minima)
                 if _DEV:
@@ -131,7 +131,7 @@ class Loader:
         if _DEV:
             print("True\t Approx\t Delta")
             for i in range(len(real_minima)):
-                print(f"{np.around(real_minima[i], decimals=2)}\t {np.around(presumed_minima[i], decimals=2)}\t {np.abs(np.around(real_minima[i] - presumed_minima, decimals=2))}\t")
+                print(f"{np.around(real_minima[i], decimals=2)}\t {np.around(presumed_minima[i], decimals=2)}\t {np.abs(np.around(real_minima[i] - presumed_minima[i], decimals=2))}\t")
         return real_minima
 
         
