@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from scipy.ndimage.filters import minimum_filter
 from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
 from scipy.optimize import minimize
+import pdb
 
 class Loader:
     def __init__(self, data_path, file_dict, stride=10):
@@ -104,6 +105,7 @@ class Loader:
         detected_minima = local_min ^ eroded_background
         detected_minima = np.where(detected_minima)
         presumed_minima = []
+        pdb.set_trace()
         for i,j in zip(*detected_minima):
             minima =[]
             for coord in sampled_positions:
