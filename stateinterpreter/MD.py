@@ -9,7 +9,6 @@ import itertools
 from scipy.ndimage.filters import minimum_filter
 from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
 from scipy.optimize import minimize
-from scipy.spatial import Vornoi
 
 class Loader:
     def __init__(self, data_path, file_dict, stride=10):
