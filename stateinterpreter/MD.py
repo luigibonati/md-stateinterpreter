@@ -306,12 +306,14 @@ class Loader:
         return ( 1-np.power(((x-d0)/r0),n) ) / ( 1-np.power(((x-d0)/r0),m) )
     
 
-    def load(self, fes_cutoff=5, memory_saver=False, splits=50):
+    def load(self, collective_vars, bounds, num=100, fes_cutoff=5, memory_saver=False, splits=50):
+        self.approximate_FES(collective_vars, bounds, num=num)
+        CVs = self.colvar[collective_vars]
         basins = self._basin_selection(fes_cutoff=fes_cutoff, memory_saver=memory_saver,splits=splits)
         CA_DIST = self._CA_DISTANCES()
         HB = self._HYDROGEN_BONDS()
         ANGLES = self._ANGLES()
-        return pd.concat([basins, CA_DIST,HB,ANGLES], axis=1)
+        return pd.concat([CVs, basins, CA_DIST,HB,ANGLES], axis=1)
 
 
         
