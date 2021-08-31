@@ -1,5 +1,4 @@
-import re
-from numpy.lib.type_check import real
+from tqdm import tqdm
 import pandas as pd
 import mdtraj as md
 import numpy as np
@@ -11,7 +10,7 @@ from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
 from scipy.optimize import minimize
 
 class Loader:
-    def __init__(self, data_path, file_dict, stride=10):
+    def __init__(self, data_path, file_dict, stride=10, _DEV=False):
         '''
             file_dict = {'trajectory': '**.dcd', 'topology': '**.pdb', 'collective_vars': 'COLVAR' }
         '''
@@ -25,6 +24,7 @@ class Loader:
         self.colvar = pd.read_csv(colvar_file,sep=' ',skipinitialspace=True, header=None,skiprows=1,names=headers,comment='#')  
         self.colvar = self.colvar.iloc[::stride, :]
         self.colvar.index = np.arange(len(self.colvar))
+        self._DEV = _DEV
         assert len(self.traj) == len(self.colvar)
         
     def approximate_FES(self, collective_vars, bounds, num=100):
@@ -83,13 +83,14 @@ class Loader:
         else:
             raise ValueError("Maximum number of dimensions over which to plot is 2")
     
-    def find_minima(self, _DEV=False):
+    def find_minima(self):
         # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
         """
         Takes an array and detects the troughs using the local maximum filter.
         Returns a boolean mask of the troughs (i.e. 1 when
         the pixel's value is the neighborhood maximum, 0 otherwise)
         """
+        _DEV= self._DEV
         sampled_positions, f = self.FES
         # define an connected neighborhood http://www.scipy.org/doc/api_docs/SciPy.ndimage.morphology.html#generate_binary_structure
         neighborhood = generate_binary_structure(f.ndim,2)
@@ -137,7 +138,7 @@ class Loader:
         argsortmin = np.argsort(real_minima, axis = 0)
         return real_minima[argsortmin[:,0]]
     
-    def _basin_selection(self, fes_cutoff=5, minima=None, memory_saver=False):
+    def _basin_selection(self, fes_cutoff=5, minima=None, memory_saver=False, splits=50):
         if not minima:
             minima = self.find_minima()
         positions = self._FES_KDE.dataset.T
@@ -145,11 +146,16 @@ class Loader:
         classes = np.argmin(norms, axis = 1)
         fes_at_minima = -self.kbt*self._FES_KDE.logpdf(minima.T)
         ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])
+        #Very slow
         if memory_saver:
-            chunks = np.array_split(positions.T, 50, axis = 1)
+            chunks = np.array_split(positions.T, splits, axis = 1)
             fes_pts = []
-            for chunk in chunks:
-                fes_pts.append(-self.kbt*self._FES_KDE.logpdf(chunk))
+            if self._DEV:
+                for chunk in tqdm(chunks):
+                    fes_pts.append(-self.kbt*self._FES_KDE.logpdf(chunk))
+            else:
+                for chunk in chunks:
+                    fes_pts.append(-self.kbt*self._FES_KDE.logpdf(chunk))
             fes_pts = np.hstack(fes_pts)
         else:
             fes_pts = -self.kbt*self._FES_KDE.logpdf(positions.T)
@@ -180,15 +186,18 @@ class Loader:
         # H-BONDS DISTANCES / CONTACTS (donor-acceptor)
         # find donors (OH or NH)
         traj = self.traj
+        _DEV= self._DEV
         donors = [ at_i.index for at_i,at_j in traj.top.bonds  
                     if ( ( at_i.element.symbol == 'O' ) | (at_i.element.symbol == 'N')  ) & ( at_j.element.symbol == 'H')]
         # keep unique 
         donors = sorted( list(set(donors)) )
-        print('Donors:',donors)
+        if _DEV:
+            print('Donors:',donors)
 
         # find acceptors (O r N)
         acceptors = traj.top.select('symbol O or symbol N')
-        print('Acceptors:',acceptors)
+        if _DEV:
+            print('Acceptors:',acceptors)
 
         # lambda func to avoid selecting interaction within the same residue
         atom_residue = lambda i : str(traj.top.atom(i)).split('-')[0] 
@@ -297,8 +306,8 @@ class Loader:
         return ( 1-np.power(((x-d0)/r0),n) ) / ( 1-np.power(((x-d0)/r0),m) )
     
 
-    def get_dataframe(self, fes_cutoff=5, memory_saver=False):
-        basins = self._basin_selection(fes_cutoff=fes_curoff, memory_saver=memory_saver)
+    def load(self, fes_cutoff=5, memory_saver=False, splits=50):
+        basins = self._basin_selection(fes_cutoff=fes_cutoff, memory_saver=memory_saver,splits=splits)
         CA_DIST = self._CA_DISTANCES()
         HB = self._HYDROGEN_BONDS()
         ANGLES = self._ANGLES()
