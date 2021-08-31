@@ -146,13 +146,13 @@ class Loader:
         fes_at_minima = -self.kbt*self._FES_KDE.logpdf(minima.T)
         ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])
         if memory_saver:
-            chunks = np.array_split(positions, 50, axis = 1)
+            chunks = np.array_split(positions.T, 50, axis = 1)
             fes_pts = []
             for chunk in chunks:
                 fes_pts.append(-self.kbt*self._FES_KDE.logpdf(chunk))
             fes_pts = np.hstack(fes_pts)
         else:
-            fes_pts = -self.kbt*self._FES_KDE.logpdf(positions)
+            fes_pts = -self.kbt*self._FES_KDE.logpdf(positions.T)
         mask = (fes_pts - ref_fes) < fes_cutoff
         df = pd.DataFrame(data=classes, columns=['basin'])
         df['selection'] = mask
