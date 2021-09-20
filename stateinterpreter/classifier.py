@@ -45,7 +45,7 @@ class MD_Data:
             _is_angle = (_is_sin or _is_cos)
             if _is_angle:
                 if not get_angle:
-                    print("Given feature is an angle. If you want to parse the angle instead of the given feature use get_angle=True", file=sys.stderr)
+                    print("Given feature is an angle. If you want to parse the angle instead of the given feature use get_angle=True")
             if get_angle:
                 if (_is_sin ==False) and (_is_cos ==False):
                     raise ValueError("Given feature is not an angle. Not with get_angle=True")
