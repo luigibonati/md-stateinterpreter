@@ -64,3 +64,6 @@ _deps
 !.vscode/extensions.json
 *.code-workspace
 .history
+
+#
+**/data
