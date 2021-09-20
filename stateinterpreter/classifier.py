@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import squareform
 from matplotlib.gridspec import GridSpec
 import scipy.sparse.linalg
+import sys
 
 class MD_Data:
     def __init__(self, dataframe):
@@ -44,7 +45,7 @@ class MD_Data:
             _is_angle = (_is_sin or _is_cos)
             if _is_angle:
                 if not get_angle:
-                    Warning("Given feature is an angle. If you want to parse the angle instead of the given feature use get_angle=True")
+                    print("Given feature is an angle. If you want to parse the angle instead of the given feature use get_angle=True", file=sys.stderr)
             if get_angle:
                 if (_is_sin ==False) and (_is_cos ==False):
                     raise ValueError("Given feature is not an angle. Not with get_angle=True")
