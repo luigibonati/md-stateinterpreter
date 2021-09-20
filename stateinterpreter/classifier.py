@@ -134,7 +134,7 @@ class CV_path():
         self._features = features
         self._quadratic_kernel = quadratic_kernel
     
-    def compute(self, C_range, l1_ratio=None, **kwargs):
+    def compute(self, C_range, l1_ratio=None, multi_class="multinomial", **kwargs):
         '''If kwargs LASSO is defined use Lasso. Elasticnet otherwise.'''
         quadratic_kernel = self._quadratic_kernel
         train_in, val_in, train_out, val_out = self._dset
@@ -152,7 +152,7 @@ class CV_path():
             penalty ='elasticnet'
 
         def _train_model(C):
-            model = LogisticRegression(penalty=penalty, C=C, solver='saga', l1_ratio=l1_ratio, multi_class="multinomial", fit_intercept=False, **kwargs) 
+            model = LogisticRegression(penalty=penalty, C=C, solver='saga', l1_ratio=l1_ratio, multi_class=multi_class, fit_intercept=False, **kwargs) 
             #Model Fit
             model.fit(train_in,train_out)
             score = model.score(val_in,val_out)
