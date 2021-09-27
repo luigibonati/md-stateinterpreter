@@ -1,0 +1,44 @@
+
+-- RELEVANT FEATURES --
+State 0:
+	 94.6% | SIDECHAIN cos_chi1 ASP3
+	 5.4%  | SIDECHAIN cos_chi1 ASP3 || SIDECHAIN cos_chi1 ASP3
+State 1:
+	 46.5% | SIDECHAIN cos_chi1 THR8 || SIDECHAIN sin_chi2 TYR2
+	 42.5% | SIDECHAIN cos_chi1 THR8
+	 9.6%  | SIDECHAIN sin_chi2 TYR2
+	 1.4%  | SIDECHAIN sin_chi1 THR6 || SIDECHAIN sin_chi2 TYR2
+State 2:
+	 43.0% | SIDECHAIN cos_chi1 THR8
+	 42.3% | SIDECHAIN cos_chi1 THR8 || SIDECHAIN sin_chi2 TYR2
+	 13.5% | SIDECHAIN sin_chi2 TYR2
+	 1.2%  | SIDECHAIN sin_chi1 THR6 || SIDECHAIN sin_chi2 TYR2
+State 3:
+	 87.1% | SIDECHAIN sin_chi1 THR6 || SIDECHAIN cos_chi1 THR8
+	 12.9% | SIDECHAIN sin_chi2 TYR2
+State 4:
+	 83.6% | SIDECHAIN sin_chi1 THR6 || SIDECHAIN cos_chi1 THR8
+	 16.4% | SIDECHAIN sin_chi2 TYR2
+State 5:
+	 71.0% | SIDECHAIN sin_chi1 THR6
+	 13.8% | SIDECHAIN sin_chi1 THR6 || SIDECHAIN sin_chi2 TYR2
+	 11.2% | SIDECHAIN sin_chi2 TYR2
+	 3.9%  | SIDECHAIN sin_chi1 THR6 || SIDECHAIN cos_chi2 TYR2
+State 6:
+	 60.8% | SIDECHAIN sin_chi1 THR6
+	 23.5% | SIDECHAIN sin_chi1 THR6 || SIDECHAIN sin_chi2 TYR2
+	 11.5% | SIDECHAIN sin_chi2 TYR2
+	 2.3%  | SIDECHAIN cos_chi2 TYR2
+	 1.9%  | SIDECHAIN sin_chi1 THR6 || SIDECHAIN cos_chi2 TYR2
+
+-- UNIQUE FEATURES --
+SIDECHAIN cos_chi1 ASP3 || SIDECHAIN cos_chi1 ASP3
+SIDECHAIN sin_chi1 THR6
+SIDECHAIN sin_chi1 THR6 || SIDECHAIN sin_chi2 TYR2
+SIDECHAIN cos_chi1 THR8 || SIDECHAIN sin_chi2 TYR2
+SIDECHAIN cos_chi1 ASP3
+SIDECHAIN sin_chi1 THR6 || SIDECHAIN cos_chi2 TYR2
+SIDECHAIN cos_chi1 THR8
+SIDECHAIN cos_chi2 TYR2
+SIDECHAIN sin_chi1 THR6 || SIDECHAIN cos_chi1 THR8
+SIDECHAIN sin_chi2 TYR2
