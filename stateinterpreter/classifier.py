@@ -223,7 +223,7 @@ class CV_path():
             features_description[state_idx] = data_list
         return features_description
     
-    def print_relevant_features(self, C, state_names=None, normalize_C=True):
+    def print_relevant_features(self, C, state_names=None, normalize_C=True, file=None):
         features_description = self.relevant_features(C, normalize_C=normalize_C)
         n_basins = len(features_description)
         if not state_names:
@@ -239,9 +239,9 @@ class CV_path():
             print_lists.append(print_list)
         col_width = max(len(str(row[0])) for row in print_list for print_list in print_lists)
         for basin_idx, print_list in enumerate(print_lists):
-            print(f"{state_names[basin_idx]}:")
+            print(f"{state_names[basin_idx]}:", file=file)
             for row in print_list:
-                print(f"\t {row[0].ljust(col_width)} | {row[1]}")
+                print(f"\t {row[0].ljust(col_width)} | {row[1]}", file=file)
     
     def plot_relevant_features(self, C, md_object, state_names=None, normalize_C=True, n_configs=100):
         if self._quadratic_kernel:
