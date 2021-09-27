@@ -16,6 +16,7 @@ classifier.py
 * add function to save results to file (list of relevant features)
 * add plot of number of features per state and total number of unique features as function of C
 * question: features for quadratic CVs should be obtained from combination of features within each state or all of them? e.g. state1: x1,x2 - state2: x3,x4 --> x1 x2, x3 x4 OR x1 x2, x1 x3, x1 x4, x2 x3 ecc... ?
+* question: how to check that model is robust? (e.g. repeat N times? )
 
 ## Systems
 
