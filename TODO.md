@@ -2,10 +2,15 @@
 
 ## Model
 
-MD.py
-* extend compute FES function to allow weighted data
-* less memory intensive FES function? (especially high dimensions)
-* allow loading COLVAR from pd.Dataframe rather than from files
+MD.p
+* [load] allow computing only subset of descriptors (e.g. via keywords)
+* [load] restructure code to mimic the different steps, e.g. divide functions in:
+  - states identification
+  - compute descriptors
+* [load] allow loading COLVAR from pd.Dataframe rather than from files
+* [FES] extend compute FES function to allow weighted data
+* [FES] less memory intensive FES function? (especially high dimensions)
+
 
 classifier.py
 * add plot of number of features per state and total number of unique features as function of C
