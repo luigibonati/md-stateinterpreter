@@ -33,11 +33,10 @@ class Loader:
         self._DEV = _DEV
         assert len(self.traj) == len(self.colvar)
         
-    
-    def approximate_FES(self, collective_vars, bounds, num=100):
+    def approximate_FES(self, collective_vars, bounds, num=100, bw_method=None, weights=None):
         ndims = len(collective_vars)
         positions = np.array(self.colvar[collective_vars]).T
-        _FES = st.gaussian_kde(positions)
+        _FES = st.gaussian_kde(positions,bw_method=bw_method,weights=weights)
         self._FES_KDE = _FES
         _1d_samples = [np.linspace(vmin, vmax, num) for (vmin, vmax) in bounds]
         meshgrids = np.meshgrid(*_1d_samples)
@@ -313,8 +312,8 @@ class Loader:
         return ( 1-np.power(((x-d0)/r0),n) ) / ( 1-np.power(((x-d0)/r0),m) )
     
 
-    def load(self, collective_vars, bounds, num=100, fes_cutoff=5, memory_saver=False, splits=50):
-        self.approximate_FES(collective_vars, bounds, num=num)
+    def load(self, collective_vars, bounds, num=100, fes_cutoff=5, memory_saver=False, splits=50,bw_method=None,weights=None):
+        self.approximate_FES(collective_vars, bounds, num=num, bw_method=None, weights=None)
         CVs = self.colvar[collective_vars]
         basins = self._basin_selection(fes_cutoff=fes_cutoff, memory_saver=memory_saver,splits=splits)
         CA_DIST = self._CA_DISTANCES()
