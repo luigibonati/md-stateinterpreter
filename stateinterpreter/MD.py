@@ -25,7 +25,7 @@ class Loader:
         self.colvar = self.colvar.iloc[::stride, :]
         self.colvar.index = np.arange(len(self.colvar))
         self._DEV = _DEV
-        assert len(self.traj) == len(self.colvar)
+        assert len(self.traj) == len(self.colvar), f"length traj ({len(self.traj)}) != length colvar ({len(self.colvar)})"
         
     def approximate_FES(self, collective_vars, bounds, num=100, bw_method=None, weights=None):
         ndims = len(collective_vars)

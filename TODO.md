@@ -10,7 +10,7 @@ MD.p
 * [ ] allow loading COLVAR from pd.Dataframe rather than from files
 * [ ] extend compute FES function to allow weighted data
 * [ ] less memory intensive FES function? (especially high dimensions)
-
+* [ ] function to load features from file rather than computing them
 
 classifier.py
 * [x] add function to save results to file (list of relevant features)
