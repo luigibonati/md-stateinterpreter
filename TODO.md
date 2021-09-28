@@ -2,22 +2,30 @@
 
 ## Model
 
-MD.p
+MD.py (restructure code)
 * [ ] allow computing only subset of descriptors (e.g. via keywords)
 * [ ] restructure code to mimic the different steps, e.g. divide functions in:
   - states identification
   - compute descriptors
 * [x] allow loading COLVAR from pd.Dataframe rather than from files
+* [ ] function to load features from file rather than computing them
+
+FES
 * [ ] extend compute FES function to allow weighted data
 * [ ] less memory intensive FES function? (especially high dimensions)
-* [ ] function to load features from file rather than computing them
+  1. [ ] implement KDE
+  2. [ ] how to find bandwith? (careful for weighted data and rules)
+  3. [ ] optimization scheme to find local minima
+
 
 classifier.py
 * [x] add function to save results to file (list of relevant features)
 * [ ] add plot of number of features per state and total number of unique features as function of C
-* [ ] question: features for quadratic CVs should be obtained from combination of features within each state or all of them? e.g. state1: x1,x2 - state2: x3,x4 --> x1 x2, x3 x4 OR x1 x2, x1 x3, x1 x4, x2 x3 ecc... ?
-* [ ] question: how to check that model is robust? (e.g. repeat N times? )
-* [ ] question: sometimes (especially with chignolin, hbonds) throws the warning: `ConvergenceWarning: The max_iter was reached which means the coef_ did not converge` should we try to increase max_iter?
+
+Questions
+* [X] question: features for quadratic CVs should be obtained from combination of features within each state or all of them? e.g. state1: x1,x2 - state2: x3,x4 --> x1 x2, x3 x4 OR x1 x2, x1 x3, x1 x4, x2 x3 ecc... ? --> ALL OF THEM
+* [X] question: how to check that model is robust? (e.g. repeat N times? ) --> CONVEX
+* [X] question: sometimes (especially with chignolin, hbonds) throws the warning: `ConvergenceWarning: The max_iter was reached which means the coef_ did not converge` should we try to increase max_iter? --> pass `max_iter` in dict to compute
 
 ## Systems
 
