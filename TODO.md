@@ -7,7 +7,7 @@ MD.p
 * [ ] restructure code to mimic the different steps, e.g. divide functions in:
   - states identification
   - compute descriptors
-* [ ] allow loading COLVAR from pd.Dataframe rather than from files
+* [x] allow loading COLVAR from pd.Dataframe rather than from files
 * [ ] extend compute FES function to allow weighted data
 * [ ] less memory intensive FES function? (especially high dimensions)
 * [ ] function to load features from file rather than computing them
