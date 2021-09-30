@@ -15,7 +15,6 @@ dependencies:
   - scipy
   - matplotlib
   - mdtraj
-  - tdqm
 
     # Testing
   - pytest
@@ -23,6 +22,5 @@ dependencies:
   - codecov
 
     # Pip-only installs
-  #- pip:
-  #  - codecov
-
+  - pip:
+    - tdqm
