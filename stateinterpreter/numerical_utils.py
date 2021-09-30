@@ -1,6 +1,5 @@
 
 import numpy as np
-from math import power
 from scipy.special import logsumexp
 
 _EPS = 1e-10
