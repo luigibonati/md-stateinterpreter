@@ -10,7 +10,7 @@ Interpretation of metastable states from MD simulations
 #### Installation
 
 Install the python package in development mode:
-````
+```
 pip install -e .
 ```
 

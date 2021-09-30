@@ -15,6 +15,7 @@ dependencies:
   - scipy
   - matplotlib
   - mdtraj
+  - tdqm
 
     # Testing
   - pytest
