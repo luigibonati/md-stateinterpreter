@@ -1,0 +1,25 @@
+# Dataset description
+
+Four different states of chignolin.
+
+- Files:  state{0..3}.dat 
+
+- 1000 datapoints per state
+
+# Input features
+
+    1. a set of diehdral angles of the main chain of the protein (sin and cos) [cphi,sphi,cpsi,spsi,cchi,schi]
+    2. all distances between atoms (about 4500) [dd*] 
+
+# Load file 
+
+See notebook in ../chignolin/
+
+To use all features:
+
+filename='state0.dat'
+headers = pd.read_csv(filename,sep=' ',skipinitialspace=True, nrows=0).columns[2:]
+df = pd.read_csv(filename,sep=' ',skipinitialspace=True, header=None,skiprows=1,names=headers,comment='#')  
+dataset = df.filter(regex='cphi|sphi|cpsi|spsi|cchi|schi|dd').values
+
+
