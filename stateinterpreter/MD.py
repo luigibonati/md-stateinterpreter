@@ -2,7 +2,7 @@ from tqdm import tqdm
 import pandas as pd
 import mdtraj as md
 import numpy as np
-import scipy.stats as st
+from .numerical_utils import gaussian_kde
 import matplotlib.pyplot as plt
 import itertools
 from scipy.ndimage.filters import minimum_filter
@@ -35,13 +35,13 @@ class Loader:
         
     def approximate_FES(self, collective_vars, bounds, num=100, bw_method=None, weights=None):
         ndims = len(collective_vars)
-        positions = np.array(self.colvar[collective_vars]).T
-        _FES = st.gaussian_kde(positions,bw_method=bw_method,weights=weights)
+        positions = np.array(self.colvar[collective_vars])
+        _FES = gaussian_kde(positions,bw_method=bw_method,weights=weights)
         self._FES_KDE = _FES
         _1d_samples = [np.linspace(vmin, vmax, num) for (vmin, vmax) in bounds]
         meshgrids = np.meshgrid(*_1d_samples)
         sampled_positions = np.array([np.ravel(coord) for coord in meshgrids])
-        f = np.reshape(_FES.logpdf(sampled_positions).T, (num,)*ndims)
+        f = np.reshape(_FES.logpdf(sampled_positions), (num,)*ndims)
         f *= -self.kbt
         f -= np.min(f)
 
