@@ -1,0 +1,4 @@
+# specific for each data folder
+*.dcd
+dataframe
+COLVAR*
