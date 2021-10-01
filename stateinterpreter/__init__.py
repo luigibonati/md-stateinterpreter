@@ -1,10 +1,9 @@
 """Interpret metastable states from MD simulations"""
-  
-# __all__ = ["MD", "classifier"]
 
 # Add imports here
 from .MD import *
 from .classifier import *
+from .io import *
 
 # Handle versioneer
 from ._version import get_versions
