@@ -1,5 +1,5 @@
 # imports
-from typing import Type
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,117 +11,26 @@ from scipy.ndimage.filters import minimum_filter
 from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
 from scipy.optimize import minimize
 
+from .io import load_dataframe
 from .numerical_utils import gaussian_kde
+
+__all__ = ["Loader"]
 
 """
 OUTLINE
 =======
 1a. Load collective variables
    - from FILE or pd.DataFrame
-1b. Load descriptors
+1b. Load descriptors (optional)
    - from FILE or pd.DataFrame
 2. (optional: load trajectory and compute descriptors)
-3. Compute FES --> assign states to configs
-4. Dataframe(CVs, descriptors, labels)
+3. Identify states from FES
+4. Get dataframe (CVs, descriptors, labels)
 """
-
-"""
-TODO
-====
-- weights or logweights
-- basins or states?
-- name functions
-- mismatch approximate_fes (pietro)
-"""
-
-def is_plumed_file(filename):
-    """
-    Check if given file is in PLUMED format.
-
-    Parameters
-    ----------
-    filename : string, optional
-        PLUMED output file
-
-    Returns
-    -------
-    bool
-        wheter is a plumed output file
-    """   
-    headers = pd.read_csv( filename, sep=" ", skipinitialspace=True, nrows=0 )
-    is_plumed = True if " ".join(headers.columns[:2]) == "#! FIELDS" else False
-    return is_plumed
-
-def plumed_to_pandas(filename="./COLVAR"):
-    """
-    Load a PLUMED file and save it to a dataframe.
-
-    Parameters
-    ----------
-    filename : string, optional
-        PLUMED output file
-
-    Returns
-    -------
-    df : DataFrame
-        Collective variables dataframe
-    """
-    skip_rows = 1
-    # Read header 
-    headers = pd.read_csv( filename, sep=" ", skipinitialspace=True, nrows=0 )
-    # Discard #! FIELDS
-    headers = headers.columns[2:]
-    # Load dataframe and use headers for columns names
-    df = pd.read_csv(
-        filename,
-        sep=' ',
-        skipinitialspace=True,
-        header=None,
-        skiprows=range(skip_rows),
-        names=headers,
-        comment="#",
-    )
-
-    return df
-
-def load_dataframe(data, **kwargs):
-    """Load dataframe from object or from file.
-
-    Parameters
-    ----------
-    data : str or pandas.DataFrame
-        input data
-
-    Returns
-    -------
-    pandas.DataFrame
-        Dataframe
-
-    Raises
-    ------
-    TypeError
-        if data is not a valid type
-    """
-    # check if data is Dataframe
-    if type(data) == pd.DataFrame:
-        df = data
-    # or is a string
-    elif type(data) == str:
-        filename = data
-        # check if file is in PLUMED format
-        if is_plumed_file(filename):
-            df = plumed_to_pandas(filename)
-        # else use read_csv with optional kwargs
-        else:
-            df = pd.read_csv(filename, **kwargs)
-    else:
-        raise TypeError(f"{data}: Accepted types are \'pandas.Dataframe\' or \'str\'")          
-
-    return df
 
 class Loader:
 
-    def __init__(self, colvar = None, descriptors = None, kbt = 2.5, stride=1, _DEV=False, **kwargs):
+    def __init__(self, colvar, descriptors = None, kbt = 2.5, stride=1, _DEV=False, **kwargs):
         """Prepare inputs for stateinterpreter
 
         Parameters
@@ -135,7 +44,19 @@ class Loader:
         stride : int, optional
             keep data every stride, by default 1
         _DEV : bool, optional
-            enable dev. mode, by default False
+            enable debug mode, by default False
+        
+        Examples
+        --------
+        Load collective variables and descriptors from file, and store them as DataFrames
+        
+        >>> folder = 'data/test-chignolin/'
+        >>> colvar_file = folder + 'COLVAR'
+        >>> descr_file = folder+ 'DESCRIPTORS.csv'
+        >>> data = Loader(colvar_file, descr_file, kbt=2.8, stride=10)
+        >>> print(f"Colvar: {data.colvar.shape}, Descriptors: {data.descriptors.shape}")
+        Colvar: (105, 9), Descriptors: (105, 783)
+
         """
         # collective variables data
         self.colvar = load_dataframe(colvar, **kwargs)      
@@ -169,6 +90,8 @@ class Loader:
         ----------
         traj_dict : dict
             dictionary containing trajectory and topology (optional) file
+
+        Exampl
         """
         traj_file = traj_dict['trajectory']
         topo_file = traj_dict['topology'] if 'topology' in traj_dict else None
@@ -200,27 +123,27 @@ class Loader:
             print(f'Descriptors: {self.descriptors.shape}')
         assert len(self.colvar) == len(self.descriptors), "mismatch between colvar and descriptor length."
 
-    def identify_states(self, selected_cvs, bounds, weights=None, num=100, fes_cutoff=5, memory_saver=False, splits=50):
-        # retrieve weights
-        if weights is None:
+    def identify_states(self, selected_cvs, bounds, logweights=None, num=100, fes_cutoff=5, memory_saver=False, splits=50):
+        # retrieve logweights
+        if logweights is None:
             if '.bias' in self.colvar.columns:
                 print('WARNING: a field with .bias is present in colvar, but it is not used for the FES.')
         else:
-            if isinstance(weights,str):
-                w = self.colvar[weights].values
-            elif isinstance(weights,pd.DataFrame):
-                w = weights.values
-            elif isinstance(weights,np.ndarray):
-                w = weights
+            if isinstance(logweights,str):
+                w = self.colvar[logweights].values
+            elif isinstance(logweights,pd.DataFrame):
+                w = logweights.values
+            elif isinstance(logweights,np.ndarray):
+                w = logweights
             else:
-                raise TypeError(f"{weights}: Accepted types are \'pandas.Dataframe\', \'str\' or \'numpy.ndarray\' ")
+                raise TypeError(f"{logweights}: Accepted types are \'pandas.Dataframe\', \'str\' or \'numpy.ndarray\' ")
             if w.ndim != 1:
-                raise ValueError(f"{weights}: 1D array is required for weights")
+                raise ValueError(f"{logweights}: 1D array is required for logweights")
         
         # store selected cvs
         self.selected_cvs = selected_cvs
         # compute fes
-        self.approximate_FES(selected_cvs, bounds, num=num, bw_method=None, weights=weights) 
+        self.approximate_FES(selected_cvs, bounds, num=num, bw_method=None, logweights=logweights) 
         # assign basins and select based on FES cutoff
         self.basins = self._basin_selection(fes_cutoff=fes_cutoff, memory_saver=memory_saver,splits=splits)
 
@@ -252,17 +175,8 @@ class Loader:
             self.descriptors 
             ], axis=1)
 
-    # DEPRECATED, TO REMOVE
-    def load(self, collective_vars, bounds, num=100, fes_cutoff=5, memory_saver=False, splits=50,bw_method=None,weights=None):
-        self.approximate_FES(collective_vars, bounds, num=num, bw_method=None, weights=None)
-        CVs = self.colvar[collective_vars]
-        basins = self._basin_selection(fes_cutoff=fes_cutoff, memory_saver=memory_saver,splits=splits)
-        CA_DIST = self._CA_DISTANCES()
-        HB = self._HYDROGEN_BONDS()
-        ANGLES = self._ANGLES()
-        return pd.concat([CVs, basins, CA_DIST,HB,ANGLES], axis=1)
-
     def approximate_FES(self, collective_vars, bounds, num=100, bw_method=None, weights=None):
+        """TODO: ADD DOC"""
         ndims = len(collective_vars)
         positions = np.array(self.colvar[collective_vars])
         _FES = gaussian_kde(positions,bw_method=bw_method,weights=weights )
@@ -278,6 +192,7 @@ class Loader:
         return self.FES
 
     def plot_FES(self, bounds= None, names = ['Variable 1', 'Variable 2']):
+        """TODO: add doc or remove?"""
         try:
             self.FES
         except NameError:
@@ -399,6 +314,8 @@ class Loader:
         df['selection'] = mask
         return df
         
+    # DESCRIPTORS COMPUTATION
+    
     def _CA_DISTANCES(self):
         sel = self.traj.top.select('name CA')
 
