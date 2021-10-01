@@ -117,7 +117,7 @@ class Loader:
         KeyError
             Trajectory needs to be set beforehand.
         """
-        if self.traj == None:
+        if self.traj is None:
             raise KeyError("Trajectory not loaded. Call self.load_trajectory() first.")
 
         ca = self._CA_DISTANCES()
@@ -165,7 +165,7 @@ class Loader:
         self.selected_cvs = selected_cvs
         # compute fes
         self.approximate_FES(
-            selected_cvs, bounds, num=num, bw_method=None, logweights=logweights
+            selected_cvs, bounds, num=num, bw_method=None, weights=logweights
         )
         # assign basins and select based on FES cutoff
         self.basins = self._basin_selection(
