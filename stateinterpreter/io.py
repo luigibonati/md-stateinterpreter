@@ -1,5 +1,7 @@
 import pandas as pd
 
+__all__ = ["load_dataframe", "plumed_to_pandas"]
+
 def is_plumed_file(filename):
     """
     Check if given file is in PLUMED format.
@@ -13,10 +15,11 @@ def is_plumed_file(filename):
     -------
     bool
         wheter is a plumed output file
-    """   
-    headers = pd.read_csv( filename, sep=" ", skipinitialspace=True, nrows=0 )
+    """
+    headers = pd.read_csv(filename, sep=" ", skipinitialspace=True, nrows=0)
     is_plumed = True if " ".join(headers.columns[:2]) == "#! FIELDS" else False
     return is_plumed
+
 
 def plumed_to_pandas(filename="./COLVAR"):
     """
@@ -33,14 +36,14 @@ def plumed_to_pandas(filename="./COLVAR"):
         Collective variables dataframe
     """
     skip_rows = 1
-    # Read header 
-    headers = pd.read_csv( filename, sep=" ", skipinitialspace=True, nrows=0 )
+    # Read header
+    headers = pd.read_csv(filename, sep=" ", skipinitialspace=True, nrows=0)
     # Discard #! FIELDS
     headers = headers.columns[2:]
     # Load dataframe and use headers for columns names
     df = pd.read_csv(
         filename,
-        sep=' ',
+        sep=" ",
         skipinitialspace=True,
         header=None,
         skiprows=range(skip_rows),
@@ -49,6 +52,7 @@ def plumed_to_pandas(filename="./COLVAR"):
     )
 
     return df
+
 
 def load_dataframe(data, **kwargs):
     """Load dataframe from object or from file.
@@ -81,6 +85,6 @@ def load_dataframe(data, **kwargs):
         else:
             df = pd.read_csv(filename, **kwargs)
     else:
-        raise TypeError(f"{data}: Accepted types are \'pandas.Dataframe\' or \'str\'")          
+        raise TypeError(f"{data}: Accepted types are 'pandas.Dataframe' or 'str'")
 
     return df
