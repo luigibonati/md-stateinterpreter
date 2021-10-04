@@ -89,7 +89,7 @@ class gaussian_kde:
             return res
 
     def _kde_args(self, points):
-        if points.ndim ==1:
+        if (points.ndim ==1) and (self.dims > 1) :
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
         args = np.empty((points.shape[0], self.n_centers))
