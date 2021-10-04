@@ -84,6 +84,7 @@ class Loader:
         # initialize attributes to None
         self.traj = None
         self.basins = None
+        self.n_basins = None
 
     def load_trajectory(self, traj_dict):
         """ "Load trajectory with mdtraj.
@@ -140,6 +141,46 @@ class Loader:
         memory_saver=False, 
         splits=50
     ):
+        """Label configurations based on free energy
+
+        Parameters
+        ----------
+        selected_cvs : list of strings
+            Names of the collective variables used for clustering
+        bounds : tuple of list 
+            Bounds for the cvs ([min,max]*n_cvs)
+        logweights : pandas.DataFrame, np.array or string , optional
+            Logweights used for FES calculation, by default None
+        fes_cutoff : float, optional
+            Cutoff used to select only low free-energy configurations, by default 5
+        optimizer : optional
+            Method for finding local minima, by default None
+        optimizer_kwargs : optional
+            Arguments for optimizer, by default dict()
+        memory_saver : bool, optional
+            Memory saver option for basin selection, by default False
+        splits : int, optional
+            Divide data in `splits` chuck, by default 50
+
+        Returns
+        -------
+        [type]
+            [description]
+
+        Raises
+        ------
+        TypeError
+            [description]
+        ValueError
+            [description]
+        KeyError
+            [description]
+        ValueError
+            [description]
+        KeyError
+            [description]
+        """
+
         # retrieve logweights
         if logweights is None:
             if ".bias" in self.colvar.columns:
@@ -172,7 +213,6 @@ class Loader:
 
         self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
            
-
         # Assign basins and select based on FES cutoff
         self.basins = self._basin_selection(
             self.minima,
@@ -180,6 +220,8 @@ class Loader:
             memory_saver=memory_saver, 
             splits=splits
         )
+        
+        self.n_basins = len(self.basins['basin'].unique())
 
     def collect_data(self, only_selected_cvs=False):
         """Prepare dataframe with: CVs, labels and descriptors
@@ -279,6 +321,7 @@ class Loader:
     def _basin_selection(
         self, minima, fes_cutoff=5, memory_saver=False, splits=50
     ):
+    
         positions = self.KDE.dataset
         norms = np.linalg.norm((positions[:,np.newaxis,:] - minima), axis=2)
         classes = np.argmin(norms, axis=1)
