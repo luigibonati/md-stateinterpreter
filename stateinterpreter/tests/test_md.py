@@ -46,7 +46,7 @@ def test_compute_descriptors():
 
     assert data.descriptors.shape == data2.descriptors.shape
 
-@pytest.mark.skip
+#@pytest.mark.skip
 @pytest.mark.parametrize("n_cvs", [1,2])
 def test_identify_states(n_cvs):
     """Identify metastable states based on FES, clustering with differen no. of CVs"""
@@ -62,7 +62,7 @@ def test_identify_states(n_cvs):
     bounds = [(-1.,1.)]*n_cvs
 
     data = Loader(colvar_file, descr_file, kbt=2.8, stride=1, _DEV=True)
-    data.identify_states(selected_cvs,bounds,num=50)
+    data.identify_states(selected_cvs,bounds)
     df = data.collect_data()
     print(df.shape)
 

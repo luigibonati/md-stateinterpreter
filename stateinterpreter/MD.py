@@ -7,12 +7,10 @@ import mdtraj as md
 import itertools
 
 from tqdm import tqdm
-from scipy.ndimage.filters import minimum_filter
-from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
-from scipy.optimize import minimize
+
 
 from .io import load_dataframe
-from .numerical_utils import gaussian_kde
+from .numerical_utils import gaussian_kde, local_minima
 
 __all__ = ["Loader"]
 
@@ -136,10 +134,11 @@ class Loader:
         selected_cvs,
         bounds,
         logweights=None,
-        num=100,
         fes_cutoff=5,
-        memory_saver=False,
-        splits=50,
+        optimizer=None,
+        optimizer_kwargs=dict(),
+        memory_saver=False, 
+        splits=50
     ):
         # retrieve logweights
         if logweights is None:
@@ -163,13 +162,23 @@ class Loader:
 
         # store selected cvs
         self.selected_cvs = selected_cvs
-        # compute fes
+
+        # Compute fes
         self.approximate_FES(
-            selected_cvs, bounds, num=num, bw_method=None, weights=logweights
+            selected_cvs, 
+            bw_method=None, 
+            logweights=logweights
         )
-        # assign basins and select based on FES cutoff
+
+        self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
+           
+
+        # Assign basins and select based on FES cutoff
         self.basins = self._basin_selection(
-            fes_cutoff=fes_cutoff, memory_saver=memory_saver, splits=splits
+            self.minima,
+            fes_cutoff=fes_cutoff,
+            memory_saver=memory_saver, 
+            splits=splits
         )
 
     def collect_data(self, only_selected_cvs=False):
@@ -204,22 +213,24 @@ class Loader:
         )
 
     def approximate_FES(
-        self, collective_vars, bounds, num=100, bw_method=None, weights=None
+        self, collective_vars, bw_method=None, logweights=None
     ):
-        """TODO: ADD DOC"""
-        ndims = len(collective_vars)
-        positions = np.array(self.colvar[collective_vars])
-        _FES = gaussian_kde(positions, bw_method=bw_method, weights=weights)
-        self._FES_KDE = _FES
-        _1d_samples = [np.linspace(vmin, vmax, num) for (vmin, vmax) in bounds]
-        meshgrids = np.meshgrid(*_1d_samples)
-        sampled_positions = np.array([np.ravel(coord) for coord in meshgrids])
-        f = np.reshape(_FES.logpdf(sampled_positions), (num,) * ndims)
-        f *= -self.kbt
-        f -= np.min(f)
+        """Approximate Free Energy Surface (FES) in the space of collective_vars through Gaussian Kernel Density Estimation
 
-        self.FES = (meshgrids, f)
-        return self.FES
+        Args:
+            collective_vars (numpy.ndarray or pd.Dataframe): List of sampled collective variables with dimensions [num_timesteps, num_CVs]
+            bounds (list of tuples): (min, max) bounds for each collective Variable
+            num (int, optional): [description]. Defaults to 100.
+            bw_method ('scott', 'silverman' or a scalar, optional): Bandwidth method used in GaussianKDE. Defaults to None ('scotts' factor).
+            logweights (arraylike log weights, optional): [description]. Defaults to None (uniform weights).
+
+        Returns:
+            [type]: [description]
+        """
+        empirical_centers = self.colvar[collective_vars].to_numpy()
+        self.KDE = gaussian_kde(empirical_centers)
+        self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)
+        return self.fes
 
     def plot_FES(self, bounds=None, names=["Variable 1", "Variable 2"]):
         """TODO: add doc or remove?"""
@@ -265,90 +276,27 @@ class Loader:
         else:
             raise ValueError("Maximum number of dimensions over which to plot is 2")
 
-    def find_minima(self):
-        # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
-        """
-        Takes an array and detects the troughs using the local maximum filter.
-        Returns a boolean mask of the troughs (i.e. 1 when
-        the pixel's value is the neighborhood maximum, 0 otherwise)
-        """
-        _DEV = self._DEV
-        sampled_positions, f = self.FES
-        # define an connected neighborhood http://www.scipy.org/doc/api_docs/SciPy.ndimage.morphology.html#generate_binary_structure
-        neighborhood = generate_binary_structure(f.ndim, 2)
-        # apply the local minimum filter; all locations of minimum value in their neighborhood are set to 1 http://www.scipy.org/doc/api_docs/SciPy.ndimage.filters.html#minimum_filter
-        local_min = minimum_filter(f, footprint=neighborhood) == f
-        # local_min is a mask that contains the peaks we are looking for, but also the background.
-        # In order to isolate the peaks we must remove the background from the mask. we create the mask of the background
-        background = f == 0
-        #
-        # a little technicality: we must erode the background in order to successfully subtract it from local_min, otherwise a line will appear along the background border (artifact of the local minimum filter) http://www.scipy.org/doc/api_docs/SciPy.ndimage.morphology.html#binary_erosion
-        eroded_background = binary_erosion(
-            background, structure=neighborhood, border_value=1
-        )
-        #
-        # we obtain the final mask, containing only peaks, by removing the background from the local_min mask
-        detected_minima = local_min ^ eroded_background
-        detected_minima = np.where(detected_minima)
-        presumed_minima = []
-
-        for idxs in zip(*detected_minima):
-            minima = []
-            for coord in sampled_positions:
-                minima.append(coord[idxs])
-            presumed_minima.append(np.array(minima))
-        presumed_minima = np.array(presumed_minima)
-        if _DEV:
-            print(f"Detected {len(presumed_minima)} minima")
-        obj_fun = lambda x: -self.kbt * self._FES_KDE.logpdf(x)
-
-        real_minima = []
-        for minima in presumed_minima:
-
-            res = minimize(obj_fun, minima)
-            if res.success:
-                real_minima.append(res.x)
-            else:
-                real_minima.append(minima)
-                if _DEV:
-                    print(
-                        f"Unable to converge minima at {minima}, using approximated one"
-                    )
-        real_minima = np.array(real_minima)
-
-        if _DEV:
-            print("True\t Approx\t Delta")
-            for i in range(len(real_minima)):
-                print(
-                    f"{np.around(real_minima[i], decimals=2)}\t {np.around(presumed_minima[i], decimals=2)}\t {np.abs(np.around(real_minima[i] - presumed_minima[i], decimals=2))}\t"
-                )
-        # Sorting w.r.t. first dim, to be stabilized
-        argsortmin = np.argsort(real_minima, axis=0)
-        return real_minima[argsortmin[:, 0]]
-
     def _basin_selection(
-        self, fes_cutoff=5, minima=None, memory_saver=False, splits=50
+        self, minima, fes_cutoff=5, memory_saver=False, splits=50
     ):
-        if not minima:
-            minima = self.find_minima()
-        positions = self._FES_KDE.dataset.T
-        norms = np.linalg.norm((positions[..., np.newaxis] - minima.T), axis=1)
+        positions = self.KDE.dataset
+        norms = np.linalg.norm((positions[:,np.newaxis,:] - minima), axis=2)
         classes = np.argmin(norms, axis=1)
-        fes_at_minima = -self.kbt * self._FES_KDE.logpdf(minima.T)
+        fes_at_minima = self.fes(minima)
         ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])
         # Very slow
         if memory_saver:
-            chunks = np.array_split(positions.T, splits, axis=1)
+            chunks = np.array_split(positions, splits, axis=0)
             fes_pts = []
             if self._DEV:
                 for chunk in tqdm(chunks):
-                    fes_pts.append(-self.kbt * self._FES_KDE.logpdf(chunk))
+                    fes_pts.append(self.fes(chunk))
             else:
                 for chunk in chunks:
-                    fes_pts.append(-self.kbt * self._FES_KDE.logpdf(chunk))
+                    fes_pts.append(self.fes(chunk))
             fes_pts = np.hstack(fes_pts)
         else:
-            fes_pts = -self.kbt * self._FES_KDE.logpdf(positions.T)
+            fes_pts = self.fes(positions)
         mask = (fes_pts - ref_fes) < fes_cutoff
         df = pd.DataFrame(data=classes, columns=["basin"])
         df["selection"] = mask
