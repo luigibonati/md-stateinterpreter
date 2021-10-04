@@ -64,7 +64,10 @@ def test_identify_states(n_cvs):
     data = Loader(colvar_file, descr_file, kbt=2.8, stride=1, _DEV=True)
     data.identify_states(selected_cvs,bounds)
     df = data.collect_data()
-    print(df.shape)
+
+    assert data.n_basins == 2 if n_cvs == 1 else 4
+    assert df.shape == (1050,794)
+    assert df.isnull().values.any() == False
 
 if __name__ == "__main__":
     print('>>>>> test_load_colvar')
