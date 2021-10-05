@@ -37,7 +37,6 @@ def test_compute_descriptors():
     # Compute descriptors from traj
     data = Loader(colvar_file, kbt=2.8, stride=20, _DEV=True)
     data.load_trajectory(traj_dict)
-    data.compute_descriptors()
 
     # Load descriptors from file
     descr_file = folder+"DESCRIPTORS.csv"
