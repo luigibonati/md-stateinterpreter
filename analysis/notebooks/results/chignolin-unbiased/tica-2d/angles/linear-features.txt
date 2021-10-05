@@ -1,0 +1,13 @@
+State 0:
+	 100.0% | SIDECHAIN cos_chi1 ASP3
+State 1:
+	 74.5% | SIDECHAIN sin_chi1 THR6
+	 12.2% | SIDECHAIN cos_chi1 THR8
+	 10.1% | SIDECHAIN cos_chi1 ASP3
+	 2.7%  | SIDECHAIN sin_chi1 THR8
+	 0.5%  | BACKBONE sin_psi THR8
+State 2:
+	 100.0% | SIDECHAIN cos_chi1 ASP3
+State 3:
+	 77.3% | SIDECHAIN cos_chi1 THR8
+	 22.7% | SIDECHAIN sin_chi1 THR6
