@@ -3,13 +3,13 @@
 ## Model
 
 MD.py (restructure code)
-* [ ] allow computing only subset of descriptors (e.g. via keywords)
+* [X] allow computing only subset of descriptors (e.g. via keywords)
 * [X] restructure code to mimic the different steps, e.g. divide functions in:
   - states identification
   - compute descriptors
 * [x] allow loading COLVAR from pd.Dataframe rather than from files
 * [X] function to load features from file rather than computing them
-* [ ] sort minima based on CV values
+* [X] sort minima based on CV values
 * [X] compute descriptors within load traj (add keyword for list subset)
 
 FES
@@ -20,11 +20,10 @@ FES
   3. [x] optimization scheme to find local minima
 
 Plot
-* [ ] move plotting functions to module
+* [x] move plotting functions to module
 
 classifier.py
 * [x] add function to save results to file (list of relevant features)
-* [ ] add plot of number of features per state and total number of unique features as function of C
 * [ ] add keyword to sample to select subset of basins
 
 Questions
