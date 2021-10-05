@@ -1,5 +1,6 @@
 # imports
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -88,16 +89,19 @@ class Loader:
         self.basins = None
         self.n_basins = None
 
-    def load_trajectory(self, traj_dict):
+    def load_trajectory(self, traj_dict, descriptors = ['ca','dihedrals','hbonds']):
         """ "Load trajectory with mdtraj.
 
         Parameters
         ----------
         traj_dict : dict
             dictionary containing trajectory and topology (optional) file
+        descriptors : bool or list, default True
+            compute list of descriptors. if True compute all descriptors: ['ca','dihedral','hbonds'].
+            if False no descriptor is computed.
 
-        Exampl
         """
+
         traj_file = traj_dict["trajectory"]
         topo_file = traj_dict["topology"] if "topology" in traj_dict else None
 
@@ -107,11 +111,23 @@ class Loader:
             self.colvar
         ), f"length traj ({len(self.traj)}) != length colvar ({len(self.colvar)})"
 
-    def compute_descriptors(self):
+        # Compute descriptors
+        if descriptors is True: # if true compute all of them
+            self.compute_descriptors()
+        elif descriptors is not False:
+            self.compute_descriptors(descriptors)
+
+    def compute_descriptors(self,descriptors=['ca','dihedrals','hbonds']):
+
         """Compute descriptors from trajectory:
         - Dihedral angles
         - CA distances
         - Hydrogen bonds
+
+        Parameters
+        ----------
+        descriptors : string or list
+            compute a single descriptor or a list ot them
 
         Raises
         ------
@@ -121,11 +137,19 @@ class Loader:
         if self.traj is None:
             raise KeyError("Trajectory not loaded. Call self.load_trajectory() first.")
 
-        ca = self._CA_DISTANCES()
-        hb = self._HYDROGEN_BONDS()
-        ang = self._ANGLES()
+        descr_list = []
 
-        self.descriptors = pd.concat([ca, hb, ang], axis=1)
+        for d in descriptors:
+            if d == 'ca':
+                descr_list.append(self._CA_DISTANCES())
+            elif d == 'dihedrals':
+                descr_list.append(self._ANGLES())
+            elif d == 'hbonds':
+                descr_list.append(self._HYDROGEN_BONDS())
+            else:
+                raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds' are allowed.")
+        
+        self.descriptors = pd.concat(descr_list, axis=1)
         if self._DEV:
             print(f"Descriptors: {self.descriptors.shape}")
         assert len(self.colvar) == len(
@@ -138,7 +162,7 @@ class Loader:
         bounds,
         logweights=None,
         fes_cutoff=5,
-        sort_minima = True,
+        sort_minima_by = 'cvs_grid',
         optimizer=None,
         optimizer_kwargs=dict(),
         memory_saver=False, 
@@ -156,6 +180,8 @@ class Loader:
             Logweights used for FES calculation, by default None
         fes_cutoff : float, optional
             Cutoff used to select only low free-energy configurations, by default 5
+        sort_minima_by : string, optional
+            Sort labels based on `energy`, `cvs`, or `cvs_grid` values, by default `cvs_grid`.
         optimizer : optional
             Method for finding local minima, by default None
         optimizer_kwargs : optional
@@ -171,11 +197,11 @@ class Loader:
         if logweights is None:
             if ".bias" in self.colvar.columns:
                 print(
-                    "WARNING: a field with .bias is present in colvar, but it is not used for the FES."
+                    "WARNING: a field with .bias is present in colvar, but it is not used for the FES.",file=sys.stderr
                 )
         else:
             if isinstance(logweights, str):
-                w = self.colvar[logweights].values
+                w = self.colvar[logweights].values / self.kbt
             elif isinstance(logweights, pd.DataFrame):
                 w = logweights.values
             elif isinstance(logweights, np.ndarray):
@@ -200,8 +226,21 @@ class Loader:
         self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
         
         # sort minima based on first CV
-        if sort_minima:
-            self.minima = self.minima[self.minima[:, 0].argsort()]
+        if sort_minima_by == 'energy':
+            pass #already sorted
+        elif sort_minima_by == 'cvs' :
+            # sort first by 1st cv, then 2nd, ...
+            x = self.minima
+            self.minima = x [ np.lexsort( np.round(np.flipud(x.T),2) ) ] 
+        elif sort_minima_by == 'cvs_grid' :
+            # sort based on a binning of the cvs (10 bins per each direction),
+            # along 1st cv, then 2nd, ... 
+            x = self.minima
+            y = (x - [ bound[0] for bound in bounds ]) 
+            y /= np.asarray( [ bound[1]-bound[0] for bound in bounds ]) / 10
+            self.minima = x [ np.lexsort( np.round(np.flipud(y.T),0) ) ] 
+        else:
+            raise KeyError(f'Key {sort_minima_by} not allowed. Valid values: "energy","cvs","cvs_grid".')
 
         # Assign basins and select based on FES cutoff
         self.basins = self._basin_selection(
@@ -212,6 +251,7 @@ class Loader:
         )
         
         self.n_basins = len(self.basins['basin'].unique())
+        self.bounds = bounds
 
     def collect_data(self, only_selected_cvs=False):
         """Prepare dataframe with: CVs, labels and descriptors
@@ -260,7 +300,7 @@ class Loader:
             [type]: [description]
         """
         empirical_centers = self.colvar[collective_vars].to_numpy()
-        self.KDE = gaussian_kde(empirical_centers)
+        self.KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=logweights)
         self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)
         return self.fes
 
