@@ -45,9 +45,9 @@ def test_compute_descriptors():
 
     assert data.descriptors.shape == data2.descriptors.shape
 
-#@pytest.mark.skip
 @pytest.mark.parametrize("n_cvs", [1,2])
-def test_identify_states(n_cvs):
+@pytest.mark.parametrize("optimizer", ['rand_brute','brute'])
+def test_identify_states_optimizer(optimizer,n_cvs):
     """Identify metastable states based on FES, clustering with differen no. of CVs"""
 
     folder = 'stateinterpreter/data/test-chignolin/'
@@ -61,7 +61,7 @@ def test_identify_states(n_cvs):
     bounds = [(-1.,1.)]*n_cvs
 
     data = Loader(colvar_file, descr_file, kbt=2.8, stride=1, _DEV=True)
-    data.identify_states(selected_cvs,bounds)
+    data.identify_states(selected_cvs,bounds,optimizer=optimizer,sort_minima_by='cvs_grid')
     df = data.collect_data()
 
     assert data.n_basins == 2 if n_cvs == 1 else 4
