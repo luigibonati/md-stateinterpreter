@@ -332,14 +332,14 @@ class CV_path():
             ax.plot(np.log10(1/C_range), coeffs[:,idx,:], 'k-')
             ax.axvline(x = np.log10(1/C_range[C_idx]), color='r', linewidth=0.75)
             ax.set_xlim(np.log10(1/C_range[-1]), np.log10(1/C_range[0]))
-            ax.set_xlabel(r"$-\log(C)$")
+            ax.set_xlabel(r"$-\log_{10}(C)$")
             ax.set_title(state_names[idx])
             
         ax = axes[-1]
         ax.plot(np.log10(1/C_range), crossval, 'k-')
         ax.axvline(x = np.log10(1/C_range[C_idx]), color='r', linewidth=0.75)
         ax.set_xlim(np.log10(1/C_range[-1]), np.log10(1/C_range[0]))
-        ax.set_xlabel(r"$-\log(C)$")
+        ax.set_xlabel(r"$-\log_{10}(C)$")
         ax.set_title("Score")
         return (fig, axes)
     
