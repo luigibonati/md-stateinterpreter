@@ -61,6 +61,8 @@ class Loader:
         # collective variables data
         self.colvar = load_dataframe(colvar, **kwargs)
         self.colvar = self.colvar.iloc[::stride, :]
+        if stride > 1:
+            self.colvar.reset_index(drop=True, inplace=True)
         if _DEV:
             print(f"Collective variables: {self.colvar.values.shape}")
 
@@ -136,6 +138,7 @@ class Loader:
         bounds,
         logweights=None,
         fes_cutoff=5,
+        sort_minima = True,
         optimizer=None,
         optimizer_kwargs=dict(),
         memory_saver=False, 
@@ -162,23 +165,6 @@ class Loader:
         splits : int, optional
             Divide data in `splits` chuck, by default 50
 
-        Returns
-        -------
-        [type]
-            [description]
-
-        Raises
-        ------
-        TypeError
-            [description]
-        ValueError
-            [description]
-        KeyError
-            [description]
-        ValueError
-            [description]
-        KeyError
-            [description]
         """
 
         # retrieve logweights
@@ -212,7 +198,11 @@ class Loader:
         )
 
         self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
-           
+        
+        # sort minima based on first CV
+        if sort_minima:
+            self.minima = self.minima[self.minima[:, 0].argsort()]
+
         # Assign basins and select based on FES cutoff
         self.basins = self._basin_selection(
             self.minima,
