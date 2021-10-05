@@ -68,10 +68,4 @@ def test_identify_states_optimizer(optimizer,n_cvs):
     assert df.shape == (1050,794)
     assert df.isnull().values.any() == False
 
-if __name__ == "__main__":
-    print('>>>>> test_load_colvar')
-    test_load_colvar()
-    print('>>>>> test_compute_descriptors')
-    test_compute_descriptors()
-    print('>>>>> test_identify_states')
-    test_identify_states(2)
+#if __name__ == "__main__":

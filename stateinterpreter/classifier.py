@@ -223,6 +223,18 @@ class CV_path():
             features_description[state_idx] = data_list
         return features_description
     
+    def unique_features(self,C):
+        # get unique features
+        relevant_feat = self.relevant_features(C)
+
+        unique_features = set()
+        for state in relevant_feat.values():
+            for feat in state:
+                unique_features.add(feat[1])
+        unique_features = list(unique_features)
+    
+        return unique_features
+
     def print_relevant_features(self, C, state_names=None, normalize_C=True, file=None):
         features_description = self.relevant_features(C, normalize_C=normalize_C)
         n_basins = len(features_description)
