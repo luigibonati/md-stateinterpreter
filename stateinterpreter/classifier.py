@@ -168,7 +168,7 @@ class CV_path():
 
         n_features = train_in.shape[1]
         n_C = C_range.shape[0]
-        n_basins = train_out.max() + 1
+        n_basins = len(np.unique(train_out))
 
         C_range, coeffs, crossval = np.empty((n_C,)), np.empty((n_C, n_basins, n_features)), np.empty((n_C,))
 
