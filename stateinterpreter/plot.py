@@ -4,8 +4,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import itertools
 from matplotlib.gridspec import GridSpec
+import nglview
 
-__all__ = ["plot_states", "plot_cvpath", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features"]
+__all__ = ["plot_states", "plot_cvpath", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features", "visualize_features"]
 
 # aux function to compute basins mean
 def compute_basin_mean(df, basin, label_x, label_y):
@@ -189,3 +190,43 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
             axs[i,j].axis('off')
 
     plt.tight_layout()
+
+def visualize_features(data,relevant_features,state=0,n_feat_per_state=3):
+    # sample one frame per state
+    frames = [data.basins[data.basins['basin'] == i ].sample(1).index.values[0] for i in range(data.n_basins) ]
+    traj = data.traj[frames]
+    traj.superpose(traj[state])
+
+    # find atom ids of relevant features
+    atom_ids = []
+
+    features = relevant_features[state]
+    for i, feature in enumerate(features):
+        if i < n_feat_per_state:
+            name = feature[1]
+            atom_ids.append( data.descriptors_ids[name] )
+
+    # set up visualization
+    view = nglview.show_mdtraj(traj)
+    #view.frame = state
+    view.clear_representations()
+
+    # draw backbone + transparent sidechain
+    view.add_licorice('(not hydrogen)',opacity=0.35)
+    view.add_licorice('(backbone) and (not hydrogen)',opacity=0.85)
+
+    # loop over relevant features
+    for ids in atom_ids:
+        ids_string = [str(p) for p in ids]
+        selection = '@'+','.join(ids_string)
+
+        if len(ids) == 2: # distance
+            color = 'orange'
+            atom_pair = [ '@'+p for p in ids_string ]
+            view.add_distance(atom_pair=[atom_pair], color=color, label_visible=False)
+            view.add_ball_and_stick(selection,color=color,opacity=0.75)
+        elif len(ids) == 4: # angle
+            color = 'green'
+            view.add_ball_and_stick(selection,color=color,opacity=0.75)
+
+    return view
