@@ -137,6 +137,8 @@ class Loader:
         if self.traj is None:
             raise KeyError("Trajectory not loaded. Call self.load_trajectory() first.")
 
+        self.descriptors_ids = {} # used to store id of atoms associated with each feature
+
         descr_list = []
 
         for d in descriptors:
@@ -392,6 +394,8 @@ class Loader:
         )
 
         names = [label(i, j) for (i, j) in pairs]
+        for (i,j) in pairs:
+            self.descriptors_ids[label(i, j)] = [i,j]
         df = pd.DataFrame(data=dist, columns=names)
         return df
 
@@ -441,7 +445,9 @@ class Loader:
         # basename = 'hb_'
         # names = [ basename+str(x)+'-'+str(y) for x,y in  pairs]
         names = [label(x, y) for x, y in pairs]
-
+        for (x,y) in pairs:
+            self.descriptors_ids[label(x,y)] = [x,y]
+            
         df_HB_DIST = pd.DataFrame(data=dist, columns=names)
 
         # compute contacts
@@ -456,6 +462,9 @@ class Loader:
             "s" if traj.top.atom(j).is_sidechain else "",
         )
         names = [label(x, y) for x, y in pairs]
+        for (x,y) in pairs:
+            self.descriptors_ids[label(x,y)] = [x,y]
+
         df = pd.DataFrame(data=contacts, columns=names)
         df = df.join(df_HB_DIST)
         return df
@@ -507,6 +516,8 @@ class Loader:
                 name = "SIDECHAIN " + kind + " " + res
             names.append(name)
             values.append(dihedrals[1][:, i])
+            self.descriptors_ids[name] = list(idx)
+            
             if sincos:
                 # names.append('cos_'+kind+'-'+str(res))
                 name = "BACKBONE " + "cos_" + kind + " " + res
@@ -514,6 +525,7 @@ class Loader:
                     name = "SIDECHAIN " + "cos_" + kind + " " + res
                 names.append(name)
                 values.append(np.cos(dihedrals[1][:, i]))
+                self.descriptors_ids[name] = list(idx)
 
                 # names.append('sin_'+kind+'-'+str(res))
                 name = "BACKBONE " + "sin_" + kind + " " + res
@@ -521,6 +533,8 @@ class Loader:
                     name = "SIDECHAIN " + "sin_" + kind + " " + res
                 names.append(name)
                 values.append(np.sin(dihedrals[1][:, i]))
+                self.descriptors_ids[name] = list(idx)
+
         return names, values
 
     def contact_function(self, x, r0=1.0, d0=0, n=6, m=12):
