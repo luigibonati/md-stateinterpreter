@@ -15,11 +15,13 @@ class MD_Data:
     def __init__(self, dataframe):
         self._df = dataframe
         self.n_clusters = self._df['basin'].max() + 1
-    def sample(self, n_configs, regex_filter = '.*'):
+    def sample(self, n_configs, regex_filter = '.*', states_subset=None):
         features = self._df.filter(regex=regex_filter).columns.values
         config_list = []
         labels = []
-        for basin in range(self.n_clusters):
+        if states_subset is None:
+            states_subset = range(self.n_clusters)
+        for basin in states_subset:
             #select basin
             df = self._df.loc[ (self._df['basin'] == basin) & (self._df['selection'] == True)]
             #select descriptors and sample
