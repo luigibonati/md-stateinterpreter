@@ -168,6 +168,7 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
     n_basins = len(basins)
 
     fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=100, )
+                            #sharex=True, sharey=True)
 
     # for each state ...
     for i,(state,feat_list) in enumerate(relevant_feat.items()):
@@ -184,8 +185,8 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
                 #add basins labels
                 for b in basins:
                     mx,my = compute_basin_mean(df,b,cv_x,cv_y)
-                    bcolor = 'k' if b == i else 'w'
-                    fcolor = 'w' if b == i else 'k'            
+                    bcolor = 'k' if b == state else 'w'
+                    fcolor = 'w' if b == state else 'k'            
                     ax.scatter(mx,my,color=bcolor,s=250,alpha=0.7)
                     text = ax.text(mx, my, b, ha="center", va="center", 
                                 color=fcolor, fontsize='large')
