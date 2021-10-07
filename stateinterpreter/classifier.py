@@ -246,7 +246,7 @@ class CV_path():
         features_description = self.relevant_features(C, normalize_C=normalize_C)
         n_basins = len(features_description)
         if not state_names:
-            state_names = [f'State {idx}' for idx in range(n_basins)]
+            state_names = [f'State {idx}' for idx in features_description.keys()]
         
          # padding
         print_lists = []
@@ -269,7 +269,7 @@ class CV_path():
         features_description = self.relevant_features(C, normalize_C=normalize_C)
         n_basins = len(features_description)
         if not state_names:
-            state_names = [f'State {idx}' for idx in range(n_basins)]
+            state_names = [f'State {idx}' for idx in features_description.keys()]
         
         rows = np.int(np.ceil((n_basins + 1)/3))
         fig = plt.figure(constrained_layout=True, figsize=(9,3*rows))
