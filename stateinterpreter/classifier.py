@@ -158,7 +158,7 @@ class CV_path():
             #Model Fit
             model.fit(train_in,train_out)
             score = model.score(val_in,val_out)
-            return (C, model.coef_,score)
+            return (C, model.coef_,score, model.classes_)
         
         path_data = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -170,17 +170,22 @@ class CV_path():
         n_C = C_range.shape[0]
         n_basins = len(np.unique(train_out))
 
-        C_range, coeffs, crossval = np.empty((n_C,)), np.empty((n_C, n_basins, n_features)), np.empty((n_C,))
+        C_range, coeffs, crossval, classes_labels = np.empty((n_C,)), np.empty((n_C, n_basins, n_features)), np.empty((n_C,)), np.empty((n_C, n_basins), dtype=np.int_)
 
         for idx, data in enumerate(path_data):
             C_range[idx] = data[0]
             coeffs[idx] = data[1]
             crossval[idx] = data[2]
+            classes_labels[idx] = data[3].astype(np.int_)
+
 
         sort_perm = np.argsort(C_range)
+
         self._C_range = C_range[sort_perm]
         self._coeffs = coeffs[sort_perm]
         self._crossval = crossval[sort_perm]
+        self.classes_labels = classes_labels[sort_perm]
+
         return self._C_range, self._coeffs, self._crossval
 
     def relevant_features(self, C, normalize_C=True):
@@ -222,7 +227,7 @@ class CV_path():
             for perm_idx in sortperm:
                 #Value,name,importance,index
                 data_list.append((feat_val[perm_idx], feat_names[perm_idx], feat_importance[perm_idx], model_idxs[perm_idx]))
-            features_description[state_idx] = data_list
+            features_description[self.classes_labels[C_idx, state_idx]] = data_list
         return features_description
     
     def unique_features(self,C):

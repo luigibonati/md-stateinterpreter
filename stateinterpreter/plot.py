@@ -168,7 +168,6 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
     n_basins = len(basins)
 
     fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=100, )
-                            #sharex=True, sharey=True)
 
     # for each state ...
     for i,(state,feat_list) in enumerate(relevant_feat.items()):
@@ -201,5 +200,4 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
         #disable unused axis
         for j in range(len(feat_list),max_nfeat):
             axs[i,j].axis('off')
-
     plt.tight_layout()
