@@ -250,7 +250,7 @@ class CV_path():
         
          # padding
         print_lists = []
-        for basin_idx in range(n_basins):
+        for basin_idx in features_description.keys():
             basin_data = features_description[basin_idx]
             print_list = []
             for feat in basin_data:
