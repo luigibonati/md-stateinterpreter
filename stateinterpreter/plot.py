@@ -4,6 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import itertools
 from matplotlib.gridspec import GridSpec
+import sys
 
 __all__ = ["plot_states", "plot_cvpath", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features"]
 
@@ -133,6 +134,20 @@ def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, sa
     plt.tight_layout()
 
 def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, save_folder=None,file_prefix='linear'):
+    
+    added_columns = False
+    #Handle quadratic kernels
+    for _state in relevant_features.values():
+        for _feat_tuple in _state:
+            feature = _feat_tuple[1]
+            if "||" in feature:
+                if feature not in df.columns:
+                    added_columns = True
+                    i, j = feature.split(' || ')
+                    feat_ij = df[i].values * df[j].values
+                    df[feature] = feat_ij
+    if added_columns:
+        print("Warning: detected quadratic kenel features, added quadratic features to the input dataframe", file=sys.stderr)
 
     pairs = itertools.combinations(selected_cvs, 2)
     n_pairs = sum(1 for _ in pairs)
@@ -148,7 +163,6 @@ def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, 
                         bbox_inches='tight')
 
 def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
-
     # retrieve basins
     basins = df['basin'].unique()
     n_basins = len(basins)
