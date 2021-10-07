@@ -21,10 +21,11 @@ FES
 
 Plot
 * [x] move plotting functions to module
+* [] default name of the states displayed in the title should be consistent with the basin index used in classification (useful for states subsets)
 
 classifier.py
 * [x] add function to save results to file (list of relevant features)
-* [ ] add keyword to sample to select subset of basins
+* [x] add keyword to sample to select subset of basins
 
 Questions
 * [X] question: features for quadratic CVs should be obtained from combination of features within each state or all of them? e.g. state1: x1,x2 - state2: x3,x4 --> x1 x2, x3 x4 OR x1 x2, x1 x3, x1 x4, x2 x3 ecc... ? --> ALL OF THEM
