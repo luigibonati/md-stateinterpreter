@@ -32,8 +32,9 @@ def plot_cvpath(cvpath, C, state_names=None, suptitle=None, normalize_C=True):
 
     n_basins = coeffs.shape[1]
 
+    C_idx = np.argmin(np.abs(C_range - C))
     if not state_names:
-        state_names = [f'State {idx}' for idx in range(n_basins)]
+        state_names = [f'State {idx}' for idx in cvpath.classes_labels[C_idx]]
     assert len(state_names) == n_basins
 
     rows = np.int(np.ceil((n_basins + 1)/3))
@@ -45,7 +46,7 @@ def plot_cvpath(cvpath, C, state_names=None, suptitle=None, normalize_C=True):
         axes.append(fig.add_subplot(gs[np.unravel_index(basin_idx, (rows, 3))]))
     axes.append(fig.add_subplot(gs[np.unravel_index(n_basins, (rows, 3))]))
     
-    C_idx = np.argmin(np.abs(C_range - C))
+    
     if suptitle:
         fig.suptitle(suptitle)
     for idx in range(n_basins):
@@ -166,7 +167,7 @@ def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, 
 def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
     # retrieve basins
     basins = df['basin'].unique()
-    n_basins = len(basins)
+    n_basins = len(relevant_feat.keys())
 
     fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=100, )
                             #sharex=True, sharey=True)
@@ -186,8 +187,8 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
                 #add basins labels
                 for b in basins:
                     mx,my = compute_basin_mean(df,b,cv_x,cv_y)
-                    bcolor = 'k' if b == i else 'w'
-                    fcolor = 'w' if b == i else 'k'            
+                    bcolor = 'k' if b == state else 'w'
+                    fcolor = 'w' if b == state else 'k'            
                     ax.scatter(mx,my,color=bcolor,s=250,alpha=0.7)
                     text = ax.text(mx, my, b, ha="center", va="center", 
                                 color=fcolor, fontsize='large')
