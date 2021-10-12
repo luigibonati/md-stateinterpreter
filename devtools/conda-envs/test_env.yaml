@@ -17,6 +17,7 @@ dependencies:
   - matplotlib
   - mdtraj
   - nglview
+  - numba
 
     # Testing
   - pytest
