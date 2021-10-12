@@ -1,7 +1,9 @@
 
+from numba.np.ufunc import parallel
 import numpy as np
 from scipy.special import logsumexp
 import concurrent.futures
+from numba import jit, prange
 from scipy.optimize import shgo, minimize
 from scipy.ndimage.filters import minimum_filter
 from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
@@ -31,6 +33,21 @@ def weights_from_logweights(logweights):
     """Check if this is somewhat stable"""
     C = logsumexp(logweights)
     return np.exp(logweights - C)
+
+@jit(nopython=True, parallel=True)
+def _evaluate_kde_args(points, n_centers, dataset, inv_cov, bwidth, logweights, _logweights_norm):
+    args = np.empty((points.shape[0], n_centers))
+    for idx in prange(points.shape[0]):
+        args[idx] = _evaluate_one_arg(points[idx], dataset, inv_cov, bwidth, logweights, _logweights_norm)
+    return args
+
+@jit(nopython=True)
+def _evaluate_one_arg(pt, dataset, inv_cov, bwidth, logweights, _logweights_norm):
+    X = dataset - pt
+    arg = -np.sum(np.dot(X, inv_cov)*X, axis=-1) #[n_dataset]
+    arg /= 2*(bwidth**2)
+    arg += logweights - _logweights_norm
+    return arg 
 
 class gaussian_kde:
     #Trying to implement SciPy api
@@ -92,20 +109,9 @@ class gaussian_kde:
         if (points.ndim ==1) and (self.dims > 1) :
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
-        args = np.empty((points.shape[0], self.n_centers))
-        def _evaluate_one_arg(in_arg):
-            idx, pt = in_arg
-            X = self.dataset - pt
-            arg = -np.sum(np.dot(X, self.inv_cov)*X, axis=-1) #[n_dataset]
-            arg /= 2*(self.bwidth**2)
-            arg += self.logweights - self._logweights_norm
-            return idx, arg 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            fut = [executor.submit(_evaluate_one_arg, in_arg) for in_arg in enumerate(points)]
-            for fut_result in concurrent.futures.as_completed(fut):
-                idx, out_arg = fut_result.result()
-                args[idx] = out_arg
-            return args
+        #self.dims, self.n_centers, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweightts_norm
+
+        return _evaluate_kde_args(points, self.n_centers, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm)
 
     def grad(points):
         #Evaluate the estimated pdf grad on a provided set of points.
