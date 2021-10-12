@@ -26,6 +26,7 @@ Plot
 classifier.py
 * [x] add function to save results to file (list of relevant features)
 * [x] add keyword to sample to select subset of basins
+* [] The objects defined in classifier.py are a bit convoluted. Both of them do tiny jobs. Simplify and merge them
 
 Questions
 * [X] question: features for quadratic CVs should be obtained from combination of features within each state or all of them? e.g. state1: x1,x2 - state2: x3,x4 --> x1 x2, x3 x4 OR x1 x2, x1 x3, x1 x4, x2 x3 ecc... ? --> ALL OF THEM

@@ -3,9 +3,10 @@
 import sys
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import mdtraj as md
 import itertools
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 from tqdm import tqdm
 
@@ -306,50 +307,6 @@ class Loader:
         self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)
         return self.fes
 
-    def plot_FES(self, bounds=None, names=["Variable 1", "Variable 2"]):
-        """TODO: add doc or remove?"""
-        try:
-            self.FES
-        except NameError:
-            print(
-                "Free energy surface hasn't been computed. Use approximate_FES function."
-            )
-        else:
-            pass
-        sampled_positions, f = self.FES
-        FES_dims = f.ndim
-        if FES_dims == 1:
-            fig, ax = plt.subplots(dpi=100)
-            xx = sampled_positions[0]
-            ax.plot(xx, f)
-            ax.set_xlabel(names[0])
-            ax.set_ylabel("FES [kJ/mol]")
-            return (fig, ax)
-        elif FES_dims == 2:
-            xx = sampled_positions[0]
-            yy = sampled_positions[1]
-
-            if not bounds:
-                levels = np.linspace(1, 30, 10)
-            else:
-                levels = np.linspace(bounds[0], bounds[1], 10)
-
-            fig, ax = plt.subplots(dpi=100)
-            cfset = ax.contourf(xx, yy, f, levels=levels, cmap="Blues")
-            # Contour plot
-            cset = ax.contour(xx, yy, f, levels=levels, colors="k")
-            # Label plot
-            ax.clabel(cset, inline=1, fontsize=10)
-
-            cbar = plt.colorbar(cfset)
-
-            ax.set_xlabel(names[0])
-            ax.set_ylabel(names[1])
-            cbar.set_label("FES [kJ/mol]")
-            return (fig, ax)
-        else:
-            raise ValueError("Maximum number of dimensions over which to plot is 2")
-
     def _basin_selection(
         self, minima, fes_cutoff=5, memory_saver=False, splits=50
     ):
@@ -540,3 +497,38 @@ class Loader:
     def contact_function(self, x, r0=1.0, d0=0, n=6, m=12):
         # (see formula for RATIONAL) https://www.plumed.org/doc-v2.6/user-doc/html/switchingfunction.html
         return (1 - np.power(((x - d0) / r0), n)) / (1 - np.power(((x - d0) / r0), m))
+
+    def sample(self, n_configs, regex_filter = '.*', states_subset=None):
+        features = self.descriptors.filter(regex=regex_filter).columns.values
+        config_list = []
+        labels = []
+        if states_subset is None:
+            states_subset = range(self.n_basins)
+        for basin in states_subset:
+            #select basin
+            df = self.descriptors.loc[ (self.basins['basin'] == basin) & (self.basins['selection'] == True)]
+            #select descriptors and sample
+            config_i = df.filter(regex=regex_filter).sample(n=n_configs).values
+            config_list.append(config_i)
+            labels.extend([basin]*n_configs)
+        labels = np.array(labels, dtype=np.int_)
+        configurations = np.vstack(config_list)
+        return Sample(configurations, features, labels, scale=True)
+
+class Sample:
+    def __init__(self, configurations, features, labels, scale=False):
+        self.unscaled_configurations = configurations
+        self.configurations = configurations
+        self.features = features
+        self.labels = labels
+        if scale:
+            self.scale()
+    def scale(self):
+        self.scaler = StandardScaler(with_mean=True)
+        self.scaler.fit(self.configurations)
+        self.configurations = self.scaler.transform(self.unscaled_configurations)
+    def train_test_dataset(self, **kwargs):
+        return train_test_split(self.configurations, self.labels, **kwargs)
+    @property
+    def dataset(self):
+        return [self.configurations, self.labels]
