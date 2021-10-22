@@ -31,7 +31,7 @@ OUTLINE
 
 class Loader:
     def __init__(
-        self, colvar, descriptors=None, kbt=2.5, stride=1, _DEV=False, **kwargs
+        self, colvar, descriptors=None, kbt=2.5, start=0, stride=1, _DEV=False, **kwargs
     ):
         """Prepare inputs for stateinterpreter
 
@@ -43,6 +43,8 @@ class Loader:
             input features, by default None
         kbt : float, optional
             temperature [KbT], by default 2.5
+        start : int, optional
+            keep data from value, by default 0
         stride : int, optional
             keep data every stride, by default 1
         _DEV : bool, optional
@@ -62,8 +64,8 @@ class Loader:
         """
         # collective variables data
         self.colvar = load_dataframe(colvar, **kwargs)
-        self.colvar = self.colvar.iloc[::stride, :]
-        if stride > 1:
+        self.colvar = self.colvar.iloc[start::stride, :]
+        if ( stride > 1 ) or ( start > 0 ):
             self.colvar.reset_index(drop=True, inplace=True)
         if _DEV:
             print(f"Collective variables: {self.colvar.values.shape}")
@@ -71,7 +73,7 @@ class Loader:
         # descriptors data
         if descriptors is not None:
             self.descriptors = load_dataframe(descriptors, **kwargs)
-            self.descriptors = self.descriptors.iloc[::stride, :]
+            self.descriptors = self.descriptors.iloc[start::stride, :]
             if "time" in self.descriptors.columns:
                 self.descriptors = self.descriptors.drop("time", axis="columns")
             if _DEV:
@@ -83,6 +85,7 @@ class Loader:
         # save attributes
         self.kbt = kbt
         self.stride = stride
+        self.start = start
         self._DEV = _DEV
 
         # initialize attributes to None
@@ -107,6 +110,8 @@ class Loader:
         topo_file = traj_dict["topology"] if "topology" in traj_dict else None
 
         self.traj = md.load(traj_file, top=topo_file, stride=self.stride)
+        if self.start > 0:
+            self.traj = self.traj[int(self.start/self.stride) : ]
 
         assert len(self.traj) == len(
             self.colvar
@@ -204,7 +209,10 @@ class Loader:
                 )
         else:
             if isinstance(logweights, str):
-                w = self.colvar[logweights].values / self.kbt
+                if "*" in logweights:
+                    w = self.colvar.filter(regex=logweights.replace('*','')).sum(axis=1).values / self.kbt
+                else:
+                    w = self.colvar[logweights].values / self.kbt
             elif isinstance(logweights, pd.DataFrame):
                 w = logweights.values
             elif isinstance(logweights, np.ndarray):
@@ -223,7 +231,7 @@ class Loader:
         self.approximate_FES(
             selected_cvs, 
             bw_method=None, 
-            logweights=logweights
+            logweights=w
         )
 
         self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
