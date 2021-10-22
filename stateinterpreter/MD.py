@@ -203,6 +203,7 @@ class Loader:
 
         # retrieve logweights
         if logweights is None:
+            w = None
             if ".bias" in self.colvar.columns:
                 print(
                     "WARNING: a field with .bias is present in colvar, but it is not used for the FES.",file=sys.stderr
