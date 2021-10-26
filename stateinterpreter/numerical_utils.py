@@ -35,19 +35,23 @@ def weights_from_logweights(logweights):
     return np.exp(logweights - C)
 
 @jit(nopython=True, parallel=True)
-def _evaluate_kde_args(points, n_centers, dataset, inv_cov, bwidth, logweights, _logweights_norm):
-    args = np.empty((points.shape[0], n_centers))
+def _evaluate_kde_args(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
+    args = np.empty((points.shape[0]))
     for idx in prange(points.shape[0]):
-        args[idx] = _evaluate_one_arg(points[idx], dataset, inv_cov, bwidth, logweights, _logweights_norm)
+        args[idx] = _evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
     return args
 
 @jit(nopython=True)
-def _evaluate_one_arg(pt, dataset, inv_cov, bwidth, logweights, _logweights_norm):
-    X = dataset - pt
-    arg = -np.sum(np.dot(X, inv_cov)*X, axis=-1) #[n_dataset]
+def _evaluate_one_arg(logpdf, pt, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
+    dims = dataset.shape[1]
+    dataset -= pt
+    arg = -np.sum(np.dot(dataset, inv_cov)*dataset, axis=-1) #[n_centers]
     arg /= 2*(bwidth**2)
-    arg += logweights - _logweights_norm
-    return arg 
+    arg += logweights - logweights_norm -0.5*dims*np.log(2*np.pi*(bwidth**2)) - sqrt_cov_log_det
+    if logpdf:
+        return np.logaddexp(arg)
+    else:
+        return np.sum(np.exp(arg))
 
 class gaussian_kde:
     #Trying to implement SciPy api
@@ -105,13 +109,13 @@ class gaussian_kde:
         else:
             return res
 
-    def _kde_args(self, points):
+    def _kde_args(self, points, logpdf=False):
         if (points.ndim ==1) and (self.dims > 1) :
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
-        #self.dims, self.n_centers, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweightts_norm
 
-        return _evaluate_kde_args(points, self.n_centers, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm)
+        #self.dims, self.n_centers, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweightts_norm
+        return _evaluate_kde_args(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
 
     def grad(points):
         #Evaluate the estimated pdf grad on a provided set of points.
