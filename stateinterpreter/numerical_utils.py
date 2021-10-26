@@ -92,9 +92,7 @@ class gaussian_kde:
         
     def __call__(self, points):
         #Evaluate the estimated pdf on a provided set of points.
-        norm = (np.power(2*np.pi*(self.bwidth**2),0.5*self.dims)*self._sqrt_cov_det)**-1
-        args = self._kde_args(points)
-        res = norm*np.sum(np.exp(args), axis=-1)
+        res = self._kde_args(points)
         if len(res) == 1:
             return res[0]
         else:
@@ -102,8 +100,7 @@ class gaussian_kde:
 
     def logpdf(self, points):
         #Evaluate the estimated logpdf on a provided set of points.
-        args = self._kde_args(points) -0.5*self.dims*np.log(2*np.pi*(self.bwidth**2)) - self._sqrt_cov_log_det
-        res = logsumexp(args, axis = -1)
+        res = self._kde_args(points, logpdf==True) 
         if len(res) == 1:
             return res[0]
         else:
