@@ -1,7 +1,6 @@
 
 from numba.np.ufunc import parallel
 import numpy as np
-from scipy.special import logsumexp
 import concurrent.futures
 from numba import jit, prange
 from scipy.optimize import shgo, minimize
@@ -41,15 +40,29 @@ def _evaluate_kde_args(logpdf, points, dataset, inv_cov, bwidth, logweights, log
         args[idx] = _evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
     return args
 
+@jit(nopython=True, fastmath=True)
+def logsumexp(X):
+    alpha = -np.Inf
+    r = 0.0
+    for x in X:
+        if x != -np.Inf:
+            if x <= alpha:
+                r += np.exp(x - alpha)
+            else:
+                r *= np.exp(alpha - x)
+                r += 1.0
+                alpha = x
+    return np.log(r) + alpha
+
 @jit(nopython=True)
 def _evaluate_one_arg(logpdf, pt, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
     dims = dataset.shape[1]
-    dataset -= pt
-    arg = -np.sum(np.dot(dataset, inv_cov)*dataset, axis=-1) #[n_centers]
+    X = dataset - pt
+    arg = -np.sum(np.dot(X, inv_cov)*X, axis=-1) #[n_centers]
     arg /= 2*(bwidth**2)
     arg += logweights - logweights_norm -0.5*dims*np.log(2*np.pi*(bwidth**2)) - sqrt_cov_log_det
     if logpdf:
-        return np.logaddexp(arg)
+        return logsumexp(arg)
     else:
         return np.sum(np.exp(arg))
 
@@ -100,7 +113,7 @@ class gaussian_kde:
 
     def logpdf(self, points):
         #Evaluate the estimated logpdf on a provided set of points.
-        res = self._kde_args(points, logpdf==True) 
+        res = self._kde_args(points, logpdf=True) 
         if len(res) == 1:
             return res[0]
         else:
@@ -110,8 +123,6 @@ class gaussian_kde:
         if (points.ndim ==1) and (self.dims > 1) :
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
-
-        #self.dims, self.n_centers, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweightts_norm
         return _evaluate_kde_args(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
 
     def grad(points):
