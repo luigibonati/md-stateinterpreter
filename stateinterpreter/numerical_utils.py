@@ -40,6 +40,13 @@ def _evaluate_kde_args(logpdf, points, dataset, inv_cov, bwidth, logweights, log
         args[idx] = _evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
     return args
 
+@jit(nopython=True, parallel=True)
+def _evaluate_kde_grads(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
+    grads = np.empty_like(points)
+    for idx in prange(points.shape[0]):
+        grads[idx] = _evaluate_one_grad(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
+    return grads
+
 @jit(nopython=True, fastmath=True)
 def logsumexp(X):
     alpha = -np.Inf
@@ -65,6 +72,20 @@ def _evaluate_one_arg(logpdf, pt, dataset, inv_cov, bwidth, logweights, logweigh
         return logsumexp(arg)
     else:
         return np.sum(np.exp(arg))
+
+@jit(nopython=True)
+def _evaluate_one_grad(logpdf, pt, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
+    dims = dataset.shape[1]
+    X = dataset - pt
+    arg = -np.sum(np.dot(X, inv_cov)*X, axis=-1) #[n_centers]
+    arg /= 2*(bwidth**2)
+    arg += logweights - logweights_norm -0.5*dims*np.log(2*np.pi*(bwidth**2)) - sqrt_cov_log_det
+    grad_pdf = np.sum(np.exp(arg)*np.dot(X, inv_cov).T, axis=1)
+    if logpdf:
+        return grad_pdf/np.sum(np.exp(arg))
+    else:
+        return grad_pdf
+
 
 class gaussian_kde:
     #Trying to implement SciPy api
@@ -103,31 +124,28 @@ class gaussian_kde:
         self._sqrt_cov_log_det = np.sum(np.log(self._sqrt_cov))
 
         
-    def __call__(self, points):
+    def __call__(self, points, logpdf=False, grads=False):
         #Evaluate the estimated pdf on a provided set of points.
-        res = self._kde_args(points)
+        res = self._kde_eval(points, logpdf=logpdf, grads=grads)
         if len(res) == 1:
             return res[0]
         else:
             return res
 
     def logpdf(self, points):
-        #Evaluate the estimated logpdf on a provided set of points.
-        res = self._kde_args(points, logpdf=True) 
-        if len(res) == 1:
-            return res[0]
-        else:
-            return res
+        return self.__call__(points, logpdf=True)
+    
+    def grad(self, points, logpdf=False):
+        return self.__call__(points, logpdf=logpdf, grads=True)
 
-    def _kde_args(self, points, logpdf=False):
+    def _kde_eval(self, points, logpdf=False, grads=False):
         if (points.ndim ==1) and (self.dims > 1) :
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
-        return _evaluate_kde_args(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
-
-    def grad(points):
-        #Evaluate the estimated pdf grad on a provided set of points.
-        raise NotImplementedError("Not yet implemented")
+        if grads:
+            return _evaluate_kde_grads(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
+        else:
+            return _evaluate_kde_args(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
 
     @property
     def neff(self):
@@ -163,14 +181,12 @@ def local_minima(objective, bounds, method=None, method_kwargs=dict()):
     assert callable(objective), "The given objective function should be a callable"
     if method is None:
         method = _brute_rand_minima
-    elif method == 'shgo':
-        method = shgo
     elif method == 'brute':
         method = _brute_grid_minima
     elif method == 'rand_brute':
         method = _brute_rand_minima
     else:
-        msg = "`method` should be 'shgo', 'brute' or 'rand_brute' "
+        msg = "`method` should be 'brute' or 'rand_brute' "
         raise ValueError(msg)
     
     res = method(objective, bounds, **method_kwargs)

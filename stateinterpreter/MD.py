@@ -172,6 +172,7 @@ class Loader:
         fes_cutoff=5,
         sort_minima_by = 'cvs_grid',
         optimizer=None,
+        use_jac = False,
         optimizer_kwargs=dict(),
         memory_saver=False, 
         splits=50
@@ -234,6 +235,8 @@ class Loader:
             bw_method=None, 
             logweights=w
         )
+        if use_jac:
+            raise NotImplementedError("Not yet implemented")
 
         self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
         
@@ -313,7 +316,7 @@ class Loader:
         """
         empirical_centers = self.colvar[collective_vars].to_numpy()
         self.KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=logweights)
-        self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)
+        self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)   
         return self.fes
 
     def _basin_selection(
