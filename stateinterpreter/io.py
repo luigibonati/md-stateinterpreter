@@ -54,12 +54,12 @@ def plumed_to_pandas(filename="./COLVAR"):
     return df
 
 
-def load_dataframe(data, **kwargs):
+def load_dataframe(data, start = 0, stop = None, stride = 1, **kwargs):
     """Load dataframe from object or from file.
 
     Parameters
     ----------
-    data : str or pandas.DataFrame
+    data : str, pandas.DataFrame, or list
         input data
 
     Returns
@@ -75,6 +75,8 @@ def load_dataframe(data, **kwargs):
     # check if data is Dataframe
     if type(data) == pd.DataFrame:
         df = data
+        df = df.iloc[start:stop:stride, :].reset_index(drop=True, inplace=True)
+
     # or is a string
     elif type(data) == str:
         filename = data
@@ -84,7 +86,39 @@ def load_dataframe(data, **kwargs):
         # else use read_csv with optional kwargs
         else:
             df = pd.read_csv(filename, **kwargs)
+        
+        df = df.iloc[start:stop:stride, :].reset_index(drop=True, inplace=True)
+
+    # or a list 
+    elif type(data) == list:
+        # (a) list of filenames
+        if type(data[0]) == str:
+            df_list = []
+            for i, filename in enumerate(data):
+                # check if file is in PLUMED format
+                if is_plumed_file(filename):
+                    df_tmp = plumed_to_pandas(filename)
+                    df_tmp['walker'] = [i for _ in range(len(df_tmp))]
+                    df_tmp = df_tmp.iloc[start:stop:stride, :]
+                    df_list.append( df_tmp )
+                    
+                # else use read_csv with optional kwargs
+                else:
+                    df_tmp = pd.read_csv(filename, **kwargs)
+                    df_tmp['walker'] = [i for _ in range(len(df_tmp))]
+                    df_tmp = df_tmp.iloc[start:stop:stride, :]
+                    df_list.append( df_tmp )
+
+        elif type(data[0]) == pd.DataFrame:
+            df_list = []
+            for df_tmp in data:
+                df_tmp = df_tmp.iloc[start:stop:stride, :]
+                df_list.append(df_tmp)
+
+        df = pd.concat(df_list)
+        df.reset_index(drop=True, inplace=True)
+
     else:
-        raise TypeError(f"{data}: Accepted types are 'pandas.Dataframe' or 'str'")
+        raise TypeError(f"{data}: Accepted types are 'pandas.Dataframe', 'str', or list")
 
     return df

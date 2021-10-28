@@ -31,13 +31,13 @@ OUTLINE
 
 class Loader:
     def __init__(
-        self, colvar, descriptors=None, kbt=2.5, start=0, stride=1, _DEV=False, **kwargs
+        self, colvar, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, _DEV=False, **kwargs
     ):
         """Prepare inputs for stateinterpreter
 
         Parameters
         ----------
-        colvar : pandas.DataFrame or string
+        colvar : pandas.DataFrame or string 
             collective variables
         descriptors : pandas.DataFrame or string, optional
             input features, by default None
@@ -63,10 +63,8 @@ class Loader:
 
         """
         # collective variables data
-        self.colvar = load_dataframe(colvar, **kwargs)
-        self.colvar = self.colvar.iloc[start::stride, :]
-        if ( stride > 1 ) or ( start > 0 ):
-            self.colvar.reset_index(drop=True, inplace=True)
+        self.colvar = load_dataframe(colvar, start=start, stop=stop, stride=stride, **kwargs)
+
         if _DEV:
             print(f"Collective variables: {self.colvar.values.shape}")
 
@@ -86,6 +84,7 @@ class Loader:
         self.kbt = kbt
         self.stride = stride
         self.start = start
+        self.stop = stop
         self._DEV = _DEV
 
         # initialize attributes to None
@@ -105,14 +104,21 @@ class Loader:
             if False no descriptor is computed.
 
         """
-
         traj_file = traj_dict["trajectory"]
         topo_file = traj_dict["topology"] if "topology" in traj_dict else None
 
-        self.traj = md.load(traj_file, top=topo_file, stride=self.stride)
-        if self.start > 0:
-            self.traj = self.traj[int(self.start/self.stride) : ]
-
+        if type(traj_file) == list:
+            traj_list = []
+            for traj in traj_file:
+                tmp_traj = md.load(traj, top=topo_file, stride=self.stride)
+                tmp_traj = tmp_traj[int(self.start/self.stride) : int(self.stop/self.stride)]
+                traj_list.append(tmp_traj)
+                
+            self.traj = md.join(traj_list)
+        else:
+            self.traj = md.load(traj_file, top=topo_file, stride=self.stride)
+            self.traj = self.traj[int(self.start/self.stride) : int(self.stop/self.stride)]
+            
         assert len(self.traj) == len(
             self.colvar
         ), f"length traj ({len(self.traj)}) != length colvar ({len(self.colvar)})"
