@@ -169,12 +169,13 @@ class Loader:
         selected_cvs,
         bounds,
         logweights=None,
+        bw_method=None,
         fes_cutoff=5,
         sort_minima_by = 'cvs_grid',
         optimizer=None,
         optimizer_kwargs=dict(),
         memory_saver=False, 
-        splits=50
+        splits=50,
     ):
         """Label configurations based on free energy
 
@@ -186,6 +187,8 @@ class Loader:
             Bounds for the cvs ([min,max]*n_cvs)
         logweights : pandas.DataFrame, np.array or string , optional
             Logweights used for FES calculation, by default None
+        bw_method : string, optional
+            Bandwidth method for FES calculations (TODO add options)
         fes_cutoff : float, optional
             Cutoff used to select only low free-energy configurations, by default 5
         sort_minima_by : string, optional
@@ -198,6 +201,7 @@ class Loader:
             Memory saver option for basin selection, by default False
         splits : int, optional
             Divide data in `splits` chuck, by default 50
+
 
         """
 
@@ -231,7 +235,7 @@ class Loader:
         # Compute fes
         self.approximate_FES(
             selected_cvs, 
-            bw_method=None, 
+            bw_method=bw_method, 
             logweights=w
         )
 
