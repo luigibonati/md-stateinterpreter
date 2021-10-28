@@ -3,7 +3,7 @@ from numba.np.ufunc import parallel
 import numpy as np
 import concurrent.futures
 from numba import jit, prange
-from scipy.optimize import shgo, minimize
+from scipy.optimize import minimize
 from scipy.ndimage.filters import minimum_filter
 from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
 from os import cpu_count
@@ -37,14 +37,13 @@ def weights_from_logweights(logweights):
 def _evaluate_kde_args(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
     args = np.empty((points.shape[0]))
     for idx in prange(points.shape[0]):
-        args[idx] = _evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
+        args[idx] +=_evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
     return args
 
-@jit(nopython=True, parallel=True)
 def _evaluate_kde_grads(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
-    grads = np.empty_like(points)
+    grads = np.zeros_like(points)
     for idx in prange(points.shape[0]):
-        grads[idx] = _evaluate_one_grad(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
+        grads[idx] += _evaluate_one_grad(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
     return grads
 
 @jit(nopython=True, fastmath=True)
