@@ -111,13 +111,19 @@ class Loader:
             traj_list = []
             for traj in traj_file:
                 tmp_traj = md.load(traj, top=topo_file, stride=self.stride)
-                tmp_traj = tmp_traj[int(self.start/self.stride) : int(self.stop/self.stride)]
+                if self.stop is not None:
+                    tmp_traj = tmp_traj[int(self.start/self.stride) : int(self.stop/self.stride)]
+                else: 
+                    tmp_traj = tmp_traj[int(self.start/self.stride) : ]
                 traj_list.append(tmp_traj)
                 
             self.traj = md.join(traj_list)
         else:
             self.traj = md.load(traj_file, top=topo_file, stride=self.stride)
-            self.traj = self.traj[int(self.start/self.stride) : int(self.stop/self.stride)]
+            if self.stop is not None:
+                self.traj = self.traj[int(self.start/self.stride) : int(self.stop/self.stride)]
+            else: 
+                self.traj = self.traj[int(self.start/self.stride) : ]
             
         assert len(self.traj) == len(
             self.colvar

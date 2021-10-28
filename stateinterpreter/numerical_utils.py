@@ -33,11 +33,11 @@ def weights_from_logweights(logweights):
     C = logsumexp(logweights)
     return np.exp(logweights - C)
 
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, parallel=False)
 def _evaluate_kde_args(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
-    args = np.empty((points.shape[0]))
+    args = np.zeros((points.shape[0]))
     for idx in prange(points.shape[0]):
-        args[idx] +=_evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
+        args[idx] += _evaluate_one_arg(logpdf, points[idx], dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det)
     return args
 
 def _evaluate_kde_grads(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
@@ -84,7 +84,6 @@ def _evaluate_one_grad(logpdf, pt, dataset, inv_cov, bwidth, logweights, logweig
         return grad_pdf/np.sum(np.exp(arg))
     else:
         return grad_pdf
-
 
 class gaussian_kde:
     #Trying to implement SciPy api

@@ -75,8 +75,9 @@ def load_dataframe(data, start = 0, stop = None, stride = 1, **kwargs):
     # check if data is Dataframe
     if type(data) == pd.DataFrame:
         df = data
-        df = df.iloc[start:stop:stride, :].reset_index(drop=True, inplace=True)
-
+        df = df.iloc[start:stop:stride, :]
+        df.reset_index(drop=True, inplace=True)
+        
     # or is a string
     elif type(data) == str:
         filename = data
@@ -87,7 +88,8 @@ def load_dataframe(data, start = 0, stop = None, stride = 1, **kwargs):
         else:
             df = pd.read_csv(filename, **kwargs)
         
-        df = df.iloc[start:stop:stride, :].reset_index(drop=True, inplace=True)
+        df = df.iloc[start:stop:stride, :]
+        df.reset_index(drop=True, inplace=True)
 
     # or a list 
     elif type(data) == list:
