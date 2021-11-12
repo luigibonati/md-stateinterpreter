@@ -45,11 +45,13 @@ class Classifier():
         self._train_in, self._val_in, self._train_out, self._val_out = dataset
         self._n_samples = self._train_in.shape[0]
         self.features = features
+        self._computed = False
 
-    def compute(self, reg, max_iter = 100,  quadratic_kernel=None, groups=None, **kwargs):
+    def compute(self, reg, max_iter = 100,  quadratic_kernel=None, groups=None):
         if hasattr(reg, '__iter__') == False:
             reg = np.array([reg])
         _num_reg = len(reg)
+        _n_basins = len(np.unique(self._train_out))
 
         if quadratic_kernel:
             train_in, val_in = quadratic_kernel_featuremap(self._train_in), quadratic_kernel_featuremap(self._val_in)
@@ -69,7 +71,7 @@ class Classifier():
                 #Model Fit
                 model.fit(train_in,self._train_out)
                 score = model.score(val_in,self._val_out)
-                return (idx, model.coef_,score, model.classes_, model.chosen_groups_)
+                return (idx, model.coef_,score, model.classes_)
         else:
             def _train_model(idx):
                 C = (reg[idx]*self._n_samples)**-1
@@ -77,30 +79,84 @@ class Classifier():
                 #Model Fit
                 model.fit(train_in,self._train_out)
                 score = model.score(val_in,self._val_out)
-                return (idx, model.coef_,score, model.classes_, -1)
+                return (idx, model.coef_,score, model.classes_)
 
-        C_range, np.empty((n_C,))
-        coeffs,  np.empty((_num_reg, n_basins, _n_features))
-        crossval, np.empty((n_C,))
-        classes_labels = ,, , np.empty((n_C, n_basins), dtype=np.int_)
+        coeffs =  np.empty((_num_reg, _n_basins, _n_features))
+        crossval = np.empty((_num_reg,))
+        classes_labels = np.empty((_num_reg, _n_basins), dtype=np.int_)
 
+        _raw_data = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
             fut = [executor.submit(_train_model, lbda) for lbda in reg]
             for fut_result in concurrent.futures.as_completed(fut):
-                path_data.append(fut_result.result())
+                _raw_data.append(fut_result.result())
+                    
+        for _datapoint in _raw_data:
+            if _is_group:
+                idx, coeff, score, classes = _datapoint
+            else:
+                idx, coeff, score, classes = _datapoint
+            coeffs[idx] = coeff
+            crossval[idx] = score
+            classes_labels[idx] = classes.astype(int)
 
         
-        n_C = C_range.shape[0]
-        n_basins = len(np.unique(train_out))
+        self._quadratic_kernel=quadratic_kernel 
+        self._groups= groups
+        self.classes_labels = classes_labels
+        self._reg = reg
+        self._coeffs = coeffs
+        self._crossval = crossval
+        if _is_group:
+            self._groups_mask = [
+                self._groups == u
+                for u in np.unique(self._groups)
+            ]
+        self._computed = True
 
-        
+    def _closest_reg_idx(self, reg):
+        assert self._computed, "You have to run Classifier.compute first."
+        return np.argmin(np.abs(self._reg - reg))
 
-        for idx, data in enumerate(path_data):
-            C_range[idx] = data[0]
-            coeffs[idx] = data[1]
-            crossval[idx] = data[2]
-            classes_labels[idx] = data[3].astype(np.int_)
-        
+    def _get_selected(self, reg):
+        assert self._computed, "You have to run Classifier.compute first."
+        reg_idx = self._closest_reg_idx(reg)
+        coefficients = self._coeffs[reg_idx]
+        classes = self.classes_labels[reg_idx]
+        selected_dict = dict()
+        for state, coef in zip(classes, coefficients):
+            if self._groups is not None:
+                coef = np.array([np.linalg.norm(coef[b])**2 for b in self._groups_mask])
+            else:
+                coef = coef**2
+            nrm = np.sum(coef)
+            coef = csr_matrix(coef/nrm)
+            sort_perm = np.argsort(coef.data)[::-1]
+            #idx, weight
+            selected_dict[state] = list(zip(coef.indices[sort_perm], coef.data[sort_perm]))
+        return selected_dict
+    
+    def print_selected(self, reg, state_names=None):
+        selected = self._get_selected(reg)
+        if not state_names:
+            state_names = [f'State {idx}' for idx in selected.keys()]
+
+        print_lists = []
+        for state_idx in selected.keys():
+            data = selected[state_idx]
+            print_list = []
+            for feat in basin_data:
+                print_list.append([f"{np.around(feat[2]*100, decimals=3)}%", f"{feat[1]}"])
+            print_lists.append(print_list)
+        col_width = max(len(str(row[0])) for row in print_list for print_list in print_lists)
+        for basin_idx, print_list in enumerate(print_lists):
+            print(f"{state_names[basin_idx]}:", file=file)
+            for row in print_list:
+                print(f"\t {row[0].ljust(col_width)} | {row[1]}", file=file)
+    
+
+
+
 
 class CV_path():
     def __init__(self, dataset, features, quadratic_kernel=False):
