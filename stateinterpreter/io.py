@@ -124,3 +124,22 @@ def load_dataframe(data, start = 0, stop = None, stride = 1, **kwargs):
         raise TypeError(f"{data}: Accepted types are 'pandas.Dataframe', 'str', or list")
 
     return df
+
+    def save_cvpath(cvpath):
+
+
+
+    def __init__(self, dataset, features, quadratic_kernel=False):
+        self._dset = dataset
+        self._n_samples = dataset[0].shape[0]
+        self._features = features
+        self._quadratic_kernel = quadratic_kernel
+        train_in, val_in, train_out, val_out = self._dset
+        self._C_range = C_range[sort_perm]
+        self._coeffs = coeffs[sort_perm]
+        self._crossval = crossval[sort_perm]
+        self.classes_labels = classes_labels[sort_perm]
+   
+
+
+def load_cvpath(cvpath):

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import concurrent.futures
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, data
 from scipy.spatial.distance import squareform
 import scipy.sparse.linalg
 
@@ -39,6 +39,68 @@ def decode_quadratic_features(idx, features_names):
         else:
             s = f"{features_names[i]} || {features_names[j]}"
     return s
+
+class Classifier():
+    def __init__(self, dataset, features):
+        self._train_in, self._val_in, self._train_out, self._val_out = dataset
+        self._n_samples = self._train_in.shape[0]
+        self.features = features
+
+    def compute(self, reg, max_iter = 100,  quadratic_kernel=None, groups=None, **kwargs):
+        if hasattr(reg, '__iter__') == False:
+            reg = np.array([reg])
+        _num_reg = len(reg)
+
+        if quadratic_kernel:
+            train_in, val_in = quadratic_kernel_featuremap(self._train_in), quadratic_kernel_featuremap(self._val_in)
+        else:
+            train_in = self._train_in
+            val_in = self._val_in
+        _n_features = train_in.shape[1]
+
+        if groups is not None:
+            if quadratic_kernel:
+                assert len(groups) == train_in.shape[1], "Length of group array does not match quadratic features number."
+            else:
+                assert len(groups) == len(self.features), "Length of group array does not match features number."
+            _is_group = True
+            def _train_model(idx):
+                model = LogisticGroupLasso(groups,group_reg = reg[idx], l1_reg=0, n_iter=max_iter, supress_warning=True, scale_reg='none') 
+                #Model Fit
+                model.fit(train_in,self._train_out)
+                score = model.score(val_in,self._val_out)
+                return (idx, model.coef_,score, model.classes_, model.chosen_groups_)
+        else:
+            def _train_model(idx):
+                C = (reg[idx]*self._n_samples)**-1
+                model = LogisticRegression(penalty='l1', C=C, solver='saga', multi_class='ovr', fit_intercept=False, max_iter=max_iter) 
+                #Model Fit
+                model.fit(train_in,self._train_out)
+                score = model.score(val_in,self._val_out)
+                return (idx, model.coef_,score, model.classes_, -1)
+
+        C_range, np.empty((n_C,))
+        coeffs,  np.empty((_num_reg, n_basins, _n_features))
+        crossval, np.empty((n_C,))
+        classes_labels = ,, , np.empty((n_C, n_basins), dtype=np.int_)
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            fut = [executor.submit(_train_model, lbda) for lbda in reg]
+            for fut_result in concurrent.futures.as_completed(fut):
+                path_data.append(fut_result.result())
+
+        
+        n_C = C_range.shape[0]
+        n_basins = len(np.unique(train_out))
+
+        
+
+        for idx, data in enumerate(path_data):
+            C_range[idx] = data[0]
+            coeffs[idx] = data[1]
+            crossval[idx] = data[2]
+            classes_labels[idx] = data[3].astype(np.int_)
+        
 
 class CV_path():
     def __init__(self, dataset, features, quadratic_kernel=False):
