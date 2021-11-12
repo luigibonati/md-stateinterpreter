@@ -51,7 +51,9 @@ def plot_cvpath(cvpath, C, state_names=None, suptitle=None, normalize_C=True):
         fig.suptitle(suptitle)
     for idx in range(n_basins):
         ax = axes[idx]
-        ax.plot(np.log10(1/C_range), coeffs[:,idx,:], 'k-')
+        _cfs = coeffs[:,idx,:]
+        killer = np.abs(np.sum(_cfs, axis=0)) >= 1e-8
+        ax.plot(np.log10(1/C_range), _cfs[:,killer], 'k-')
         ax.axvline(x = np.log10(1/C_range[C_idx]), color='r', linewidth=0.75)
         ax.set_xlim(np.log10(1/C_range[-1]), np.log10(1/C_range[0]))
         ax.set_xlabel(r"$-\log_{10}(C)$")

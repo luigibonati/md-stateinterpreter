@@ -253,7 +253,8 @@ class Loader:
         )
         if use_jac:
             raise NotImplementedError("Not yet implemented")
-
+        if self._DEV:
+            print("DEV >>> Finding Local Minima")
         self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
         
         # sort minima based on first CV
@@ -330,6 +331,8 @@ class Loader:
         Returns:
             [type]: [description]
         """
+        if self._DEV:
+            print("DEV >>> Approximating FES")
         empirical_centers = self.colvar[collective_vars].to_numpy()
         self.KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=logweights)
         self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)   
@@ -338,7 +341,8 @@ class Loader:
     def _basin_selection(
         self, minima, fes_cutoff=5, memory_saver=False, splits=50
     ):
-    
+        if self._DEV:
+            print("DEV >>> Basin Assignment")
         positions = self.KDE.dataset
         norms = np.linalg.norm((positions[:,np.newaxis,:] - minima), axis=2)
         classes = np.argmin(norms, axis=1)
