@@ -33,7 +33,7 @@ def weights_from_logweights(logweights):
     C = logsumexp(logweights)
     return np.exp(logweights - C)
 
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, parallel=False)
 def _evaluate_kde_args(logpdf, points, dataset, inv_cov, bwidth, logweights, logweights_norm, sqrt_cov_log_det):
     args = np.zeros((points.shape[0]))
     for idx in prange(points.shape[0]):
