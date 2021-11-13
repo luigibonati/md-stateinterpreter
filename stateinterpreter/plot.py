@@ -15,27 +15,14 @@ def compute_basin_mean(df, basin, label_x, label_y):
     my = df[df['basin'] == basin][label_y].mean()
     return mx,my
 
-def plot_cvpath(cvpath, C, state_names=None, suptitle=None, normalize_C=True):
-    try:
-        cvpath._coeffs
-        cvpath._C_range
-        cvpath._crossval
-    except NameError:
-        raise ValueError("CV_path not computed.")
+def plot_cvpath(classifier, reg, state_names=None, suptitle=None):
+    assert classifier._computed, "You have to run Classifier.compute first."
+    reg_idx = classifier._closest_reg_idx(reg)
+    n_basins = classifier._coeffs.shape[1]
 
-    coeffs = cvpath._coeffs
-    if normalize_C:
-        C_range = cvpath._C_range*cvpath._n_samples
-    else:
-        C_range = cvpath._C_range
-    crossval = cvpath._crossval
-
-    n_basins = coeffs.shape[1]
-
-    C_idx = np.argmin(np.abs(C_range - C))
     if not state_names:
-        state_names = [f'State {idx}' for idx in cvpath.classes_labels[C_idx]]
-    assert len(state_names) == n_basins
+        state_names = [f'State {idx}' for idx in classifier.classes_labels[reg_idx]]
+    assert len(state_names) == n_basins, "The length of state_names do not match the actual states."
 
     rows = np.int(np.ceil((n_basins + 1)/3))
     fig = plt.figure(constrained_layout=True, figsize=(9,3*rows))
@@ -51,19 +38,19 @@ def plot_cvpath(cvpath, C, state_names=None, suptitle=None, normalize_C=True):
         fig.suptitle(suptitle)
     for idx in range(n_basins):
         ax = axes[idx]
-        _cfs = coeffs[:,idx,:]
+        _cfs = classifier._coeffs[:,idx,:]
         killer = np.abs(np.sum(_cfs, axis=0)) >= 1e-8
-        ax.plot(np.log10(1/C_range), _cfs[:,killer], 'k-')
-        ax.axvline(x = np.log10(1/C_range[C_idx]), color='r', linewidth=0.75)
-        ax.set_xlim(np.log10(1/C_range[-1]), np.log10(1/C_range[0]))
-        ax.set_xlabel(r"$-\log_{10}(C)$")
+        ax.plot(np.log10(classifier._reg), _cfs[:,killer], 'k-')
+        ax.axvline(x = np.log10(classifier._reg[reg_idx]), color='r', linewidth=0.75)
+        ax.set_xlim(np.log10(classifier._reg[0]), np.log10(classifier._reg[-1]))
+        ax.set_xlabel(r"$\log_{10}(\lambda)$")
         ax.set_title(state_names[idx])
         
     ax = axes[-1]
-    ax.plot(np.log10(1/C_range), crossval, 'k-')
-    ax.axvline(x = np.log10(1/C_range[C_idx]), color='r', linewidth=0.75)
-    ax.set_xlim(np.log10(1/C_range[-1]), np.log10(1/C_range[0]))
-    ax.set_xlabel(r"$-\log_{10}(C)$")
+    ax.plot(np.log10(classifier._reg), classifier._crossval, 'k-')
+    ax.axvline(x = np.log10(classifier._reg[reg_idx]), color='r', linewidth=0.75)
+    ax.set_xlim(np.log10(classifier._reg[0]), np.log10(classifier._reg[-1]))
+    ax.set_xlabel(r"$\log_{10}(\lambda)$")
     ax.set_title("Score")
     return (fig, axes)
 
