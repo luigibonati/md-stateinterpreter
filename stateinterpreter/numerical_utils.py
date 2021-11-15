@@ -137,9 +137,10 @@ class gaussian_kde:
         return self.__call__(points, logpdf=logpdf, grads=True)
 
     def _kde_eval(self, points, logpdf=False, grads=False, cython=True):
-        if (points.ndim ==1) and (self.dims > 1) :
+        if (points.ndim ==1):
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
+
         if grads:
             return _evaluate_kde_grads(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
         else:

@@ -56,7 +56,6 @@ def plot_cvpath(classifier, reg, state_names=None, suptitle=None):
 
 
 def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, save_folder=None):
-
     basins = data.basins['basin'].unique()
     n_basins = data.n_basins
 
@@ -64,8 +63,11 @@ def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, sa
     n_pairs = sum(1 for _ in itertools.combinations(data.selected_cvs, 2))
 
     fig, axs = plt.subplots(1,n_pairs,figsize=(6*n_pairs,5.5),dpi=100)
+    idx_list = list(range(len(data.selected_cvs)))
 
-    for k,(label_x,label_y) in enumerate(itertools.combinations(data.selected_cvs, 2)):
+    for k,(x_idx,y_idx) in enumerate(itertools.combinations(idx_list, 2)):
+        label_x = data.selected_cvs[x_idx]
+        label_y = data.selected_cvs[y_idx]
         # select ax
         ax = axs[k] if n_pairs > 1 else axs
 
@@ -115,7 +117,7 @@ def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, sa
         
         #add basins labels
         for b in basins:
-            mx,my = data.minima[b] #compute_basin_mean(df,b,label_x,label_y)
+            mx,my = data.minima[b][x_idx], data.minima[b][y_idx]  #compute_basin_mean(df,b,label_x,label_y)
             ax.scatter(mx,my,color='w',s=300,alpha=0.7)
             text = ax.text(mx, my, b, ha="center", va="center", 
                         color='k', fontsize='large')
