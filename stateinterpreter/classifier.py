@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.fromnumeric import sort
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import concurrent.futures
@@ -126,6 +127,7 @@ class Classifier():
         return np.argmin(np.abs(self._reg - reg))
 
     def _get_selected(self, reg):
+        group_names = np.unique(self._groups)
         reg_idx = self._closest_reg_idx(reg)
         coefficients = self._coeffs[reg_idx]
         selected = []
@@ -141,8 +143,19 @@ class Classifier():
             else:
                 coef = csr_matrix(coef/nrm)
                 sort_perm = np.argsort(coef.data)[::-1]
+                names = []
+                for idx in coef.indices:
+                    if self._groups is not None:
+                        names.append(group_names[idx])
+                    else: 
+                        if self._quadratic_kernel:
+                            names.append(decode_quadratic_features(idx, self.features))
+                        else:
+                            names.append(self.features[idx])
+                
                 #idx, weight
-                selected.append(list(zip(coef.indices[sort_perm], coef.data[sort_perm])))
+                names = np.array(names)
+                selected.append(list(zip(coef.indices[sort_perm], coef.data[sort_perm], names[sort_perm])))
         return selected
     
     def print_selected(self, reg, state_names=None):
@@ -150,20 +163,12 @@ class Classifier():
         reg_idx = self._closest_reg_idx(reg)
         if not state_names:
             state_names = [f'State {idx}' for idx in self.classes_labels[reg_idx]]
-        group_names = np.unique(self._groups)
 
         print_queue = []
         for state in selected:
             _intra_state_queue = []
             for data in state:
-                if self._groups is not None:
-                    name = group_names[data[0]]
-                else: 
-                    if self._quadratic_kernel:
-                        name = decode_quadratic_features(data[0], self.features)
-                    else:
-                        name = self.features[data[0]]       
-                _intra_state_queue.append([f"{np.around(data[1]*100, decimals=3)}%", f"{name}"])
+                _intra_state_queue.append([f"{np.around(data[1]*100, decimals=3)}%", f"{data[2]}"])
             print_queue.append(_intra_state_queue)
         
         col_width = 0
@@ -178,7 +183,7 @@ class Classifier():
                 print(f"\t {row[0].ljust(col_width)} | {row[1]}")
 
     def get_pruned(self, reg):
-        selected = self._get_selected(self, reg)
+        selected = self._get_selected(reg)
         if self._quadratic_kernel:
             AttributeError("Pruning is not possible on classifiers trained with quadratic kernels.")
         unique_idxs = set()
@@ -191,9 +196,9 @@ class Classifier():
             mask = np.array([False]*len(self.features))
             for idx in unique_idxs:
                 mask[idx] = True
-
-        pruned_dset = (self._dset[0][:,mask],self._dset[1][:,mask],self._dset[2],self._dset[3])
-        pruned_features = self._features[mask]
+        
+        pruned_dset = (self._train_in[:, mask], self._val_in[:, mask], self._train_out, self._val_out)
+        pruned_features = self.features[mask]
         return Classifier(pruned_dset, pruned_features)
 
     def save(self):

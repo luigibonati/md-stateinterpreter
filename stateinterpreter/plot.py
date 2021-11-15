@@ -128,9 +128,9 @@ def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, 
     
     added_columns = False
     #Handle quadratic kernels
-    for _state in relevant_features.values():
+    for _state in relevant_features:
         for _feat_tuple in _state:
-            feature = _feat_tuple[1]
+            feature = _feat_tuple[2]
             if "||" in feature:
                 if feature not in df.columns:
                     added_columns = True
@@ -156,19 +156,21 @@ def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, 
 def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
     # retrieve basins
     basins = df['basin'].unique()
-    n_basins = len(relevant_feat.keys())
+    n_basins = len(relevant_feat)
 
     fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=100, )
                             #sharex=True, sharey=True)
 
     # for each state ...
-    for i,(state,feat_list) in enumerate(relevant_feat.items()):
+    for i, feat_list in enumerate(relevant_feat):
+        #This is wrong it should be modified with classes labels
+        state = i
         # ... color with the corresponding features ...
         for j,feat_array in enumerate(feat_list):
             # ... up to max_nfeat plot per state
             if j < max_nfeat:
-                feat = feat_array[1]
-                importance = feat_array[2]
+                feat = feat_array[2]
+                importance = feat_array[1]
                 ax = axs[i,j]
                 pp = df[df['selection']==1].plot.hexbin(cv_x,cv_y,C=feat,cmap='coolwarm',ax=ax)
                 #set title
