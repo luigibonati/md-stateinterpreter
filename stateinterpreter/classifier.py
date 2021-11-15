@@ -5,6 +5,7 @@ import concurrent.futures
 from scipy.sparse import csr_matrix
 from scipy.spatial.distance import squareform
 from group_lasso import LogisticGroupLasso
+from tqdm import tqdm
 
 def quadratic_kernel_featuremap(X):
     n_pts, n_feats = X.shape
@@ -87,7 +88,9 @@ class Classifier():
         classes_labels = np.empty((_num_reg, _n_basins), dtype=np.int_)
 
         if _is_group:
-            _raw_data = [_train_model(reg_idx) for reg_idx in range(len(reg)) ]
+            _raw_data = []
+            for reg_idx in tqdm(range(len(reg)), desc='Group Lasso'):
+                _raw_data.append(_train_model(reg_idx))
         else:
             _raw_data = []
             with concurrent.futures.ThreadPoolExecutor() as executor:

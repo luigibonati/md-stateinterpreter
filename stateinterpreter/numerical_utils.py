@@ -1,5 +1,4 @@
 
-from numba.np.ufunc import parallel
 import numpy as np
 import concurrent.futures
 from numba import jit, prange
@@ -7,6 +6,7 @@ from scipy.optimize import minimize
 from scipy.ndimage.filters import minimum_filter
 from scipy.ndimage.morphology import binary_erosion, generate_binary_structure
 from os import cpu_count
+from stateinterpreter._numerics import _evaluate_kde_args_cython, _evaluate_logkde_args_cython
 
 _EPS = 1e-10
 
@@ -117,14 +117,14 @@ class gaussian_kde:
         self.covariance = cov(dataset, weights=self.weights)
         self.inv_cov = np.linalg.inv(self.covariance)
         
-        self._sqrt_cov = np.diag(np.linalg.cholesky(self.covariance))
-        self._sqrt_cov_det = np.prod(self._sqrt_cov)
-        self._sqrt_cov_log_det = np.sum(np.log(self._sqrt_cov))
+        self._sqrt_cov = np.linalg.cholesky(self.inv_cov)
+        self._sqrt_cov_det = np.prod(np.diag(self._sqrt_cov))
+        self._sqrt_cov_log_det = np.sum(np.log(np.diag(self._sqrt_cov)))
 
         
-    def __call__(self, points, logpdf=False, grads=False):
+    def __call__(self, points, logpdf=False, grads=False, cython=True):
         #Evaluate the estimated pdf on a provided set of points.
-        res = self._kde_eval(points, logpdf=logpdf, grads=grads)
+        res = self._kde_eval(points, logpdf=logpdf, grads=grads, cython=cython)
         if len(res) == 1:
             return res[0]
         else:
@@ -136,14 +136,23 @@ class gaussian_kde:
     def grad(self, points, logpdf=False):
         return self.__call__(points, logpdf=logpdf, grads=True)
 
-    def _kde_eval(self, points, logpdf=False, grads=False):
+    def _kde_eval(self, points, logpdf=False, grads=False, cython=True):
         if (points.ndim ==1) and (self.dims > 1) :
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
         if grads:
             return _evaluate_kde_grads(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
         else:
-            return _evaluate_kde_args(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
+            if cython:
+                points = np.dot(points, self._sqrt_cov)
+                dataset = np.dot(self.dataset, self._sqrt_cov)
+                dtype = points.dtype
+                if logpdf:
+                    return _evaluate_logkde_args_cython(points, dataset, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det, dtype)
+                else:
+                    return _evaluate_kde_args_cython(points, dataset, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det, dtype)
+            else:
+                return _evaluate_kde_args(logpdf, points, self.dataset, self.inv_cov, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_cov_log_det)
 
     @property
     def neff(self):
@@ -186,9 +195,8 @@ def local_minima(objective, bounds, method=None, method_kwargs=dict()):
     else:
         msg = "`method` should be 'brute' or 'rand_brute' "
         raise ValueError(msg)
-    
-    res = method(objective, bounds, **method_kwargs)
-    return res.xl
+
+    return method(objective, bounds, **method_kwargs)
 
 def _brute_grid_minima(objective, bounds, num_splits=100):
     # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
@@ -241,7 +249,7 @@ def _brute_grid_minima(objective, bounds, num_splits=100):
     real_minima = np.array(real_minima)
     f_min =np.asarray([objective(x) for x in real_minima])
     sortperm = np.argsort(f_min, axis=0)
-    return BruteMinimizationRes(real_minima[sortperm])
+    return real_minima[sortperm]
 
 def _brute_rand_minima(objective, bounds, num_init=100, decimals_tolerance=4):
     init_pts = np.random.rand(num_init, len(bounds)) - 0.5 #centering
@@ -262,21 +270,21 @@ def _brute_rand_minima(objective, bounds, num_init=100, decimals_tolerance=4):
             if res.success:
                 minima.append(res.x)
         return minima
+
+    """
     with concurrent.futures.ThreadPoolExecutor() as executor:
             fut = [executor.submit(_minimize_chunk, chunk) for chunk in chunks]
             for fut_result in concurrent.futures.as_completed(fut):
                 _chunk_minima = fut_result.result()
                 found_minima.extend(_chunk_minima)
+    """
+    for chunk in chunks:
+        found_minima.extend(_minimize_chunk(chunk))
     found_minima = np.asarray(found_minima).round(decimals=decimals_tolerance)
     real_minima = np.unique(found_minima, axis=0)
     f_min =np.asarray([objective(x) for x in real_minima])
     sortperm = np.argsort(f_min, axis=0)
-    return BruteMinimizationRes(real_minima[sortperm])
-
-
-class BruteMinimizationRes:
-    def __init__(self, xl):
-        self.xl = xl
+    return real_minima[sortperm]
 
 
   
