@@ -1931,9 +1931,9 @@ static PyThread_type_lock __pyx_memoryview_thread_locks[8];
 static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics_logsumexp(__Pyx_memviewslice, int __pyx_skip_dispatch); /*proto*/
 static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics_logsumexp(__Pyx_memviewslice, int __pyx_skip_dispatch); /*proto*/
 static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics_logsumexp(__Pyx_memviewslice, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__Pyx_memviewslice, __Pyx_memviewslice, float, __Pyx_memviewslice, float, float, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__Pyx_memviewslice, __Pyx_memviewslice, double, __Pyx_memviewslice, double, double, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__Pyx_memviewslice, __Pyx_memviewslice, long double, __Pyx_memviewslice, long double, long double, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__Pyx_memviewslice, __Pyx_memviewslice, float, __Pyx_memviewslice, float, float, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__Pyx_memviewslice, __Pyx_memviewslice, double, __Pyx_memviewslice, double, double, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__Pyx_memviewslice, __Pyx_memviewslice, long double, __Pyx_memviewslice, long double, long double, PyObject *, int __pyx_skip_dispatch); /*proto*/
 static float __pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__get_arg(Py_ssize_t, Py_ssize_t, __Pyx_memviewslice, __Pyx_memviewslice, float, float, float, int); /*proto*/
 static double __pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__get_arg(Py_ssize_t, Py_ssize_t, __Pyx_memviewslice, __Pyx_memviewslice, double, double, double, int); /*proto*/
 static long double __pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__get_arg(Py_ssize_t, Py_ssize_t, __Pyx_memviewslice, __Pyx_memviewslice, long double, long double, long double, int); /*proto*/
@@ -2082,29 +2082,29 @@ static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_logweights_norm[] = "_logweights_norm";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_sqrt_cov_log_det[] = "_sqrt_cov_log_det";
+static const char __pyx_k_evaluate_kde_args[] = "_evaluate_kde_args";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
 static const char __pyx_k_pyx_fuse_0logsumexp[] = "__pyx_fuse_0logsumexp";
 static const char __pyx_k_pyx_fuse_1logsumexp[] = "__pyx_fuse_1logsumexp";
 static const char __pyx_k_pyx_fuse_2logsumexp[] = "__pyx_fuse_2logsumexp";
+static const char __pyx_k_evaluate_logkde_args[] = "_evaluate_logkde_args";
+static const char __pyx_k_sqrt_inv_cov_log_det[] = "_sqrt_inv_cov_log_det";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
-static const char __pyx_k_evaluate_kde_args_cython[] = "_evaluate_kde_args_cython";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static const char __pyx_k_stateinterpreter__numerics[] = "stateinterpreter._numerics";
 static const char __pyx_k_No_matching_signature_found[] = "No matching signature found";
-static const char __pyx_k_evaluate_logkde_args_cython[] = "_evaluate_logkde_args_cython";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
+static const char __pyx_k_pyx_fuse_0_evaluate_kde_args[] = "__pyx_fuse_0_evaluate_kde_args";
+static const char __pyx_k_pyx_fuse_1_evaluate_kde_args[] = "__pyx_fuse_1_evaluate_kde_args";
+static const char __pyx_k_pyx_fuse_2_evaluate_kde_args[] = "__pyx_fuse_2_evaluate_kde_args";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
-static const char __pyx_k_pyx_fuse_0_evaluate_kde_args_c[] = "__pyx_fuse_0_evaluate_kde_args_cython";
-static const char __pyx_k_pyx_fuse_1_evaluate_kde_args_c[] = "__pyx_fuse_1_evaluate_kde_args_cython";
-static const char __pyx_k_pyx_fuse_2_evaluate_kde_args_c[] = "__pyx_fuse_2_evaluate_kde_args_cython";
 static const char __pyx_k_stateinterpreter__numerics_pyx[] = "stateinterpreter/_numerics.pyx";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -2175,8 +2175,8 @@ static PyObject *__pyx_n_s_dtype_is_object;
 static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
-static PyObject *__pyx_n_s_evaluate_kde_args_cython;
-static PyObject *__pyx_n_s_evaluate_logkde_args_cython;
+static PyObject *__pyx_n_s_evaluate_kde_args;
+static PyObject *__pyx_n_s_evaluate_logkde_args;
 static PyObject *__pyx_n_s_flags;
 static PyObject *__pyx_n_s_float;
 static PyObject *__pyx_n_s_format;
@@ -2214,11 +2214,11 @@ static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_points;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
-static PyObject *__pyx_n_s_pyx_fuse_0_evaluate_kde_args_c;
+static PyObject *__pyx_n_s_pyx_fuse_0_evaluate_kde_args;
 static PyObject *__pyx_n_s_pyx_fuse_0logsumexp;
-static PyObject *__pyx_n_s_pyx_fuse_1_evaluate_kde_args_c;
+static PyObject *__pyx_n_s_pyx_fuse_1_evaluate_kde_args;
 static PyObject *__pyx_n_s_pyx_fuse_1logsumexp;
-static PyObject *__pyx_n_s_pyx_fuse_2_evaluate_kde_args_c;
+static PyObject *__pyx_n_s_pyx_fuse_2_evaluate_kde_args;
 static PyObject *__pyx_n_s_pyx_fuse_2logsumexp;
 static PyObject *__pyx_n_s_pyx_getbuffer;
 static PyObject *__pyx_n_s_pyx_result;
@@ -2238,7 +2238,7 @@ static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_signatures;
 static PyObject *__pyx_n_s_size;
 static PyObject *__pyx_n_s_split;
-static PyObject *__pyx_n_s_sqrt_cov_log_det;
+static PyObject *__pyx_n_s_sqrt_inv_cov_log_det;
 static PyObject *__pyx_n_s_start;
 static PyObject *__pyx_n_s_stateinterpreter__numerics;
 static PyObject *__pyx_kp_s_stateinterpreter__numerics_pyx;
@@ -2261,14 +2261,14 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_logsumexp(CYTHON_UNUSED 
 static PyObject *__pyx_pf_16stateinterpreter_9_numerics_6__pyx_fuse_0logsumexp(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_X); /* proto */
 static PyObject *__pyx_pf_16stateinterpreter_9_numerics_8__pyx_fuse_1logsumexp(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_X); /* proto */
 static PyObject *__pyx_pf_16stateinterpreter_9_numerics_10__pyx_fuse_2logsumexp(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_X); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -3628,15 +3628,15 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_10__pyx_fuse_2logsumexp(
 /* "stateinterpreter/_numerics.pyx":35
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython = {"_evaluate_kde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_16stateinterpreter_9_numerics_3_evaluate_kde_args = {"_evaluate_kde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_signatures = 0;
   PyObject *__pyx_v_args = 0;
   PyObject *__pyx_v_kwargs = 0;
@@ -3713,14 +3713,14 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cyth
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args_cython(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
   PyObject *__pyx_v_dest_sig = NULL;
   Py_ssize_t __pyx_v_i;
   PyTypeObject *__pyx_v_ndarray = 0;
@@ -3759,7 +3759,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args_cyth
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("_evaluate_kde_args", 0);
   __Pyx_INCREF(__pyx_v_kwargs);
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4202,9 +4202,9 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_2_evaluate_kde_args_cyth
   return __pyx_r;
 }
 
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype, CYTHON_UNUSED int __pyx_skip_dispatch) {
   CYTHON_UNUSED int __pyx_v_data_dim;
   int __pyx_v_x_dim;
   int __pyx_v_d;
@@ -4231,11 +4231,11 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_kde_args", 0);
 
   /* "stateinterpreter/_numerics.pyx":36
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int x_dim = points.shape[0]
  *     cdef int d = points.shape[1]
@@ -4243,7 +4243,7 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   __pyx_v_data_dim = (__pyx_v_dataset.shape[0]);
 
   /* "stateinterpreter/_numerics.pyx":37
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int d = points.shape[1]
@@ -4264,7 +4264,7 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
  *     cdef int d = points.shape[1]
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)             # <<<<<<<<<<<<<<
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double res
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
@@ -4330,14 +4330,14 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   /* "stateinterpreter/_numerics.pyx":41
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det             # <<<<<<<<<<<<<<
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det             # <<<<<<<<<<<<<<
  *     cdef double res
  *     for i in range(x_dim):
  */
-  __pyx_v_norm = ((__pyx_v__logweights_norm + ((0.5 * __pyx_v_d) * log(((2.0 * NPY_PI) * (__pyx_v_bwidth * __pyx_v_bwidth))))) + __pyx_v__sqrt_cov_log_det);
+  __pyx_v_norm = ((__pyx_v__logweights_norm + ((0.5 * __pyx_v_d) * log(((2.0 * NPY_PI) * (__pyx_v_bwidth * __pyx_v_bwidth))))) - __pyx_v__sqrt_inv_cov_log_det);
 
   /* "stateinterpreter/_numerics.pyx":43
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double res
  *     for i in range(x_dim):             # <<<<<<<<<<<<<<
  *         res = 0
@@ -4484,7 +4484,7 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   /* "stateinterpreter/_numerics.pyx":35
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
@@ -4497,7 +4497,7 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
@@ -4507,24 +4507,24 @@ static PyObject *__pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args_cython = {"__pyx_fuse_0_evaluate_kde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args = {"__pyx_fuse_0_evaluate_kde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_points = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dataset = { 0, 0, { 0 }, { 0 }, { 0 } };
   float __pyx_v_bwidth;
   __Pyx_memviewslice __pyx_v_logweights = { 0, 0, { 0 }, { 0 }, { 0 } };
   float __pyx_v__logweights_norm;
-  float __pyx_v__sqrt_cov_log_det;
+  float __pyx_v__sqrt_inv_cov_log_det;
   PyObject *__pyx_v_dtype = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_kde_args_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_kde_args (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_cov_log_det,&__pyx_n_s_dtype,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_inv_cov_log_det,&__pyx_n_s_dtype,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -4556,41 +4556,41 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dataset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, 1); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, 1); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bwidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, 2); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, 2); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, 3); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, 3); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights_norm)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, 4); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, 4); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_cov_log_det)) != 0)) kw_args--;
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_inv_cov_log_det)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, 5); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, 5); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dtype)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, 6); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, 6); __PYX_ERR(0, 35, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fuse_0_evaluate_kde_args_cython") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fuse_0_evaluate_kde_args") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -4608,37 +4608,37 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_
     __pyx_v_bwidth = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_bwidth == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v_logweights = __Pyx_PyObject_to_MemoryviewSlice_ds_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_logweights.memview)) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v__logweights_norm = __pyx_PyFloat_AsFloat(values[4]); if (unlikely((__pyx_v__logweights_norm == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
-    __pyx_v__sqrt_cov_log_det = __pyx_PyFloat_AsFloat(values[5]); if (unlikely((__pyx_v__sqrt_cov_log_det == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
+    __pyx_v__sqrt_inv_cov_log_det = __pyx_PyFloat_AsFloat(values[5]); if (unlikely((__pyx_v__sqrt_inv_cov_log_det == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v_dtype = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args_cython", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 35, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fuse_0_evaluate_kde_args", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 35, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_0_evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_0_evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_kde_args_cython(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_kde_args(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_kde_args", 0);
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(!__pyx_v_points.memview)) { __Pyx_RaiseUnboundLocalError("points"); __PYX_ERR(0, 35, __pyx_L1_error) }
   if (unlikely(!__pyx_v_dataset.memview)) { __Pyx_RaiseUnboundLocalError("dataset"); __PYX_ERR(0, 35, __pyx_L1_error) }
   if (unlikely(!__pyx_v_logweights.memview)) { __Pyx_RaiseUnboundLocalError("logweights"); __PYX_ERR(0, 35, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4647,7 +4647,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_0_evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_0_evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_points, 1);
@@ -4658,9 +4658,9 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_14__pyx_fuse_0_evaluate_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype, CYTHON_UNUSED int __pyx_skip_dispatch) {
   CYTHON_UNUSED int __pyx_v_data_dim;
   int __pyx_v_x_dim;
   int __pyx_v_d;
@@ -4687,11 +4687,11 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_kde_args", 0);
 
   /* "stateinterpreter/_numerics.pyx":36
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int x_dim = points.shape[0]
  *     cdef int d = points.shape[1]
@@ -4699,7 +4699,7 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   __pyx_v_data_dim = (__pyx_v_dataset.shape[0]);
 
   /* "stateinterpreter/_numerics.pyx":37
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int d = points.shape[1]
@@ -4720,7 +4720,7 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
  *     cdef int d = points.shape[1]
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)             # <<<<<<<<<<<<<<
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double res
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
@@ -4786,14 +4786,14 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   /* "stateinterpreter/_numerics.pyx":41
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det             # <<<<<<<<<<<<<<
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det             # <<<<<<<<<<<<<<
  *     cdef double res
  *     for i in range(x_dim):
  */
-  __pyx_v_norm = ((__pyx_v__logweights_norm + ((0.5 * __pyx_v_d) * log(((2.0 * NPY_PI) * (__pyx_v_bwidth * __pyx_v_bwidth))))) + __pyx_v__sqrt_cov_log_det);
+  __pyx_v_norm = ((__pyx_v__logweights_norm + ((0.5 * __pyx_v_d) * log(((2.0 * NPY_PI) * (__pyx_v_bwidth * __pyx_v_bwidth))))) - __pyx_v__sqrt_inv_cov_log_det);
 
   /* "stateinterpreter/_numerics.pyx":43
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double res
  *     for i in range(x_dim):             # <<<<<<<<<<<<<<
  *         res = 0
@@ -4940,7 +4940,7 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   /* "stateinterpreter/_numerics.pyx":35
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
@@ -4953,7 +4953,7 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
@@ -4963,24 +4963,24 @@ static PyObject *__pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args_cython = {"__pyx_fuse_1_evaluate_kde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args = {"__pyx_fuse_1_evaluate_kde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_points = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dataset = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_bwidth;
   __Pyx_memviewslice __pyx_v_logweights = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v__logweights_norm;
-  double __pyx_v__sqrt_cov_log_det;
+  double __pyx_v__sqrt_inv_cov_log_det;
   PyObject *__pyx_v_dtype = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_kde_args_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_kde_args (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_cov_log_det,&__pyx_n_s_dtype,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_inv_cov_log_det,&__pyx_n_s_dtype,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -5012,41 +5012,41 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dataset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, 1); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, 1); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bwidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, 2); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, 2); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, 3); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, 3); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights_norm)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, 4); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, 4); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_cov_log_det)) != 0)) kw_args--;
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_inv_cov_log_det)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, 5); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, 5); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dtype)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, 6); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, 6); __PYX_ERR(0, 35, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fuse_1_evaluate_kde_args_cython") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fuse_1_evaluate_kde_args") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -5064,37 +5064,37 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_
     __pyx_v_bwidth = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_bwidth == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v_logweights = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_logweights.memview)) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v__logweights_norm = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v__logweights_norm == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
-    __pyx_v__sqrt_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_cov_log_det == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
+    __pyx_v__sqrt_inv_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_inv_cov_log_det == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v_dtype = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args_cython", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 35, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fuse_1_evaluate_kde_args", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 35, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_1_evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_1_evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_kde_args_cython(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_kde_args(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_kde_args", 0);
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(!__pyx_v_points.memview)) { __Pyx_RaiseUnboundLocalError("points"); __PYX_ERR(0, 35, __pyx_L1_error) }
   if (unlikely(!__pyx_v_dataset.memview)) { __Pyx_RaiseUnboundLocalError("dataset"); __PYX_ERR(0, 35, __pyx_L1_error) }
   if (unlikely(!__pyx_v_logweights.memview)) { __Pyx_RaiseUnboundLocalError("logweights"); __PYX_ERR(0, 35, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5103,7 +5103,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_1_evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_1_evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_points, 1);
@@ -5114,9 +5114,9 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_16__pyx_fuse_1_evaluate_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_3_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype, CYTHON_UNUSED int __pyx_skip_dispatch) {
   CYTHON_UNUSED int __pyx_v_data_dim;
   int __pyx_v_x_dim;
   int __pyx_v_d;
@@ -5143,11 +5143,11 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_kde_args", 0);
 
   /* "stateinterpreter/_numerics.pyx":36
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int x_dim = points.shape[0]
  *     cdef int d = points.shape[1]
@@ -5155,7 +5155,7 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   __pyx_v_data_dim = (__pyx_v_dataset.shape[0]);
 
   /* "stateinterpreter/_numerics.pyx":37
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int d = points.shape[1]
@@ -5176,7 +5176,7 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
  *     cdef int d = points.shape[1]
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)             # <<<<<<<<<<<<<<
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double res
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
@@ -5242,14 +5242,14 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   /* "stateinterpreter/_numerics.pyx":41
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det             # <<<<<<<<<<<<<<
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det             # <<<<<<<<<<<<<<
  *     cdef double res
  *     for i in range(x_dim):
  */
-  __pyx_v_norm = ((__pyx_v__logweights_norm + ((0.5 * __pyx_v_d) * log(((2.0 * NPY_PI) * (__pyx_v_bwidth * __pyx_v_bwidth))))) + __pyx_v__sqrt_cov_log_det);
+  __pyx_v_norm = ((__pyx_v__logweights_norm + ((0.5 * __pyx_v_d) * log(((2.0 * NPY_PI) * (__pyx_v_bwidth * __pyx_v_bwidth))))) - __pyx_v__sqrt_inv_cov_log_det);
 
   /* "stateinterpreter/_numerics.pyx":43
- *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double res
  *     for i in range(x_dim):             # <<<<<<<<<<<<<<
  *         res = 0
@@ -5396,7 +5396,7 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   /* "stateinterpreter/_numerics.pyx":35
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
@@ -5409,7 +5409,7 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
@@ -5419,24 +5419,24 @@ static PyObject *__pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args_cython = {"__pyx_fuse_2_evaluate_kde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args = {"__pyx_fuse_2_evaluate_kde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_points = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dataset = { 0, 0, { 0 }, { 0 }, { 0 } };
   long double __pyx_v_bwidth;
   __Pyx_memviewslice __pyx_v_logweights = { 0, 0, { 0 }, { 0 }, { 0 } };
   long double __pyx_v__logweights_norm;
-  long double __pyx_v__sqrt_cov_log_det;
+  long double __pyx_v__sqrt_inv_cov_log_det;
   PyObject *__pyx_v_dtype = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_kde_args_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_kde_args (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_cov_log_det,&__pyx_n_s_dtype,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_inv_cov_log_det,&__pyx_n_s_dtype,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -5468,41 +5468,41 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dataset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, 1); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, 1); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bwidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, 2); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, 2); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, 3); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, 3); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights_norm)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, 4); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, 4); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_cov_log_det)) != 0)) kw_args--;
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_inv_cov_log_det)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, 5); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, 5); __PYX_ERR(0, 35, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dtype)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, 6); __PYX_ERR(0, 35, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, 6); __PYX_ERR(0, 35, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fuse_2_evaluate_kde_args_cython") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fuse_2_evaluate_kde_args") < 0)) __PYX_ERR(0, 35, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -5520,37 +5520,37 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_
     __pyx_v_bwidth = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_bwidth == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v_logweights = __Pyx_PyObject_to_MemoryviewSlice_ds_long__double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_logweights.memview)) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v__logweights_norm = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v__logweights_norm == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
-    __pyx_v__sqrt_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_cov_log_det == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
+    __pyx_v__sqrt_inv_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_inv_cov_log_det == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L3_error)
     __pyx_v_dtype = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args_cython", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 35, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fuse_2_evaluate_kde_args", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 35, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_2_evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_2_evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_kde_args_cython(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_kde_args(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_kde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_kde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_kde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_kde_args", 0);
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(!__pyx_v_points.memview)) { __Pyx_RaiseUnboundLocalError("points"); __PYX_ERR(0, 35, __pyx_L1_error) }
   if (unlikely(!__pyx_v_dataset.memview)) { __Pyx_RaiseUnboundLocalError("dataset"); __PYX_ERR(0, 35, __pyx_L1_error) }
   if (unlikely(!__pyx_v_logweights.memview)) { __Pyx_RaiseUnboundLocalError("logweights"); __PYX_ERR(0, 35, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args_cython(__pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__evaluate_kde_args(__pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5559,7 +5559,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_18__pyx_fuse_2_evaluate_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_2_evaluate_kde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics.__pyx_fuse_2_evaluate_kde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_points, 1);
@@ -5902,15 +5902,15 @@ static long double __pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__get_arg(Py
 /* "stateinterpreter/_numerics.pyx":63
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_16stateinterpreter_9_numerics_5_evaluate_logkde_args_cython = {"_evaluate_logkde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_16stateinterpreter_9_numerics_5_evaluate_logkde_args = {"_evaluate_logkde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_signatures = 0;
   PyObject *__pyx_v_args = 0;
   PyObject *__pyx_v_kwargs = 0;
@@ -5987,14 +5987,14 @@ static PyObject *__pyx_pw_16stateinterpreter_9_numerics_5_evaluate_logkde_args_c
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args_cython(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
   PyObject *__pyx_v_dest_sig = NULL;
   Py_ssize_t __pyx_v_i;
   PyTypeObject *__pyx_v_ndarray = 0;
@@ -6033,7 +6033,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args_c
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_evaluate_logkde_args_cython", 0);
+  __Pyx_RefNannySetupContext("_evaluate_logkde_args", 0);
   __Pyx_INCREF(__pyx_v_kwargs);
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -6477,24 +6477,24 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_4_evaluate_logkde_args_c
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_23_evaluate_logkde_args_cython = {"__pyx_fuse_0_evaluate_logkde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_logkde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_23_evaluate_logkde_args = {"__pyx_fuse_0_evaluate_logkde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_logkde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_points = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dataset = { 0, 0, { 0 }, { 0 }, { 0 } };
   float __pyx_v_bwidth;
   __Pyx_memviewslice __pyx_v_logweights = { 0, 0, { 0 }, { 0 }, { 0 } };
   float __pyx_v__logweights_norm;
-  float __pyx_v__sqrt_cov_log_det;
+  float __pyx_v__sqrt_inv_cov_log_det;
   PyObject *__pyx_v_dtype = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_evaluate_logkde_args_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("_evaluate_logkde_args (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_cov_log_det,&__pyx_n_s_dtype,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_inv_cov_log_det,&__pyx_n_s_dtype,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -6526,41 +6526,41 @@ static PyObject *__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dataset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bwidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights_norm)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_cov_log_det)) != 0)) kw_args--;
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_inv_cov_log_det)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dtype)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_evaluate_logkde_args_cython") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_evaluate_logkde_args") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -6578,25 +6578,25 @@ static PyObject *__pyx_fuse_0__pyx_pw_16stateinterpreter_9_numerics_23_evaluate_
     __pyx_v_bwidth = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_bwidth == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v_logweights = __Pyx_PyObject_to_MemoryviewSlice_ds_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_logweights.memview)) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v__logweights_norm = __pyx_PyFloat_AsFloat(values[4]); if (unlikely((__pyx_v__logweights_norm == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
-    __pyx_v__sqrt_cov_log_det = __pyx_PyFloat_AsFloat(values[5]); if (unlikely((__pyx_v__sqrt_cov_log_det == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
+    __pyx_v__sqrt_inv_cov_log_det = __pyx_PyFloat_AsFloat(values[5]); if (unlikely((__pyx_v__sqrt_inv_cov_log_det == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v_dtype = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_cython(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, float __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, float __pyx_v__logweights_norm, float __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype) {
   int __pyx_v_data_dim;
   int __pyx_v_x_dim;
   int __pyx_v_d;
@@ -6621,11 +6621,11 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_logkde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_0_evaluate_logkde_args", 0);
 
   /* "stateinterpreter/_numerics.pyx":64
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int x_dim = points.shape[0]
  *     cdef int d = points.shape[1]
@@ -6633,7 +6633,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   __pyx_v_data_dim = (__pyx_v_dataset.shape[0]);
 
   /* "stateinterpreter/_numerics.pyx":65
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int d = points.shape[1]
@@ -6654,7 +6654,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
  *     cdef int d = points.shape[1]
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)             # <<<<<<<<<<<<<<
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
@@ -6720,7 +6720,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   /* "stateinterpreter/_numerics.pyx":69
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det             # <<<<<<<<<<<<<<
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det             # <<<<<<<<<<<<<<
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):
  */
@@ -6759,9 +6759,9 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v__sqrt_cov_log_det); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v__sqrt_inv_cov_log_det); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Subtract(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6771,7 +6771,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
 
   /* "stateinterpreter/_numerics.pyx":70
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth             # <<<<<<<<<<<<<<
  *     for i in prange(x_dim, nogil=True):
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -6779,7 +6779,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   __pyx_v_bwidth_ = __pyx_v_bwidth;
 
   /* "stateinterpreter/_numerics.pyx":71
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):             # <<<<<<<<<<<<<<
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -6838,7 +6838,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
       }
 
       /* "stateinterpreter/_numerics.pyx":71
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):             # <<<<<<<<<<<<<<
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -6894,7 +6894,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   /* "stateinterpreter/_numerics.pyx":63
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
@@ -6908,7 +6908,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
@@ -6921,24 +6921,24 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_22_evaluate_logkde_args_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_25_evaluate_logkde_args_cython = {"__pyx_fuse_1_evaluate_logkde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_logkde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_25_evaluate_logkde_args = {"__pyx_fuse_1_evaluate_logkde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_logkde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_points = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dataset = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_bwidth;
   __Pyx_memviewslice __pyx_v_logweights = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v__logweights_norm;
-  double __pyx_v__sqrt_cov_log_det;
+  double __pyx_v__sqrt_inv_cov_log_det;
   PyObject *__pyx_v_dtype = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_evaluate_logkde_args_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("_evaluate_logkde_args (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_cov_log_det,&__pyx_n_s_dtype,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_inv_cov_log_det,&__pyx_n_s_dtype,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -6970,41 +6970,41 @@ static PyObject *__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dataset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bwidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights_norm)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_cov_log_det)) != 0)) kw_args--;
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_inv_cov_log_det)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dtype)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_evaluate_logkde_args_cython") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_evaluate_logkde_args") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -7022,25 +7022,25 @@ static PyObject *__pyx_fuse_1__pyx_pw_16stateinterpreter_9_numerics_25_evaluate_
     __pyx_v_bwidth = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_bwidth == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v_logweights = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_logweights.memview)) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v__logweights_norm = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v__logweights_norm == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
-    __pyx_v__sqrt_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_cov_log_det == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
+    __pyx_v__sqrt_inv_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_inv_cov_log_det == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v_dtype = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_cython(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, double __pyx_v__logweights_norm, double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype) {
   int __pyx_v_data_dim;
   int __pyx_v_x_dim;
   int __pyx_v_d;
@@ -7065,11 +7065,11 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_logkde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_1_evaluate_logkde_args", 0);
 
   /* "stateinterpreter/_numerics.pyx":64
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int x_dim = points.shape[0]
  *     cdef int d = points.shape[1]
@@ -7077,7 +7077,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   __pyx_v_data_dim = (__pyx_v_dataset.shape[0]);
 
   /* "stateinterpreter/_numerics.pyx":65
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int d = points.shape[1]
@@ -7098,7 +7098,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
  *     cdef int d = points.shape[1]
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)             # <<<<<<<<<<<<<<
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
@@ -7164,7 +7164,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   /* "stateinterpreter/_numerics.pyx":69
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det             # <<<<<<<<<<<<<<
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det             # <<<<<<<<<<<<<<
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):
  */
@@ -7203,9 +7203,9 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v__sqrt_cov_log_det); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v__sqrt_inv_cov_log_det); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Subtract(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -7215,7 +7215,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
 
   /* "stateinterpreter/_numerics.pyx":70
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth             # <<<<<<<<<<<<<<
  *     for i in prange(x_dim, nogil=True):
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -7223,7 +7223,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   __pyx_v_bwidth_ = __pyx_v_bwidth;
 
   /* "stateinterpreter/_numerics.pyx":71
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):             # <<<<<<<<<<<<<<
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -7282,7 +7282,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
       }
 
       /* "stateinterpreter/_numerics.pyx":71
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):             # <<<<<<<<<<<<<<
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -7338,7 +7338,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   /* "stateinterpreter/_numerics.pyx":63
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
@@ -7352,7 +7352,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
@@ -7365,24 +7365,24 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_24_evaluate_logkde_args_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_27_evaluate_logkde_args_cython = {"__pyx_fuse_2_evaluate_logkde_args_cython", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_logkde_args_cython, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_logkde_args_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_27_evaluate_logkde_args = {"__pyx_fuse_2_evaluate_logkde_args", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_logkde_args, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_logkde_args(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_points = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dataset = { 0, 0, { 0 }, { 0 }, { 0 } };
   long double __pyx_v_bwidth;
   __Pyx_memviewslice __pyx_v_logweights = { 0, 0, { 0 }, { 0 }, { 0 } };
   long double __pyx_v__logweights_norm;
-  long double __pyx_v__sqrt_cov_log_det;
+  long double __pyx_v__sqrt_inv_cov_log_det;
   PyObject *__pyx_v_dtype = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_evaluate_logkde_args_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("_evaluate_logkde_args (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_cov_log_det,&__pyx_n_s_dtype,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_points,&__pyx_n_s_dataset,&__pyx_n_s_bwidth,&__pyx_n_s_logweights,&__pyx_n_s_logweights_norm,&__pyx_n_s_sqrt_inv_cov_log_det,&__pyx_n_s_dtype,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -7414,41 +7414,41 @@ static PyObject *__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dataset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bwidth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_logweights_norm)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_cov_log_det)) != 0)) kw_args--;
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sqrt_inv_cov_log_det)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dtype)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_evaluate_logkde_args_cython") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_evaluate_logkde_args") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -7466,25 +7466,25 @@ static PyObject *__pyx_fuse_2__pyx_pw_16stateinterpreter_9_numerics_27_evaluate_
     __pyx_v_bwidth = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_bwidth == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v_logweights = __Pyx_PyObject_to_MemoryviewSlice_ds_long__double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_logweights.memview)) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v__logweights_norm = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v__logweights_norm == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
-    __pyx_v__sqrt_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_cov_log_det == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
+    __pyx_v__sqrt_inv_cov_log_det = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v__sqrt_inv_cov_log_det == (long double)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
     __pyx_v_dtype = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args_cython", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_evaluate_logkde_args", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_cython(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_cov_log_det, __pyx_v_dtype);
+  __pyx_r = __pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args(__pyx_self, __pyx_v_points, __pyx_v_dataset, __pyx_v_bwidth, __pyx_v_logweights, __pyx_v__logweights_norm, __pyx_v__sqrt_inv_cov_log_det, __pyx_v_dtype);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_cov_log_det, PyObject *__pyx_v_dtype) {
+static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_points, __Pyx_memviewslice __pyx_v_dataset, long double __pyx_v_bwidth, __Pyx_memviewslice __pyx_v_logweights, long double __pyx_v__logweights_norm, long double __pyx_v__sqrt_inv_cov_log_det, PyObject *__pyx_v_dtype) {
   int __pyx_v_data_dim;
   int __pyx_v_x_dim;
   int __pyx_v_d;
@@ -7509,11 +7509,11 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_logkde_args_cython", 0);
+  __Pyx_RefNannySetupContext("__pyx_fuse_2_evaluate_logkde_args", 0);
 
   /* "stateinterpreter/_numerics.pyx":64
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int x_dim = points.shape[0]
  *     cdef int d = points.shape[1]
@@ -7521,7 +7521,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   __pyx_v_data_dim = (__pyx_v_dataset.shape[0]);
 
   /* "stateinterpreter/_numerics.pyx":65
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int d = points.shape[1]
@@ -7542,7 +7542,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
  *     cdef int d = points.shape[1]
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)             # <<<<<<<<<<<<<<
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
@@ -7608,7 +7608,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   /* "stateinterpreter/_numerics.pyx":69
  *     cdef Py_ssize_t i, j
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det             # <<<<<<<<<<<<<<
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det             # <<<<<<<<<<<<<<
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):
  */
@@ -7647,9 +7647,9 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v__sqrt_cov_log_det); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v__sqrt_inv_cov_log_det); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Subtract(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -7659,7 +7659,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
 
   /* "stateinterpreter/_numerics.pyx":70
  *     cdef real[:] result = np.zeros(x_dim, dtype)
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth             # <<<<<<<<<<<<<<
  *     for i in prange(x_dim, nogil=True):
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -7667,7 +7667,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   __pyx_v_bwidth_ = __pyx_v_bwidth;
 
   /* "stateinterpreter/_numerics.pyx":71
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):             # <<<<<<<<<<<<<<
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -7726,7 +7726,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
       }
 
       /* "stateinterpreter/_numerics.pyx":71
- *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) + _sqrt_cov_log_det
+ *     cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
  *     cdef double bwidth_ = bwidth
  *     for i in prange(x_dim, nogil=True):             # <<<<<<<<<<<<<<
  *         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)
@@ -7782,7 +7782,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   /* "stateinterpreter/_numerics.pyx":63
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
@@ -7796,7 +7796,7 @@ static PyObject *__pyx_pf_16stateinterpreter_9_numerics_26_evaluate_logkde_args_
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("stateinterpreter._numerics._evaluate_logkde_args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
@@ -7931,6 +7931,7 @@ static float __pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__get_log_arg(Py_s
  *                 r += 1
  *                 alpha = arg             # <<<<<<<<<<<<<<
  *     return math.log(r) + alpha
+ * 
  */
         __pyx_v_alpha = __pyx_v_arg;
       }
@@ -7950,6 +7951,8 @@ static float __pyx_fuse_0__pyx_f_16stateinterpreter_9_numerics__get_log_arg(Py_s
  *                 r += 1
  *                 alpha = arg
  *     return math.log(r) + alpha             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __pyx_r = (log(__pyx_v_r) + __pyx_v_alpha);
   goto __pyx_L0;
@@ -8082,6 +8085,7 @@ static double __pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__get_log_arg(Py_
  *                 r += 1
  *                 alpha = arg             # <<<<<<<<<<<<<<
  *     return math.log(r) + alpha
+ * 
  */
         __pyx_v_alpha = __pyx_v_arg;
       }
@@ -8101,6 +8105,8 @@ static double __pyx_fuse_1__pyx_f_16stateinterpreter_9_numerics__get_log_arg(Py_
  *                 r += 1
  *                 alpha = arg
  *     return math.log(r) + alpha             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __pyx_r = (log(__pyx_v_r) + __pyx_v_alpha);
   goto __pyx_L0;
@@ -8233,6 +8239,7 @@ static long double __pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__get_log_ar
  *                 r += 1
  *                 alpha = arg             # <<<<<<<<<<<<<<
  *     return math.log(r) + alpha
+ * 
  */
         __pyx_v_alpha = __pyx_v_arg;
       }
@@ -8252,6 +8259,8 @@ static long double __pyx_fuse_2__pyx_f_16stateinterpreter_9_numerics__get_log_ar
  *                 r += 1
  *                 alpha = arg
  *     return math.log(r) + alpha             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __pyx_r = (log(__pyx_v_r) + __pyx_v_alpha);
   goto __pyx_L0;
@@ -22101,8 +22110,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
-  {&__pyx_n_s_evaluate_kde_args_cython, __pyx_k_evaluate_kde_args_cython, sizeof(__pyx_k_evaluate_kde_args_cython), 0, 0, 1, 1},
-  {&__pyx_n_s_evaluate_logkde_args_cython, __pyx_k_evaluate_logkde_args_cython, sizeof(__pyx_k_evaluate_logkde_args_cython), 0, 0, 1, 1},
+  {&__pyx_n_s_evaluate_kde_args, __pyx_k_evaluate_kde_args, sizeof(__pyx_k_evaluate_kde_args), 0, 0, 1, 1},
+  {&__pyx_n_s_evaluate_logkde_args, __pyx_k_evaluate_logkde_args, sizeof(__pyx_k_evaluate_logkde_args), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
   {&__pyx_n_s_float, __pyx_k_float, sizeof(__pyx_k_float), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
@@ -22140,11 +22149,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_points, __pyx_k_points, sizeof(__pyx_k_points), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
-  {&__pyx_n_s_pyx_fuse_0_evaluate_kde_args_c, __pyx_k_pyx_fuse_0_evaluate_kde_args_c, sizeof(__pyx_k_pyx_fuse_0_evaluate_kde_args_c), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_fuse_0_evaluate_kde_args, __pyx_k_pyx_fuse_0_evaluate_kde_args, sizeof(__pyx_k_pyx_fuse_0_evaluate_kde_args), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_fuse_0logsumexp, __pyx_k_pyx_fuse_0logsumexp, sizeof(__pyx_k_pyx_fuse_0logsumexp), 0, 0, 1, 1},
-  {&__pyx_n_s_pyx_fuse_1_evaluate_kde_args_c, __pyx_k_pyx_fuse_1_evaluate_kde_args_c, sizeof(__pyx_k_pyx_fuse_1_evaluate_kde_args_c), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_fuse_1_evaluate_kde_args, __pyx_k_pyx_fuse_1_evaluate_kde_args, sizeof(__pyx_k_pyx_fuse_1_evaluate_kde_args), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_fuse_1logsumexp, __pyx_k_pyx_fuse_1logsumexp, sizeof(__pyx_k_pyx_fuse_1logsumexp), 0, 0, 1, 1},
-  {&__pyx_n_s_pyx_fuse_2_evaluate_kde_args_c, __pyx_k_pyx_fuse_2_evaluate_kde_args_c, sizeof(__pyx_k_pyx_fuse_2_evaluate_kde_args_c), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_fuse_2_evaluate_kde_args, __pyx_k_pyx_fuse_2_evaluate_kde_args, sizeof(__pyx_k_pyx_fuse_2_evaluate_kde_args), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_fuse_2logsumexp, __pyx_k_pyx_fuse_2logsumexp, sizeof(__pyx_k_pyx_fuse_2logsumexp), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_result, __pyx_k_pyx_result, sizeof(__pyx_k_pyx_result), 0, 0, 1, 1},
@@ -22164,7 +22173,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_signatures, __pyx_k_signatures, sizeof(__pyx_k_signatures), 0, 0, 1, 1},
   {&__pyx_n_s_size, __pyx_k_size, sizeof(__pyx_k_size), 0, 0, 1, 1},
   {&__pyx_n_s_split, __pyx_k_split, sizeof(__pyx_k_split), 0, 0, 1, 1},
-  {&__pyx_n_s_sqrt_cov_log_det, __pyx_k_sqrt_cov_log_det, sizeof(__pyx_k_sqrt_cov_log_det), 0, 0, 1, 1},
+  {&__pyx_n_s_sqrt_inv_cov_log_det, __pyx_k_sqrt_inv_cov_log_det, sizeof(__pyx_k_sqrt_inv_cov_log_det), 0, 0, 1, 1},
   {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
   {&__pyx_n_s_stateinterpreter__numerics, __pyx_k_stateinterpreter__numerics, sizeof(__pyx_k_stateinterpreter__numerics), 0, 0, 1, 1},
   {&__pyx_kp_s_stateinterpreter__numerics_pyx, __pyx_k_stateinterpreter__numerics_pyx, sizeof(__pyx_k_stateinterpreter__numerics_pyx), 0, 0, 1, 0},
@@ -22424,26 +22433,26 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "stateinterpreter/_numerics.pyx":35
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
-  __pyx_tuple__26 = PyTuple_Pack(7, __pyx_n_s_points, __pyx_n_s_dataset, __pyx_n_s_bwidth, __pyx_n_s_logweights, __pyx_n_s_logweights_norm, __pyx_n_s_sqrt_cov_log_det, __pyx_n_s_dtype); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(7, __pyx_n_s_points, __pyx_n_s_dataset, __pyx_n_s_bwidth, __pyx_n_s_logweights, __pyx_n_s_logweights_norm, __pyx_n_s_sqrt_inv_cov_log_det, __pyx_n_s_dtype); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(7, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stateinterpreter__numerics_pyx, __pyx_n_s_pyx_fuse_0_evaluate_kde_args_c, 35, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(7, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stateinterpreter__numerics_pyx, __pyx_n_s_pyx_fuse_0_evaluate_kde_args, 35, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 35, __pyx_L1_error)
 
   /* "stateinterpreter/_numerics.pyx":63
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
-  __pyx_tuple__28 = PyTuple_Pack(15, __pyx_n_s_points, __pyx_n_s_dataset, __pyx_n_s_bwidth, __pyx_n_s_logweights, __pyx_n_s_logweights_norm, __pyx_n_s_sqrt_cov_log_det, __pyx_n_s_dtype, __pyx_n_s_data_dim, __pyx_n_s_x_dim, __pyx_n_s_d, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_result, __pyx_n_s_norm, __pyx_n_s_bwidth_2); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(15, __pyx_n_s_points, __pyx_n_s_dataset, __pyx_n_s_bwidth, __pyx_n_s_logweights, __pyx_n_s_logweights_norm, __pyx_n_s_sqrt_inv_cov_log_det, __pyx_n_s_dtype, __pyx_n_s_data_dim, __pyx_n_s_x_dim, __pyx_n_s_d, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_result, __pyx_n_s_norm, __pyx_n_s_bwidth_2); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(7, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stateinterpreter__numerics_pyx, __pyx_n_s_evaluate_logkde_args_cython, 63, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(7, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stateinterpreter__numerics_pyx, __pyx_n_s_evaluate_logkde_args, 63, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 63, __pyx_L1_error)
 
   /* "View.MemoryView":286
  *         return self.name
@@ -22913,67 +22922,67 @@ if (!__Pyx_RefNanny) {
   /* "stateinterpreter/_numerics.pyx":35
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef _evaluate_kde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
   __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args_cython, 0, __pyx_n_s_pyx_fuse_0_evaluate_kde_args_c, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_15__pyx_fuse_0_evaluate_kde_args, 0, __pyx_n_s_pyx_fuse_0_evaluate_kde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_float, __pyx_t_1) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args_cython, 0, __pyx_n_s_pyx_fuse_1_evaluate_kde_args_c, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_17__pyx_fuse_1_evaluate_kde_args, 0, __pyx_n_s_pyx_fuse_1_evaluate_kde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_double, __pyx_t_1) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args_cython, 0, __pyx_n_s_pyx_fuse_2_evaluate_kde_args_c, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_19__pyx_fuse_2_evaluate_kde_args, 0, __pyx_n_s_pyx_fuse_2_evaluate_kde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_2, __pyx_kp_s_long_double, __pyx_t_1) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_mdef_16stateinterpreter_9_numerics_3_evaluate_kde_args_cython, 0, __pyx_n_s_evaluate_kde_args_cython, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_1 = __pyx_FusedFunction_New(&__pyx_mdef_16stateinterpreter_9_numerics_3_evaluate_kde_args, 0, __pyx_n_s_evaluate_kde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_empty_tuple);
   ((__pyx_FusedFunctionObject *) __pyx_t_1)->__signatures__ = __pyx_t_2;
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_evaluate_kde_args_cython, __pyx_t_1) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_evaluate_kde_args, __pyx_t_1) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "stateinterpreter/_numerics.pyx":63
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def _evaluate_logkde_args_cython(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_cov_log_det, dtype):             # <<<<<<<<<<<<<<
+ * def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):             # <<<<<<<<<<<<<<
  *     cdef int data_dim = dataset.shape[0]
  *     cdef int x_dim = points.shape[0]
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_23_evaluate_logkde_args_cython, 0, __pyx_n_s_evaluate_logkde_args_cython, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_fuse_0__pyx_mdef_16stateinterpreter_9_numerics_23_evaluate_logkde_args, 0, __pyx_n_s_evaluate_logkde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_float, __pyx_t_2) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_25_evaluate_logkde_args_cython, 0, __pyx_n_s_evaluate_logkde_args_cython, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_fuse_1__pyx_mdef_16stateinterpreter_9_numerics_25_evaluate_logkde_args, 0, __pyx_n_s_evaluate_logkde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_double, __pyx_t_2) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_27_evaluate_logkde_args_cython, 0, __pyx_n_s_evaluate_logkde_args_cython, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_fuse_2__pyx_mdef_16stateinterpreter_9_numerics_27_evaluate_logkde_args, 0, __pyx_n_s_evaluate_logkde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_long_double, __pyx_t_2) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_mdef_16stateinterpreter_9_numerics_5_evaluate_logkde_args_cython, 0, __pyx_n_s_evaluate_logkde_args_cython, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_New(&__pyx_mdef_16stateinterpreter_9_numerics_5_evaluate_logkde_args, 0, __pyx_n_s_evaluate_logkde_args, NULL, __pyx_n_s_stateinterpreter__numerics, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   ((__pyx_FusedFunctionObject *) __pyx_t_2)->__signatures__ = __pyx_t_1;
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_evaluate_logkde_args_cython, __pyx_t_2) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_evaluate_logkde_args, __pyx_t_2) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "stateinterpreter/_numerics.pyx":2
