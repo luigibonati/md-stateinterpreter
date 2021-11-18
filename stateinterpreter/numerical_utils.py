@@ -2,7 +2,7 @@
 import numpy as np
 from scipy.optimize import minimize
 from ._configs import *
-from stateinterpreter._numerics import _evaluate_kde_args, _evaluate_logkde_args, logsumexp
+from ._numerics import _evaluate_kde_args, _evaluate_logkde_args, logsumexp
 
 def cov(points, weights=None):
     assert len(points.shape) == 2
