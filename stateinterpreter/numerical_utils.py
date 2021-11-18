@@ -28,7 +28,6 @@ def weights_from_logweights(logweights):
     return np.exp(logweights - C)
 
 class gaussian_kde:
-    #Trying to implement SciPy api
     def __init__(self, dataset, bw_method=None, logweights=None):
         assert len(dataset.shape) == 2
         self.dataset = dataset #[# of pts, # of dims]
@@ -149,9 +148,3 @@ class gaussian_kde:
         found_minima = np.asarray(found_minima).round(decimals=decimals_tolerance)
         real_minima = np.unique(found_minima, axis=0)
         return real_minima
-
-
-  
-
-
-

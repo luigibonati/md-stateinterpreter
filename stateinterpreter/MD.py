@@ -12,9 +12,9 @@ from ._configs import *
 
 
 
-__all__ = ["Loader"]
+__all__ = ["MetastableStates"]
 
-class Loader:
+class MetastableStates:
     def __init__(
         self, colvar, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, **kwargs
     ):
@@ -27,7 +27,7 @@ class Loader:
         descriptors : pandas.DataFrame or string, optional
             input features, by default None
         kbt : float, optional
-            temperature [KbT], by default 2.5
+            temperature [kBT], by default 2.5
         start : int, optional
             keep data from value, by default 0
         stride : int, optional
@@ -548,6 +548,6 @@ class Loader:
             config_i = df.filter(regex=regex_filter).sample(n=n_configs).values
             config_list.append(config_i)
             labels.extend([basin]*n_configs)
-        labels = np.array(labels, dtype=np.int_)
+        labels = np.array(labels, dtype=int)
         configurations = np.vstack(config_list)
         return (configurations, labels), features, states

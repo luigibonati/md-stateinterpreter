@@ -11,6 +11,8 @@ import warnings
 from .plot import plot_regularization_path, plot_groups
 from ._configs import *
 
+__all__ = ["Classifier"]
+
 def quadratic_kernel_featuremap(X):
     n_pts, n_feats = X.shape
     n_feats +=1

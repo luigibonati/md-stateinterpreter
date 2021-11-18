@@ -7,6 +7,7 @@ from matplotlib.ticker import MaxNLocator
 import nglview
 import sys
 from ._configs import *
+
 if __useTeX__:
     plt.rcParams.update({
         "text.usetex": True,
