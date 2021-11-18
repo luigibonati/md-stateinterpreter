@@ -8,6 +8,7 @@ from scipy.spatial.distance import squareform
 from group_lasso import LogisticGroupLasso
 from tqdm import tqdm
 import warnings
+from .plot import plot_regularization_path, plot_groups
 from ._configs import *
 
 def quadratic_kernel_featuremap(X):
@@ -46,16 +47,16 @@ def decode_quadratic_features(idx, features_names):
 
 class Classifier():
     def __init__(self, dataset, features_names, classes_names, rescale=True, test_size=0.25):
-        self._dataset = dataset
+        self._X, self._labels = dataset
         self._rescale = rescale
         self._test_size = test_size
 
         if self._rescale:
             scaler = StandardScaler(with_mean=True)
-            scaler.fit(self._dataset[0])
-            self._dataset[0] = scaler.transform(self._dataset[0])
+            scaler.fit(self._X)
+            self._X = scaler.transform(self._X)
 
-        self._train_in, self._val_in, self._train_out, self._val_out = train_test_split(*self._dataset, test_size=self._test_size)
+        self._train_in, self._val_in, self._train_out, self._val_out = train_test_split(self._X, self._labels, test_size=self._test_size)
         
         self._n_samples = self._train_in.shape[0]
         self.features = features_names
@@ -130,8 +131,8 @@ class Classifier():
         self._coeffs = coeffs
         self._crossval = crossval
         self._classes_labels = _classes_labels
+        self._groups = groups
         if _is_group:
-            self._groups= groups
             self._groups_names = groups_names
             self._groups_mask = [
                 self._groups == u
@@ -141,7 +142,7 @@ class Classifier():
     
     def _purge(self):
         if __DEV__:
-            print("DEV >>> Purging old date")
+            print("DEV >>> Purging old data")
         if self._computed:
             del self._quadratic_kernel 
             del self._reg
@@ -149,34 +150,37 @@ class Classifier():
             del self._crossval
             del self._classes_labels
             if self._groups is not None:
-                del self._groups
                 del self._groups_names
                 del self._groups_mask
+            del self._groups
         self._computed = False
 
     def _closest_reg_idx(self, reg):
         assert self._computed, "You have to run Classifier.compute first."
         return np.argmin(np.abs(self._reg - reg))
 
-    def _get_selected(self, reg):        
+    def _get_selected(self, reg, feature_mode=False):        
         reg_idx = self._closest_reg_idx(reg)
         coefficients = self._coeffs[reg_idx]
-        selected = []
-        for coef in coefficients:
-            if self._groups is not None:
+        _classes = self._classes_labels[reg_idx]
+        selected = dict()
+        group_mode = (not feature_mode) and (self._groups is not None)
+        for idx, coef in enumerate(coefficients):
+            state_name = self.classes[_classes[idx]]
+            if group_mode:
                 coef = np.array([np.linalg.norm(coef[b])**2 for b in self._groups_mask])
             else:
                 coef = coef**2
 
             nrm = np.sum(coef)
             if nrm < __EPS__:
-                selected.append([])
+                selected[state_name] = []
             else:
                 coef = csr_matrix(coef/nrm)
                 sort_perm = np.argsort(coef.data)[::-1]
                 names = []
                 for idx in coef.indices:
-                    if self._groups is not None:
+                    if group_mode:
                         names.append(self._groups_names[idx])
                     else: 
                         if self._quadratic_kernel:
@@ -185,31 +189,32 @@ class Classifier():
                             names.append(self.features[idx])
                 #idx, weight, name
                 names = np.array(names)
-                selected.append(list(zip(coef.indices[sort_perm], coef.data[sort_perm], names[sort_perm])))
+                selected[state_name]= list(zip(coef.indices[sort_perm], coef.data[sort_perm], names[sort_perm]))
         return selected
     
+    def feature_summary(self, reg):
+        return self._get_selected(reg, feature_mode=True)
+
     def print_selected(self, reg):
         selected = self._get_selected(reg)
-        reg_idx = self._closest_reg_idx(reg)
-        _classes = self._classes_labels[reg_idx]
 
-        print_queue = []
-        for state in selected:
+        print_queue = dict()
+        for state in selected.keys():
             _intra_state_queue = []
-            for data in state:
+            for data in selected[state]:
                 _intra_state_queue.append([f"{np.around(data[1]*100, decimals=3)}%", f"{data[2]}"])
-            print_queue.append(_intra_state_queue)
+            print_queue[state] = _intra_state_queue
         
         col_width = 0
-        for _intra_state_queue in print_queue:
+        for _intra_state_queue in print_queue.values():
             for _row in _intra_state_queue:
                 if len(str(_row[0])) > col_width:
                     col_width = len(str(_row[0]))
         
-        for state_idx, _intra_state_queue in enumerate(print_queue):
-            state_name = 'State ' +  self.classes[_classes[state_idx]] + ':'
+        for state in print_queue.keys():
+            state_name = 'State ' +  state + ':'
             print(state_name)
-            for row in _intra_state_queue:
+            for row in print_queue[state]:
                 print(f"\t {row[0].ljust(col_width)} | {row[1]}")
 
     def prune(self, reg, overwrite=True):    
@@ -217,7 +222,7 @@ class Classifier():
         if self._quadratic_kernel:
             AttributeError("Pruning is not possible on classifiers trained with quadratic kernels.")
         unique_idxs = set()
-        for state in selected:
+        for state in selected.values():
             for data in state:
                 unique_idxs.add(data[0])
         if self._groups is not None:
@@ -230,11 +235,16 @@ class Classifier():
         if overwrite:
             self._train_in = self._train_in[:, mask]
             self._val_in = self._val_in[:, mask]
-            self._dataset[0] = self._dataset[0][:, mask]
+            self._X = self._X[:, mask]
             self.features = self.features[mask]
             self._purge()
         else:
-            dset = self._dataset
-            dset[0] = dset[0][:, mask]
+            X = self._X[:, mask]
+            dset = (X, self._labels)
             pruned_features = self.features[mask]
             return Classifier(dset, pruned_features, self._classes_names, self._rescale, self._test_size)
+
+    def plot(self, reg):
+        return plot_regularization_path(self, reg)
+    def plot_groups(self):
+        return plot_groups(self)

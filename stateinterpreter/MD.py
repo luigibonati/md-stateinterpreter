@@ -14,19 +14,6 @@ from ._configs import *
 
 __all__ = ["Loader"]
 
-"""
-OUTLINE
-=======
-1a. Load collective variables
-   - from FILE or pd.DataFrame
-1b. Load descriptors (optional)
-   - from FILE or pd.DataFrame
-2. (optional: load trajectory and compute descriptors)
-3. Identify states from FES
-4. Get dataframe (CVs, descriptors, labels)
-"""
-
-
 class Loader:
     def __init__(
         self, colvar, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, **kwargs
@@ -75,6 +62,8 @@ class Loader:
             assert len(self.colvar) == len(
                 self.descriptors
             ), "mismatch between colvar and descriptor length."
+        else:
+            self.descriptors = None
 
         # save attributes
         self.kbt = kbt
@@ -171,7 +160,7 @@ class Loader:
             self.descriptors
         ), "mismatch between colvar and descriptor length."
 
-    def identify_states(
+    def identify_metastable_states(
         self,
         selected_cvs,
         logweights=None,
@@ -203,7 +192,7 @@ class Loader:
                 (str) sampling: sampling scheme. Accepted strings are 'data_driven' or 'uniform'.
         memory_saver : bool, optional
             Memory saver option for basin selection, by default False
-        splits : int, optional
+        splits : int, optional only used if memory_saver = True
             Divide data in `splits` chuck, by default 50
         """
         if not fes_cutoff:
@@ -276,7 +265,6 @@ class Loader:
         )
         
         self.n_basins = len(self.basins['basin'].unique())
-        self.bounds = bounds
         if __DEV__:
             for idx in range(self.n_basins):
                 l = len(self.basins.loc[ (self.basins['basin'] == idx) & (self.basins['selection'] == True)])
@@ -320,13 +308,11 @@ class Loader:
 
         Args:
             collective_vars (numpy.ndarray or pd.Dataframe): List of sampled collective variables with dimensions [num_timesteps, num_CVs]
-            bounds (list of tuples): (min, max) bounds for each collective Variable
-            num (int, optional): [description]. Defaults to 100.
             bw_method ('scott', 'silverman' or a scalar, optional): Bandwidth method used in GaussianKDE. Defaults to None ('scotts' factor).
-            logweights (arraylike log weights, optional): [description]. Defaults to None (uniform weights).
+            logweights (arraylike log weights, optional): Logarithm of the weights. Defaults to None (uniform weights).
 
         Returns:
-            [type]: [description]
+            function: Approximated Free Energy Surface
         """
         if __DEV__:
             print("DEV >>> Approximating FES")
@@ -527,6 +513,20 @@ class Loader:
         return (1 - np.power(((x - d0) / r0), n)) / (1 - np.power(((x - d0) / r0), m))
 
     def sample(self, n_configs, regex_filter = '.*', states_subset=None, states_names=None):
+        """Sample points from trajectory
+
+        Args:
+            n_configs (int): number of points to sample for each metastable state
+            regex_filter (str, optional): regex to filter the features. Defaults to '.*'.
+            states_subset (list, optional): list of integers corresponding to the metastable states to sample. Defaults to None take all states.
+            states_names (list, optional): list of strings corresponding to the name of the states. Defaults to None.
+
+        Returns:
+            (configurations, labels), features_names, states_names
+        """
+        if self.descriptors is None:
+            raise ValueError("Descriptors are not defined. Load them at initialization or run load_trajectory().")
+        
         features = self.descriptors.filter(regex=regex_filter).columns.values
         config_list = []
         labels = []
@@ -551,4 +551,3 @@ class Loader:
         labels = np.array(labels, dtype=np.int_)
         configurations = np.vstack(config_list)
         return (configurations, labels), features, states
-        #return Sample(configurations, labels, features, states, scale=True)
