@@ -1,10 +1,13 @@
+
 """
 stateinterpreter
 Interpretation of metastable states from MD simulations
 """
 import sys
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
+from Cython.Build import cythonize
 import versioneer
+import numpy
 
 short_description = "Interpretation of metastable states from MD simulations".split("\n")[0]
 
@@ -18,6 +21,15 @@ try:
 except:
     long_description = None
 
+ext_modules=[
+    Extension("stateinterpreter._numerics",
+            ["stateinterpreter/_numerics.pyx"],
+            libraries=["m"],
+            include_dirs=[numpy.get_include()],
+            extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp" ],
+            extra_link_args=['-fopenmp']
+    ) 
+]
 
 setup(
     # Self-descriptive entries which should always be present
@@ -43,6 +55,8 @@ setup(
 
     # Allows `setup.py test` to work correctly with pytest
     setup_requires=[] + pytest_runner,
+    ext_modules = cythonize(ext_modules),
+    zip_safe = False,
 
     # Additional entries you may want simply uncomment the lines you want and fill in the data
     # url='http://www.my_package.com',  # Website
@@ -55,5 +69,4 @@ setup(
 
     # Manual control if final package is compressible or not, set False to prevent the .egg from being made
     # zip_safe=False,
-
 )
