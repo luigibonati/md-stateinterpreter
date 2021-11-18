@@ -61,7 +61,6 @@ jobs:
         python -m pip install -v .
         conda list
 
-
     - name: Run tests
 
       # conda setup requires this special shell
