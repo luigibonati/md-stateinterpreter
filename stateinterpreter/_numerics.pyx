@@ -1,6 +1,5 @@
 
 # cython: infer_types=True
-
 from libc cimport math
 cimport cython
 from numpy.math cimport INFINITY
