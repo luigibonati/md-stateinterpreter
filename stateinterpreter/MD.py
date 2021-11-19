@@ -16,7 +16,7 @@ __all__ = ["MetastableStates"]
 
 class MetastableStates:
     def __init__(
-        self, colvar, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, **kwargs
+        self, colvar = None, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, **kwargs
     ):
         """Prepare inputs for stateinterpreter
 
@@ -46,22 +46,25 @@ class MetastableStates:
 
         """
         # collective variables data
-        self.colvar = load_dataframe(colvar, start=start, stop=stop, stride=stride, **kwargs)
+        self.colvar = None
+        if colvar is not None:
+            self.colvar = load_dataframe(colvar, start=start, stop=stop, stride=stride, **kwargs)
 
         if __DEV__:
             print(f"Collective variables: {self.colvar.values.shape}")
 
         # descriptors data
-        if descriptors is not None:
+        if (descriptors is not None):
             self.descriptors = load_dataframe(descriptors, **kwargs)
             self.descriptors = self.descriptors.iloc[start::stride, :]
             if "time" in self.descriptors.columns:
                 self.descriptors = self.descriptors.drop("time", axis="columns")
             if __DEV__:
                 print(f"Descriptors: {self.descriptors.shape}")
-            assert len(self.colvar) == len(
-                self.descriptors
-            ), "mismatch between colvar and descriptor length."
+            if colvar is not None:
+                assert len(self.colvar) == len(
+                    self.descriptors
+                ), "mismatch between colvar and descriptor length."
         else:
             self.descriptors = None
 
@@ -108,10 +111,11 @@ class MetastableStates:
                 self.traj = self.traj[int(self.start/self.stride) : int(self.stop/self.stride)]
             else: 
                 self.traj = self.traj[int(self.start/self.stride) : ]
-            
-        assert len(self.traj) == len(
-            self.colvar
-        ), f"length traj ({len(self.traj)}) != length colvar ({len(self.colvar)})"
+        
+        if self.colvar is not None:
+            assert len(self.traj) == len(
+                self.colvar
+            ), f"length traj ({len(self.traj)}) != length colvar ({len(self.colvar)})"
 
         # Compute descriptors
         if descriptors is True: # if true compute all of them
@@ -156,9 +160,11 @@ class MetastableStates:
         self.descriptors = pd.concat(descr_list, axis=1)
         if __DEV__:
             print(f"Descriptors: {self.descriptors.shape}")
-        assert len(self.colvar) == len(
-            self.descriptors
-        ), "mismatch between colvar and descriptor length."
+        
+        if self.colvar is not None:
+            assert len(self.colvar) == len(
+                self.descriptors
+            ), "mismatch between colvar and descriptor length."
 
     def identify_metastable_states(
         self,
