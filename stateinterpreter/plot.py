@@ -2,12 +2,13 @@ import numpy as np
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import itertools
 from matplotlib.gridspec import GridSpec
 import nglview
 import sys
 
-__all__ = ["plot_states", "plot_cvpath", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features", "visualize_features"]
+__all__ = ["plot_states", "plot_cvpath", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features", "visualize_features", "visualize_residues"]
 
 # aux function to compute basins mean
 def compute_basin_mean(df, basin, label_x, label_y):
@@ -207,6 +208,7 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
     plt.tight_layout()
 
 def visualize_features(data,relevant_features,state=0,n_feat_per_state=3):
+    
     # sample one frame per state
     frames = [data.basins[data.basins['basin'] == i ].sample(1).index.values[0] for i in range(data.n_basins) ]
     traj = data.traj[frames]
@@ -243,5 +245,68 @@ def visualize_features(data,relevant_features,state=0,n_feat_per_state=3):
         elif len(ids) == 4: # angle
             color = 'green'
             view.add_ball_and_stick(selection,color=color,opacity=0.75)
+
+    return view
+
+def visualize_residues(data, residue_score, representation = 'licorice', palette = 'Reds'):
+    # sample one frame per state
+    frames = [data.basins[data.basins['basin'] == i ].sample(1).index.values[0] for i in range(data.n_basins) ]
+    traj = data.traj[frames]
+    traj.superpose(traj[0])
+
+    view = nglview.show_mdtraj(traj, default=False)
+
+    if representation == 'licorice' :
+        view.add_licorice('all')
+    elif representation == 'cartoon':
+        view.add_cartoon('protein')
+    elif representation == 'ball_and_stick':
+        view.add_ball_and_stick('all')
+
+    # get color palette
+    cmap = cm.get_cmap(palette, 11)
+    palette = [matplotlib.colors.rgb2hex( cmap(i) ) for i in range(cmap.N)]
+
+    # transform score in colors
+    residue_colors = {}
+    for state in range(data.n_basins):
+        colors = []
+        if state in residue_score.keys():
+            for i in residue_score[state]:
+                col = int (i*10 / 1)
+                colors.append( palette[col] ) 
+        else:
+            for j in range( data.traj.n_residues ):
+                colors.append( palette[0] )
+        residue_colors[state] = colors
+
+    # define observer function to allow changing colors with frame
+    def on_change(change):
+        frame = change.new
+        frame_color = residue_colors[frame]
+        frame_color = [c.replace('#', '0x') for c in frame_color]
+        
+        view._set_color_by_residue(view,frame_color)
+        #view.update_licorice()
+        sleep(0.1) # wait for the color update
+
+    # convert to int
+   
+
+    # initialize set color by residue
+    def _set_color_by_residue(self, colors, component_index=0, repr_index=0):
+            self._remote_call('setColorByResidue',
+                            target='Widget',
+                            args=[colors, component_index, repr_index])
+
+    if not hasattr(view, '_set_color_by_residue'):
+        view._set_color_by_residue = _set_color_by_residue
+
+    # set colors from state 0 
+    frame_color = residue_colors[0]
+    frame_color = [c.replace('#', '0x') for c in frame_color]
+        
+    view._set_color_by_residue(view,frame_color)
+    view.observe(on_change, names=['frame'])
 
     return view
