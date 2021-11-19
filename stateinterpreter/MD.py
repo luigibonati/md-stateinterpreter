@@ -1,37 +1,22 @@
 # imports
-
 import sys
 import numpy as np
 import pandas as pd
 import mdtraj as md
 import itertools
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-
 from tqdm import tqdm
 
-
 from .io import load_dataframe
-from .numerical_utils import gaussian_kde, local_minima
-
-__all__ = ["Loader"]
-
-"""
-OUTLINE
-=======
-1a. Load collective variables
-   - from FILE or pd.DataFrame
-1b. Load descriptors (optional)
-   - from FILE or pd.DataFrame
-2. (optional: load trajectory and compute descriptors)
-3. Identify states from FES
-4. Get dataframe (CVs, descriptors, labels)
-"""
+from .numerical_utils import gaussian_kde
+from ._configs import *
 
 
-class Loader:
+
+__all__ = ["MetastableStates"]
+
+class MetastableStates:
     def __init__(
-        self, colvar, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, _DEV=False, **kwargs
+        self, colvar, descriptors=None, kbt=2.5, start=0, stop=None, stride=1, **kwargs
     ):
         """Prepare inputs for stateinterpreter
 
@@ -42,13 +27,11 @@ class Loader:
         descriptors : pandas.DataFrame or string, optional
             input features, by default None
         kbt : float, optional
-            temperature [KbT], by default 2.5
+            temperature [kBT], by default 2.5
         start : int, optional
             keep data from value, by default 0
         stride : int, optional
             keep data every stride, by default 1
-        _DEV : bool, optional
-            enable debug mode, by default False
 
         Examples
         --------
@@ -65,7 +48,7 @@ class Loader:
         # collective variables data
         self.colvar = load_dataframe(colvar, start=start, stop=stop, stride=stride, **kwargs)
 
-        if _DEV:
+        if __DEV__:
             print(f"Collective variables: {self.colvar.values.shape}")
 
         # descriptors data
@@ -74,18 +57,19 @@ class Loader:
             self.descriptors = self.descriptors.iloc[start::stride, :]
             if "time" in self.descriptors.columns:
                 self.descriptors = self.descriptors.drop("time", axis="columns")
-            if _DEV:
+            if __DEV__:
                 print(f"Descriptors: {self.descriptors.shape}")
             assert len(self.colvar) == len(
                 self.descriptors
             ), "mismatch between colvar and descriptor length."
+        else:
+            self.descriptors = None
 
         # save attributes
         self.kbt = kbt
         self.stride = stride
         self.start = start
         self.stop = stop
-        self._DEV = _DEV
 
         # initialize attributes to None
         self.traj = None
@@ -170,22 +154,19 @@ class Loader:
                 raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds' are allowed.")
         
         self.descriptors = pd.concat(descr_list, axis=1)
-        if self._DEV:
+        if __DEV__:
             print(f"Descriptors: {self.descriptors.shape}")
         assert len(self.colvar) == len(
             self.descriptors
         ), "mismatch between colvar and descriptor length."
 
-    def identify_states(
+    def identify_metastable_states(
         self,
         selected_cvs,
-        bounds,
         logweights=None,
         bw_method=None,
-        fes_cutoff=5,
+        fes_cutoff=None,
         sort_minima_by = 'cvs_grid',
-        optimizer=None,
-        use_jac = False,
         optimizer_kwargs=dict(),
         memory_saver=False, 
         splits=50,
@@ -196,28 +177,26 @@ class Loader:
         ----------
         selected_cvs : list of strings
             Names of the collective variables used for clustering
-        bounds : tuple of list 
-            Bounds for the cvs ([min,max]*n_cvs)
         logweights : pandas.DataFrame, np.array or string , optional
             Logweights used for FES calculation, by default None
         bw_method : string, optional
-            Bandwidth method for FES calculations (TODO add options)
+            Bandwidth method for FES calculations
         fes_cutoff : float, optional
-            Cutoff used to select only low free-energy configurations, by default 5
+            Cutoff used to select only low free-energy configurations, if None fes_cutoff is 2k_BT
         sort_minima_by : string, optional
             Sort labels based on `energy`, `cvs`, or `cvs_grid` values, by default `cvs_grid`.
-        optimizer : optional
-            Method for finding local minima, by default None
         optimizer_kwargs : optional
-            Arguments for optimizer, by default dict()
+            Arguments for optimizer, by default dict(). Possible kwargs are:
+                (int) num_init: number of initialization point, 
+                (int) decimals_tolerance: number of decimals to retain to identify unique minima,
+                (str) sampling: sampling scheme. Accepted strings are 'data_driven' or 'uniform'.
         memory_saver : bool, optional
             Memory saver option for basin selection, by default False
-        splits : int, optional
+        splits : int, optional only used if memory_saver = True
             Divide data in `splits` chuck, by default 50
-
-
         """
-
+        if not fes_cutoff:
+            fes_cutoff = 2*self.kbt
         # retrieve logweights
         if logweights is None:
             w = None
@@ -251,19 +230,23 @@ class Loader:
             bw_method=bw_method, 
             logweights=w
         )
-        if use_jac:
-            raise NotImplementedError("Not yet implemented")
 
-        self.minima = local_minima(self.fes, bounds, method=optimizer, method_kwargs=optimizer_kwargs)
+        if __DEV__:
+            print("DEV >>> Finding Local Minima")
+            
+        self.minima = self.KDE.local_minima(**optimizer_kwargs)
         
         # sort minima based on first CV
         if sort_minima_by == 'energy':
-            pass #already sorted
+            f_min = np.asarray([self.fes(x) for x in self.minima])
+            sortperm = np.argsort(f_min, axis=0)
+            self.minima = self.minima[sortperm]
         elif sort_minima_by == 'cvs' :
             # sort first by 1st cv, then 2nd, ...
             x = self.minima
             self.minima = x [ np.lexsort( np.round(np.flipud(x.T),2) ) ] 
         elif sort_minima_by == 'cvs_grid' :
+            bounds = [(x.min(), x.max()) for x in self.KDE.dataset.T]
             # sort based on a binning of the cvs (10 bins per each direction),
             # along 1st cv, then 2nd, ... 
             x = self.minima
@@ -282,7 +265,10 @@ class Loader:
         )
         
         self.n_basins = len(self.basins['basin'].unique())
-        self.bounds = bounds
+        if __DEV__:
+            for idx in range(self.n_basins):
+                l = len(self.basins.loc[ (self.basins['basin'] == idx) & (self.basins['selection'] == True)])
+                print(f"\tBasin {idx} -> {l} configurations.")
 
     def collect_data(self, only_selected_cvs=False):
         """Prepare dataframe with: CVs, labels and descriptors
@@ -322,14 +308,14 @@ class Loader:
 
         Args:
             collective_vars (numpy.ndarray or pd.Dataframe): List of sampled collective variables with dimensions [num_timesteps, num_CVs]
-            bounds (list of tuples): (min, max) bounds for each collective Variable
-            num (int, optional): [description]. Defaults to 100.
             bw_method ('scott', 'silverman' or a scalar, optional): Bandwidth method used in GaussianKDE. Defaults to None ('scotts' factor).
-            logweights (arraylike log weights, optional): [description]. Defaults to None (uniform weights).
+            logweights (arraylike log weights, optional): Logarithm of the weights. Defaults to None (uniform weights).
 
         Returns:
-            [type]: [description]
+            function: Approximated Free Energy Surface
         """
+        if __DEV__:
+            print("DEV >>> Approximating FES")
         empirical_centers = self.colvar[collective_vars].to_numpy()
         self.KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=logweights)
         self.fes = lambda X: -self.kbt*self.KDE.logpdf(X)   
@@ -338,7 +324,8 @@ class Loader:
     def _basin_selection(
         self, minima, fes_cutoff=5, memory_saver=False, splits=50
     ):
-    
+        if __DEV__:
+            print("DEV >>> Basin Assignment")
         positions = self.KDE.dataset
         norms = np.linalg.norm((positions[:,np.newaxis,:] - minima), axis=2)
         classes = np.argmin(norms, axis=1)
@@ -348,7 +335,7 @@ class Loader:
         if memory_saver:
             chunks = np.array_split(positions, splits, axis=0)
             fes_pts = []
-            if self._DEV:
+            if __DEV__:
                 for chunk in tqdm(chunks):
                     fes_pts.append(self.fes(chunk))
             else:
@@ -388,7 +375,6 @@ class Loader:
         # H-BONDS DISTANCES / CONTACTS (donor-acceptor)
         # find donors (OH or NH)
         traj = self.traj
-        _DEV = self._DEV
         donors = [
             at_i.index
             for at_i, at_j in traj.top.bonds
@@ -397,12 +383,12 @@ class Loader:
         ]
         # keep unique
         donors = sorted(list(set(donors)))
-        if _DEV:
+        if __DEV__:
             print("Donors:", donors)
 
         # find acceptors (O r N)
         acceptors = traj.top.select("symbol O or symbol N")
-        if _DEV:
+        if __DEV__:
             print("Acceptors:", acceptors)
 
         # lambda func to avoid selecting interaction within the same residue
@@ -526,12 +512,35 @@ class Loader:
         # (see formula for RATIONAL) https://www.plumed.org/doc-v2.6/user-doc/html/switchingfunction.html
         return (1 - np.power(((x - d0) / r0), n)) / (1 - np.power(((x - d0) / r0), m))
 
-    def sample(self, n_configs, regex_filter = '.*', states_subset=None):
+    def sample(self, n_configs, regex_filter = '.*', states_subset=None, states_names=None):
+        """Sample points from trajectory
+
+        Args:
+            n_configs (int): number of points to sample for each metastable state
+            regex_filter (str, optional): regex to filter the features. Defaults to '.*'.
+            states_subset (list, optional): list of integers corresponding to the metastable states to sample. Defaults to None take all states.
+            states_names (list, optional): list of strings corresponding to the name of the states. Defaults to None.
+
+        Returns:
+            (configurations, labels), features_names, states_names
+        """
+        if self.descriptors is None:
+            raise ValueError("Descriptors are not defined. Load them at initialization or run load_trajectory().")
+        
         features = self.descriptors.filter(regex=regex_filter).columns.values
         config_list = []
         labels = []
+
+        states = dict()
         if states_subset is None:
             states_subset = range(self.n_basins)
+
+        for i in states_subset:
+            if states_names is None:
+                states[i] = i
+            else:
+                states[i] = states_names[i]
+
         for basin in states_subset:
             #select basin
             df = self.descriptors.loc[ (self.basins['basin'] == basin) & (self.basins['selection'] == True)]
@@ -539,24 +548,6 @@ class Loader:
             config_i = df.filter(regex=regex_filter).sample(n=n_configs).values
             config_list.append(config_i)
             labels.extend([basin]*n_configs)
-        labels = np.array(labels, dtype=np.int_)
+        labels = np.array(labels, dtype=int)
         configurations = np.vstack(config_list)
-        return Sample(configurations, features, labels, scale=True)
-
-class Sample:
-    def __init__(self, configurations, features, labels, scale=False):
-        self.unscaled_configurations = configurations
-        self.configurations = configurations
-        self.features = features
-        self.labels = labels
-        if scale:
-            self.scale()
-    def scale(self):
-        self.scaler = StandardScaler(with_mean=True)
-        self.scaler.fit(self.configurations)
-        self.configurations = self.scaler.transform(self.unscaled_configurations)
-    def train_test_dataset(self, **kwargs):
-        return train_test_split(self.configurations, self.labels, **kwargs)
-    @property
-    def dataset(self):
-        return [self.configurations, self.labels]
+        return (configurations, labels), features, states

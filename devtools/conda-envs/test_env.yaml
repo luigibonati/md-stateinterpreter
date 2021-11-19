@@ -2,7 +2,6 @@ name: test
 channels:
 
   - conda-forge
-
   - defaults
 dependencies:
     # Base depends
@@ -17,7 +16,7 @@ dependencies:
   - matplotlib
   - mdtraj
   - nglview
-  - numba
+  - cython
 
     # Testing
   - pytest
@@ -27,3 +26,4 @@ dependencies:
     # Pip-only installs
   - pip:
     - tdqm
+    - group-lasso

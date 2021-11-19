@@ -1,10 +1,17 @@
 import numpy as np
-import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 import concurrent.futures
 from scipy.sparse import csr_matrix
 from scipy.spatial.distance import squareform
-import scipy.sparse.linalg
+from group_lasso import LogisticGroupLasso
+from tqdm import tqdm
+import warnings
+from .plot import plot_regularization_path, plot_groups
+from ._configs import *
+
+__all__ = ["Classifier"]
 
 def quadratic_kernel_featuremap(X):
     n_pts, n_feats = X.shape
@@ -40,193 +47,206 @@ def decode_quadratic_features(idx, features_names):
             s = f"{features_names[i]} || {features_names[j]}"
     return s
 
-class CV_path():
-    def __init__(self, dataset, features, quadratic_kernel=False):
-        self._dset = dataset
-        self._n_samples = dataset[0].shape[0]
-        self._features = features
-        self._quadratic_kernel = quadratic_kernel
-    
-    def compute(self, C_range, l1_ratio=None, multi_class="multinomial", **kwargs):
-        '''If kwargs LASSO is defined use Lasso. Elasticnet otherwise.'''
-        quadratic_kernel = self._quadratic_kernel
-        train_in, val_in, train_out, val_out = self._dset
+class Classifier():
+    def __init__(self, dataset, features_names, classes_names, rescale=True, test_size=0.25):
+        self._X, self._labels = dataset
+        self._rescale = rescale
+        self._test_size = test_size
+
+        if self._rescale:
+            scaler = StandardScaler(with_mean=True)
+            scaler.fit(self._X)
+            self._X = scaler.transform(self._X)
+
+        self._train_in, self._val_in, self._train_out, self._val_out = train_test_split(self._X, self._labels, test_size=self._test_size)
+        
+        self._n_samples = self._train_in.shape[0]
+        self.features = features_names
+        self.classes = classes_names
+        self._computed = False
+
+    def compute(self, reg, max_iter = 100,  quadratic_kernel=False, groups=None):
+        if self._computed:
+            warnings.warn("Warning: deleting old computed data")
+            self._purge()
+        if hasattr(reg, '__iter__') == False:
+            reg = np.array([reg])
+        _num_reg = len(reg)
+        _n_basins = len(np.unique(self._train_out))
+
         if quadratic_kernel:
-            train_in, val_in = quadratic_kernel_featuremap(train_in), quadratic_kernel_featuremap(val_in)
-        _is_lasso = kwargs.get('LASSO', False)
-        try:
-            del kwargs['LASSO']
-        except:
-            pass
-
-        if _is_lasso:
-            penalty = 'l1' 
+            train_in, val_in = quadratic_kernel_featuremap(self._train_in), quadratic_kernel_featuremap(self._val_in)
         else:
-            penalty ='elasticnet'
+            train_in = self._train_in
+            val_in = self._val_in
+        _n_features = train_in.shape[1]
 
-        def _train_model(C):
-            model = LogisticRegression(penalty=penalty, C=C, solver='saga', l1_ratio=l1_ratio, multi_class=multi_class, fit_intercept=False, **kwargs) 
-            #Model Fit
-            model.fit(train_in,train_out)
-            score = model.score(val_in,val_out)
-            return (C, model.coef_,score, model.classes_)
-        
-        path_data = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            fut = [executor.submit(_train_model, C) for C in C_range]
-            for fut_result in concurrent.futures.as_completed(fut):
-                path_data.append(fut_result.result())
-
-        n_features = train_in.shape[1]
-        n_C = C_range.shape[0]
-        n_basins = len(np.unique(train_out))
-
-        C_range, coeffs, crossval, classes_labels = np.empty((n_C,)), np.empty((n_C, n_basins, n_features)), np.empty((n_C,)), np.empty((n_C, n_basins), dtype=np.int_)
-
-        for idx, data in enumerate(path_data):
-            C_range[idx] = data[0]
-            coeffs[idx] = data[1]
-            crossval[idx] = data[2]
-            classes_labels[idx] = data[3].astype(np.int_)
-
-
-        sort_perm = np.argsort(C_range)
-
-        self._C_range = C_range[sort_perm]
-        self._coeffs = coeffs[sort_perm]
-        self._crossval = crossval[sort_perm]
-        self.classes_labels = classes_labels[sort_perm]
-
-        return self._C_range, self._coeffs, self._crossval
-
-    def relevant_features(self, C, normalize_C=True):
-        try:
-            self._coeffs
-            self._C_range
-            self._crossval
-        except NameError:
-            raise ValueError("CV_path not computed.")
-        if normalize_C:
-            C_range = self._C_range*self._n_samples
+        if groups is not None:
+            groups_names, groups = np.unique(groups, return_inverse=True)
+            if quadratic_kernel:
+                assert len(groups) == train_in.shape[1], "Length of group array does not match quadratic features number."
+            else:
+                assert len(groups) == len(self.features), "Length of group array does not match features number."
+            _is_group = True
+            def _train_model(idx):
+                model = LogisticGroupLasso(groups,group_reg = reg[idx], l1_reg=0, n_iter=max_iter, supress_warning=True, scale_reg='none') 
+                #Model Fit
+                model.fit(train_in,self._train_out)
+                score = model.score(val_in,self._val_out)
+                return (idx, model.coef_.T,score, model.classes_)
         else:
-            C_range = self._C_range
+            _is_group = False
+            def _train_model(idx):
+                C = (reg[idx]*self._n_samples)**-1
+                model = LogisticRegression(penalty='l1', C=C, solver='saga', multi_class='ovr', fit_intercept=False, max_iter=max_iter) 
+                #Model Fit
+                model.fit(train_in,self._train_out)
+                score = model.score(val_in,self._val_out)
+                return (idx, model.coef_,score, model.classes_)
 
-        coeffs = self._coeffs
-        features = self._features
+        coeffs =  np.empty((_num_reg, _n_basins, _n_features))
+        crossval = np.empty((_num_reg,))
+        _classes_labels = np.empty((_num_reg, _n_basins), dtype=np.int_)
 
-        C_idx = np.argmin(np.abs(C_range - C))
-        selected_coefficients = coeffs[C_idx]
-
-        features_description = dict()
-        for state_idx, coef in enumerate(selected_coefficients):
-            sparse_coef = csr_matrix(coef)
-            coefs_norm = scipy.sparse.linalg.norm(sparse_coef)**2
-            model_idxs = sparse_coef.indices
-            
-            feat_importance = []
-            feat_names = []
-            feat_val = []
-            for feat_idx in model_idxs:
-                feat_importance.append(np.around(coef[feat_idx]**2/coefs_norm, decimals=3))
-                feat_val.append(coef[feat_idx])
-                if self._quadratic_kernel:
-                    feat_names.append(decode_quadratic_features(feat_idx, features))
-                else:
-                    feat_names.append(features[feat_idx])
-            sortperm = np.argsort(feat_importance)[::-1]
-            data_list = []
-            for perm_idx in sortperm:
-                #Value,name,importance,index
-                data_list.append((feat_val[perm_idx], feat_names[perm_idx], feat_importance[perm_idx], model_idxs[perm_idx]))
-            features_description[self.classes_labels[C_idx, state_idx]] = data_list
-        return features_description
-    
-    def unique_features(self,C):
-        # get unique features
-        relevant_feat = self.relevant_features(C)
-
-        unique_features = set()
-        for state in relevant_feat.values():
-            for feat in state:
-                unique_features.add(feat[1])
-        unique_features = list(unique_features)
-    
-        return unique_features
-
-    def print_relevant_features(self, C, state_names=None, normalize_C=True, file=None):
-        features_description = self.relevant_features(C, normalize_C=normalize_C)
-        n_basins = len(features_description)
-        if not state_names:
-            state_names = [f'State {idx}' for idx in features_description.keys()]
-        
-         # padding
-        print_lists = []
-        for basin_idx in features_description.keys():
-            basin_data = features_description[basin_idx]
-            print_list = []
-            for feat in basin_data:
-                print_list.append([f"{np.around(feat[2]*100, decimals=3)}%", f"{feat[1]}"])
-            print_lists.append(print_list)
-        col_width = max(len(str(row[0])) for row in print_list for print_list in print_lists)
-        for basin_idx, print_list in enumerate(print_lists):
-            print(f"{state_names[basin_idx]}:", file=file)
-            for row in print_list:
-                print(f"\t {row[0].ljust(col_width)} | {row[1]}", file=file)
-    
-    def get_pruned_CVpath(self, C, normalize_C=True):
-        try:
-            self._coeffs
-            self._C_range
-            self._crossval
-        except NameError:
-            raise ValueError("CV_path not computed.")
-
-        assert not self._quadratic_kernel
-        if normalize_C:
-            C_range = self._C_range*self._n_samples
+        if _is_group:
+            _raw_data = []
+            for reg_idx in tqdm(range(len(reg)), desc='Group Lasso'):
+                _raw_data.append(_train_model(reg_idx))
         else:
-            C_range = self._C_range
-        C_idx = np.argmin(np.abs(C_range - C))
-        selected_coefficients = self._coeffs[C_idx]
-        features_mask = prune_idxs(selected_coefficients)
-        pruned_dset = (self._dset[0][:,features_mask],self._dset[1][:,features_mask],self._dset[2],self._dset[3])
-        pruned_features = self._features[features_mask]
-        return CV_path(pruned_dset, pruned_features, quadratic_kernel=True)
-
-def prune_idxs(coeffs):
-    extracted_features_idxs = set()
-    for coef in coeffs:
-        sparse_coef = csr_matrix(coef)
-        model_idxs = sparse_coef.indices
-        for feat_idx in model_idxs:
-            extracted_features_idxs.add(feat_idx)
-    extracted_features_idxs = list(extracted_features_idxs)
-    extracted_features_idxs = np.asarray(extracted_features_idxs, dtype=np.int_)
-    return extracted_features_idxs
-
-def parse_feature_name(name):
-    is_quadratic = (name.find('||') >= 0)
-    is_squared = False
-    if is_quadratic:
-        names = name.split(" || ")
-        if names[0] == names[1]:
-            names = [names[0]]
-            is_squared = True
-    else:
-        names = [name]
-
-    def _is_trig(string, kind):
-        is_trig = False
-        if (string.find(kind) >= 0):
-            is_trig = True
-        return is_trig
-    
-    infos = dict()
-    for feat_name in names:
-        infos[feat_name] = {
-            'sin': _is_trig(feat_name, 'sin_'),
-            'cos': _is_trig(feat_name, 'cos_'),
-            'squared': is_squared
-        }
-    return infos
+            _raw_data = []
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                fut = [executor.submit(_train_model, reg_idx) for reg_idx in range(len(reg))]
+                for fut_result in concurrent.futures.as_completed(fut):
+                    _raw_data.append(fut_result.result())
+                    
+        for _datapoint in _raw_data:
+            if _is_group:
+                idx, coeff, score, _classes = _datapoint
+            else:
+                idx, coeff, score, _classes = _datapoint
+            coeffs[idx] = coeff
+            crossval[idx] = score
+            _classes_labels[idx] = _classes.astype(int)
         
+        self._quadratic_kernel=quadratic_kernel 
+        self._reg = reg
+        self._coeffs = coeffs
+        self._crossval = crossval
+        self._classes_labels = _classes_labels
+        self._groups = groups
+        if _is_group:
+            self._groups_names = groups_names
+            self._groups_mask = [
+                self._groups == u
+                for u in np.unique(self._groups)
+            ]
+        self._computed = True
+    
+    def _purge(self):
+        if __DEV__:
+            print("DEV >>> Purging old data")
+        if self._computed:
+            del self._quadratic_kernel 
+            del self._reg
+            del self._coeffs
+            del self._crossval
+            del self._classes_labels
+            if self._groups is not None:
+                del self._groups_names
+                del self._groups_mask
+            del self._groups
+        self._computed = False
+
+    def _closest_reg_idx(self, reg):
+        assert self._computed, "You have to run Classifier.compute first."
+        return np.argmin(np.abs(self._reg - reg))
+
+    def _get_selected(self, reg, feature_mode=False):        
+        reg_idx = self._closest_reg_idx(reg)
+        coefficients = self._coeffs[reg_idx]
+        _classes = self._classes_labels[reg_idx]
+        selected = dict()
+        group_mode = (not feature_mode) and (self._groups is not None)
+        for idx, coef in enumerate(coefficients):
+            state_name = self.classes[_classes[idx]]
+            if group_mode:
+                coef = np.array([np.linalg.norm(coef[b])**2 for b in self._groups_mask])
+            else:
+                coef = coef**2
+
+            nrm = np.sum(coef)
+            if nrm < __EPS__:
+                selected[state_name] = []
+            else:
+                coef = csr_matrix(coef/nrm)
+                sort_perm = np.argsort(coef.data)[::-1]
+                names = []
+                for idx in coef.indices:
+                    if group_mode:
+                        names.append(self._groups_names[idx])
+                    else: 
+                        if self._quadratic_kernel:
+                            names.append(decode_quadratic_features(idx, self.features))
+                        else:
+                            names.append(self.features[idx])
+                #idx, weight, name
+                names = np.array(names)
+                selected[state_name]= list(zip(coef.indices[sort_perm], coef.data[sort_perm], names[sort_perm]))
+        return selected
+    
+    def feature_summary(self, reg):
+        return self._get_selected(reg, feature_mode=True)
+
+    def print_selected(self, reg):
+        selected = self._get_selected(reg)
+
+        print_queue = dict()
+        for state in selected.keys():
+            _intra_state_queue = []
+            for data in selected[state]:
+                _intra_state_queue.append([f"{np.around(data[1]*100, decimals=3)}%", f"{data[2]}"])
+            print_queue[state] = _intra_state_queue
+        
+        col_width = 0
+        for _intra_state_queue in print_queue.values():
+            for _row in _intra_state_queue:
+                if len(str(_row[0])) > col_width:
+                    col_width = len(str(_row[0]))
+        
+        for state in print_queue.keys():
+            state_name = 'State ' +  f'{state}' + ':'
+            print(state_name)
+            for row in print_queue[state]:
+                print(f"\t {row[0].ljust(col_width)} | {row[1]}")
+
+    def prune(self, reg, overwrite=True):    
+        selected = self._get_selected(reg)
+        if self._quadratic_kernel:
+            AttributeError("Pruning is not possible on classifiers trained with quadratic kernels.")
+        unique_idxs = set()
+        for state in selected.values():
+            for data in state:
+                unique_idxs.add(data[0])
+        if self._groups is not None:
+            mask = np.logical_or.reduce([self._groups_mask[idx] for idx in unique_idxs])
+        else:
+            mask = np.array([False]*len(self.features))
+            for idx in unique_idxs:
+                mask[idx] = True
+        
+        if overwrite:
+            self._train_in = self._train_in[:, mask]
+            self._val_in = self._val_in[:, mask]
+            self._X = self._X[:, mask]
+            self.features = self.features[mask]
+            self._purge()
+        else:
+            X = self._X[:, mask]
+            dset = (X, self._labels)
+            pruned_features = self.features[mask]
+            return Classifier(dset, pruned_features, self._classes_names, self._rescale, self._test_size)
+
+    def plot(self, reg):
+        return plot_regularization_path(self, reg)
+    def plot_groups(self):
+        return plot_groups(self)
