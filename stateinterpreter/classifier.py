@@ -214,7 +214,7 @@ class Classifier():
                     col_width = len(str(_row[0]))
         
         for state in print_queue.keys():
-            state_name = 'State ' +  state + ':'
+            state_name = 'State ' +  f'{state}' + ':'
             print(state_name)
             for row in print_queue[state]:
                 print(f"\t {row[0].ljust(col_width)} | {row[1]}")
