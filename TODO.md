@@ -1,5 +1,39 @@
 # TODO list
 
+## Ristrutturazione delle fondamenta
+
+* [ ] MD
+  1. [ ] Calcolo descrittori ( traj ) --> ( df[features], dict[residue,atom_ids, group] )
+  2. [ ] Identify_states (colvar) --> df[basins,selection]
+  3. [ ] Assert lenghts 
+  4. [ ] Sample (1,2, chiamando 3) --> subsample
+
+## Code
+
+* [ ] [LUIGI] plot_relevant_features not working
+* [ ] [LUIGI] plot_residues given score
+* [ ] [PIETRO] classifier.plot group mode (accuracy and number of unique feats)
+* [ ] [PIETRO] warm start for classifier
+* [ ] [PIETRO] define groups based on:
+* [ ] classifier.prune overwrite=False by default
+  1. [ ] angles (ok)
+  2. [ ] distances N*(N-1)/2 groups  
+* [ ] sparse group lasso?
+* [ ] expose classifier for out-of-sample prediction ( PLUMED interface? )
+* [ ] [LUIGI] export relevant features in VMD-like style
+* [ ] [LUIGI?] rewrite plot functions based on residue num and atom indices
+* [ ] [PIETRO] add quadratic features to data / df ?  
+
+## Tutorials
+
+
+## Paper
+* [ ] SCRIVEREEEEEEEEEEEEEEEEEEEEEEEEEE!
+
+
+# Deprecated
+
+
 ## Model
 
 MD.py
@@ -11,7 +45,7 @@ MD.py
 * [X] function to load features from file rather than computing them
 * [X] sort minima based on CV values
 * [X] compute descriptors within load traj (add keyword for list subset)
-* [ ] Add multiple walkers option to load multiple colvar and traj files
+* [X] Add multiple walkers option to load multiple colvar and traj files
 
 FES
 * [x] extend compute FES function to allow weighted data
