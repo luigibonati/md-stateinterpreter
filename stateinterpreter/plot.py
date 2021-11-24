@@ -146,7 +146,6 @@ def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, sa
     plt.tight_layout()
     return fig, axs
 
-
 def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, save_folder=None,file_prefix='linear'):
     
     added_columns = False
@@ -233,7 +232,7 @@ def visualize_features(data,relevant_features,state=0,n_feat_per_state=3):
     features = relevant_features[state]
     for i, feature in enumerate(features):
         if i < n_feat_per_state:
-            name = feature[1]
+            name = feature[2]
             atom_ids.append( data.descriptors_ids[name] )
 
     # set up visualization
@@ -305,7 +304,7 @@ def visualize_residues(data, residue_score, representation = 'licorice', palette
 
     # convert to int
    
-
+   
     # initialize set color by residue
     def _set_color_by_residue(self, colors, component_index=0, repr_index=0):
             self._remote_call('setColorByResidue',
