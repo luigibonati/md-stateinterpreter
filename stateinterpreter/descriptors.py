@@ -7,6 +7,7 @@ from warnings import warn
 
 from .io import load_dataframe
 from ._configs import *
+from ._compiled_numerics import contact_function
 
 
 
@@ -69,25 +70,43 @@ def _compute_descriptors(traj, descriptors):
     """
 
     descr_list = []
-
+    #Cache dists for performance
+    _cached_dists = False
+    if ('hbonds_distances' in descriptors) and ('hbonds_contacts' in descriptors):
+        _cached_dists = True
+        dist_idx = descriptors.index('hbonds_distances')
+        cont_idx = descriptors.index('hbonds_contacts')
+        #swap elements so that hb_distances are calculated first and then cached
+        if cont_idx < dist_idx:
+            get = descriptors[cont_idx], descriptors[dist_idx]        
+            descriptors[dist_idx], descriptors[cont_idx] = get
+    _raw_data = []
+    _feats = []
+    _feats_info = {}
     for d in descriptors:
         if d == 'ca':
-            descr_list.append(_CA_DISTANCES(traj))
+            res, names, descriptors_ids = _CA_DISTANCES(traj)
         elif d == 'dihedrals':
             for angle in ['phi', 'psi', 'chi1', 'chi2']:
-                descr_list.append(_DIHEDRALS(traj, kind=angle, sincos=True))
+                res, names, descriptors_ids = _DIHEDRALS(traj, kind=angle, sincos=True)
         elif d == 'hbonds_distances':
-            descr_list.append(_HYDROGEN_BONDS(traj, 'distances'))
+            res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'distances')
+            if _cached_dists:
+                _dsts = np.copy(res)
         elif d == 'hbonds_contacts':
-            descr_list.append(_HYDROGEN_BONDS(traj, 'contacts'))
+            if _cached_dists:
+                res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'contacts', _cached_dists=_dsts)
+            else:
+                res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'contacts')
         else:
             raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds' are allowed.")
-    
-    #descriptors = pd.concat(descr_list, axis=1)
+        _raw_data.append(res)
+        _feats.extend(names)
+        _feats_info.update(descriptors_ids)
+    df = pd.DataFrame(np.hstack(_raw_data), columns=_feats)    
     if __DEV__:
-        #print(f"Descriptors: {descriptors.shape}")
-        pass
-    return descr_list  
+        print(f"Descriptors: {df.shape}")
+    return df, _feats_info  
 
 # DESCRIPTORS COMPUTATION
 def _CA_DISTANCES(traj):
@@ -112,7 +131,7 @@ def _CA_DISTANCES(traj):
         descriptors_ids[label(i, j)] = [i,j]
     return dist, names, descriptors_ids
 
-def _HYDROGEN_BONDS(traj, kind):
+def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
     # H-BONDS DISTANCES / CONTACTS (donor-acceptor)
     # find donors (OH or NH)
     if __DEV__:
@@ -145,10 +164,13 @@ def _HYDROGEN_BONDS(traj, kind):
     ]
     # remove duplicates
     pairs = sorted(list(set(pairs)))
-
     
     # compute distances
-    dist = md.compute_distances(traj, pairs)
+    if _cached_dists is None:
+        dist = md.compute_distances(traj, pairs)
+    else:
+        dist = _cached_dists
+
     if kind == 'distances':
         descriptors_ids = {}
         # labels
@@ -167,9 +189,6 @@ def _HYDROGEN_BONDS(traj, kind):
         return dist, names, descriptors_ids
     elif kind == 'contacts':
         descriptors_ids = {}
-        def contact_function(x, r0=1.0, d0=0, n=6, m=12):
-            # (see formula for RATIONAL) https://www.plumed.org/doc-v2.6/user-doc/html/switchingfunction.html
-            return (1 - np.power(((x - d0) / r0), n)) / (1 - np.power(((x - d0) / r0), m)) 
         # Compute contacts
         contacts = contact_function(dist, r0=0.35, d0=0, n=6, m=12)
         # labels
@@ -205,6 +224,9 @@ def _DIHEDRALS(traj, kind, sincos=True):
         raise KeyError(f'kind="{kind}" not allowed. Supported values: "phi", "psi", "chi1", "chi2"')
 
     names = []
+    if sincos:
+        sin_names = []
+        cos_names = []
     descriptors_ids = {}
     for i, idx in enumerate(dih_idxs):
         # find residue id from topology table
@@ -218,14 +240,17 @@ def _DIHEDRALS(traj, kind, sincos=True):
         descriptors_ids[name] = list(idx)
         if sincos:
             for trig_transform in (np.sin, np.cos):
+                _trans_name = trig_transform.__name__ + "_"
                 # names.append('cos_(sin_)'+kind+'-'+str(res))
-                name = "BACKBONE " + trig_transform.__name__ + "_" + kind + " " + res
+                name = "BACKBONE " + _trans_name + kind + " " + res
                 if "chi" in kind:
-                    name = "SIDECHAIN " + "cos_" + kind + " " + res
-                names.append(name)
+                    name = "SIDECHAIN " + _trans_name + kind + " " + res
+                #Dirty trick
+                eval(_trans_name + "names.append(name)")
                 descriptors_ids[name] = list(idx) 
     if sincos:
         angles = np.hstack([angles, np.sin(angles), np.cos(angles)])
+        names = names + sin_names + cos_names
     return angles, names, descriptors_ids
 
 def load_descriptors(descriptors, start = 0, stop = None, stride = 1, **kwargs):

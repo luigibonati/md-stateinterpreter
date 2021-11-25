@@ -5,6 +5,7 @@ import matplotlib.cm as cm
 from itertools import combinations
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import MaxNLocator
+from scipy.spatial import ConvexHull
 import nglview
 import sys
 from ._configs import *
@@ -85,25 +86,27 @@ def plot_groups(classifier):
     ax1.set_xmargin(0)
     return fig, (ax1, ax2)
 
-def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, save_folder=None):
-    basins = data.basins['basin'].unique()
-    n_basins = data.n_basins
+def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, save_folder=None):
+    states = state_labels['labels'].unique()
+    n_states = len(states)
 
     # hexbin plot of tica components 
-    idxs_pairs = [p for p in combinations(np.arange(len(data.selected_cvs)), 2)]
+    idxs_pairs = [p for p in combinations(np.arange(len(selected_cvs)), 2)]
     n_pairs = len(idxs_pairs)
 
     fig, axs = plt.subplots(1,n_pairs,figsize=(4.8*n_pairs,4), dpi=100)
 
     for k, (x_idx,y_idx) in enumerate(idxs_pairs):
-        label_x = data.selected_cvs[x_idx]
-        label_y = data.selected_cvs[y_idx]
+        label_x = selected_cvs[x_idx]
+        label_y = selected_cvs[y_idx]
         # select ax
         ax = axs[k] if n_pairs > 1 else axs
 
         # FES isolines (if 2D)
-        if fes_isolines: 
-            if len(data.selected_cvs) == 2:
+        if fes_isolines:
+            raise NotImplementedError('Isolines not implemented.')
+            '''
+            if len(selected_cvs) == 2:
                 cmap = matplotlib.cm.get_cmap('Greys_r', n_iso_fes)
                 color_list = [cmap((i+1)/(n_iso_fes+3)) for i in range(n_iso_fes)]
                 num_samples = 100
@@ -116,17 +119,18 @@ def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, sa
                 ax.clabel(CS, CS.levels[::ev_iso_labels], fmt = lambda x: str(int(x))+ r'$k_{{\rm B}}T$', inline=True, fontsize=10)
             else:
                 raise NotImplementedError('Isolines are implemented only for 2D FES.')
+            ''' 
 
         # Hexbin plot
-        x = data.colvar[label_x]
-        y = data.colvar[label_y]
-        z = data.basins['basin']
-        sel = data.basins['selection']
+        x = colvar[label_x]
+        y = colvar[label_y]
+        z = state_labels['labels']
+        sel = state_labels['selection']
         not_sel = np.logical_not(sel)
 
         cmap_name = 'Set2'
-        cmap = matplotlib.cm.get_cmap(cmap_name, n_basins)
-        color_list = [cmap(i/(n_basins)) for i in range(n_basins)] 
+        cmap = matplotlib.cm.get_cmap(cmap_name, n_states)
+        color_list = [cmap(i/(n_states)) for i in range(n_states)] 
       
         ax.hexbin(x[not_sel],y[not_sel],C=z[not_sel],cmap=cmap_name,alpha=0.3)
         ax.hexbin(x[sel],y[sel],C=z[sel],cmap=cmap_name)
@@ -136,8 +140,10 @@ def plot_states(data, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, sa
         ax.set_ylabel(label_y)
     
         #Add basins labels
-        for b in basins:
-            mx,my = data.minima[b][x_idx], data.minima[b][y_idx]
+        for b in states:
+            mask = np.logical_and(sel, z == b)
+            #If weighted not ok but functional
+            mx,my = np.mean(x[mask]), np.mean(y[mask])
             ax.scatter(mx,my,color='w',s=300,alpha=0.7)
             _ = ax.text(mx, my, b, ha="center", va="center", color='k', fontsize='large')
 

@@ -2,6 +2,7 @@
 
 # Add imports here
 from .descriptors import *
+from .metastable import *
 from .classifier import *
 from .io import *
 

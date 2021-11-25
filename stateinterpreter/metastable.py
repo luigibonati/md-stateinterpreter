@@ -81,10 +81,10 @@ def identify_metastable_states(
         # Assign basins and select based on FES cutoff
         basins = _basin_selection(KDE, minima, fes_cutoff)
 
-        n_basins = len(basins['basin'].unique())
+        n_basins = len(basins['labels'].unique())
         print(f"Found {n_basins} local minima with selected populations:")
         for idx in range(n_basins):
-            l = len(basins.loc[ (basins['basin'] == idx) & (basins['selection'] == True)])
+            l = len(basins.loc[ (basins['labels'] == idx) & (basins['selection'] == True)])
             print(f"\tBasin {idx} -> {l} configurations.")
         return basins
 
@@ -94,7 +94,7 @@ def _basin_selection(
     if __DEV__:
         print("DEV >>> Basin Assignment")
     norms = np.linalg.norm((KDE.dataset[:,np.newaxis,:] - minima), axis=2)
-    classes = np.argmin(norms, axis=1, dtype=int)
+    classes = np.argmin(norms, axis=1)
     fes_at_minima = - KDE.logpdf(minima)
     ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])
     fes_pts = - KDE.logpdf(KDE.dataset)
