@@ -8,6 +8,7 @@ on:
     branches:
       - "master"
       - "main"
+      - "devel"
   pull_request:
     branches:
       - "master"
@@ -25,7 +26,7 @@ jobs:
     strategy:
       matrix:
         #os: [macOS-latest, ubuntu-latest, windows-latest]
-        os: [ubuntu-latest]
+        os: [macOS-latest, ubuntu-latest]
         python-version: [3.7, 3.8, 3.9]
 
     steps:
@@ -56,7 +57,7 @@ jobs:
       shell: bash -l {0}
       run: |
         if [ "$RUNNER_OS" == "macOS" ]; then
-              brew install llvm libomp
+              brew install libomp
               export CPP=/usr/local/opt/llvm/bin/clang;
         else
               echo "$RUNNER_OS not supported"
