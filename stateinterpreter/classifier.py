@@ -7,7 +7,7 @@ from scipy.spatial.distance import squareform
 from group_lasso import LogisticGroupLasso
 from tqdm import tqdm
 import warnings
-from .plot import plot_regularization_path, plot_groups
+from .plot import plot_regularization_path, plot_classifier_complexity_vs_accuracy
 from ._configs import *
 
 __all__ = ["Classifier"]
@@ -192,12 +192,12 @@ class Classifier():
             for _row in _intra_state_queue:
                 if len(str(_row[0])) > col_width:
                     col_width = len(str(_row[0]))
-        
+        print(f"Accuracy: {int(self._crossval[self._closest_reg_idx(reg)]*100)}%")
         for state in print_queue.keys():
             state_name = 'State ' +  f'{state}' + ':'
             print(state_name)
             for row in print_queue[state]:
-                print(f"\t {row[0].ljust(col_width)} | {row[1]}")
+                print(f"[{row[0].ljust(col_width)}]  {row[1]}")
 
     def prune(self, reg, overwrite=False):    
         selected = self._get_selected(reg)
@@ -226,7 +226,11 @@ class Classifier():
             pruned_features = self.features[mask]
             return Classifier(dset, pruned_features, self.classes, self._rescale, self._test_size)
 
-    def plot(self, reg):
+    def plot_regularization_path(self, reg):
         return plot_regularization_path(self, reg)
-    def plot_groups(self):
-        return plot_groups(self)
+
+    def plot(self):
+        return plot_classifier_complexity_vs_accuracy(self)
+    
+    def save(self, filename):
+        pass

@@ -5,7 +5,6 @@ import matplotlib.cm as cm
 from itertools import combinations
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import MaxNLocator
-from scipy.spatial import ConvexHull
 import nglview
 import sys
 from ._configs import *
@@ -18,7 +17,7 @@ if __useTeX__:
         "font.serif": ["Computer Modern Roman"]
     })
 
-__all__ = ["plot_states", "plot_cvpath", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features", "visualize_features", "visualize_residues"]
+__all__ = ["plot_states", "plot_regularization_path", "plot_classifier_complexity_vs_accuracy", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features", "visualize_features", "visualize_residues"]
 
 # aux function to compute basins mean
 def compute_basin_mean(df, basin, label_x, label_y):
@@ -61,28 +60,28 @@ def plot_regularization_path(classifier, reg):
     ax.set_title(r"Accuracy")
     return fig, axes
 
-def plot_groups(classifier):
+def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False):
     assert classifier._computed, "You have to run Classifier.compute first."
-    assert classifier._groups is not None, "You have to run Classifier.compute with valid group argument."
     num_groups = []
     for reg in classifier._reg:
-        selected = classifier._get_selected(reg)
+        selected = classifier._get_selected(reg, feature_mode=feature_mode)
         unique_idxs = set()
         for state in selected.values():
             for data in state:
                 unique_idxs.add(data[0])
-        num_groups.append(len(unique_idxs))
+        num_groups.append(len(unique_idxs)) 
     
     fig, ax1 = plt.subplots(figsize=(3,2))
     ax2 = ax1.twinx()
-    ax2.grid()
+    ax2.grid(alpha=0.3)
     ax2.plot(np.log10(classifier._reg), num_groups, '-', color='steelblue')
     ax1.plot(np.log10(classifier._reg), classifier._crossval, '-', color='tomato')
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True))
     ax1.set_xlabel(r"$\log_{10}(\lambda)$")
     ax1.set_ylabel('Accuracy', color='r')
     ax1.set_ylim(0,1.1)
-    ax2.set_ylabel('Number of Groups', color='b')
+    desc = "Groups" if classifier._groups is not None else "Features"
+    ax2.set_ylabel(f'Number of {desc}', color='b')
     ax1.set_xmargin(0)
     return fig, (ax1, ax2)
 

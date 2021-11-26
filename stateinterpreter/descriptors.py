@@ -11,7 +11,7 @@ from ._compiled_numerics import contact_function
 
 
 
-__all__ = ["descriptors_from_traj"]
+__all__ = ["descriptors_from_traj", "sample"]
 
 
 def descriptors_from_traj(traj_dict, descriptors = ['ca', 'dihedrals', 'hbonds_distances', 'hbonds_contacts'], start=0, stop=None, stride=1):
@@ -89,6 +89,9 @@ def _compute_descriptors(traj, descriptors):
         elif d == 'dihedrals':
             for angle in ['phi', 'psi', 'chi1', 'chi2']:
                 res, names, descriptors_ids = _DIHEDRALS(traj, kind=angle, sincos=True)
+                _raw_data.append(res)
+                _feats.extend(names)
+                _feats_info.update(descriptors_ids)
         elif d == 'hbonds_distances':
             res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'distances')
             if _cached_dists:
@@ -100,9 +103,11 @@ def _compute_descriptors(traj, descriptors):
                 res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'contacts')
         else:
             raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds' are allowed.")
-        _raw_data.append(res)
-        _feats.extend(names)
-        _feats_info.update(descriptors_ids)
+        
+        if d != 'dihedrals': #(Done previously)
+            _raw_data.append(res)
+            _feats.extend(names)
+            _feats_info.update(descriptors_ids)
     df = pd.DataFrame(np.hstack(_raw_data), columns=_feats)    
     if __DEV__:
         print(f"Descriptors: {df.shape}")
@@ -113,6 +118,7 @@ def _CA_DISTANCES(traj):
     descriptors_ids = {}
     if __DEV__:
         print(f"Computing CA distances")
+    table, _ = traj.top.to_dataframe()
     sel = traj.top.select("name CA")
 
     pairs = [(i, j) for i, j in itertools.combinations(sel, 2)]
@@ -128,7 +134,13 @@ def _CA_DISTANCES(traj):
 
     names = [label(i, j) for (i, j) in pairs]
     for (i,j) in pairs:
-        descriptors_ids[label(i, j)] = [i,j]
+        res_i = table["resName"][i] + table["resSeq"][i].astype("str")
+        res_j = table["resName"][j] + table["resSeq"][j].astype("str")
+        info = {
+            'atoms': [i,j],
+            'group': res_i + "_" + res_j
+        }
+        descriptors_ids[label(i, j)] = info
     return dist, names, descriptors_ids
 
 def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
@@ -137,6 +149,7 @@ def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
     if __DEV__:
         print(f"Computing Hydrogen bonds {kind}")
 
+    table, _ = traj.top.to_dataframe()
     donors = [
         at_i.index
         for at_i, at_j in traj.top.bonds
@@ -185,7 +198,13 @@ def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
         # names = [ basename+str(x)+'-'+str(y) for x,y in  pairs]
         names = [label(x, y) for x, y in pairs]
         for (x,y) in pairs:
-            descriptors_ids[label(x,y)] = [x,y]   
+            res_x = table["resName"][x] + table["resSeq"][x].astype("str")
+            res_y = table["resName"][y] + table["resSeq"][y].astype("str")
+            info = {
+                'atoms': [x,y],
+                'group': res_x + "_" + res_y
+            }
+            descriptors_ids[label(x,y)] = info   
         return dist, names, descriptors_ids
     elif kind == 'contacts':
         descriptors_ids = {}
@@ -202,7 +221,13 @@ def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
         )
         names = [label(x, y) for x, y in pairs]
         for (x,y) in pairs:
-            descriptors_ids[label(x,y)] = [x,y]
+            res_x = table["resName"][x] + table["resSeq"][x].astype("str")
+            res_y = table["resName"][y] + table["resSeq"][y].astype("str")
+            info = {
+                'atoms': [x,y],
+                'group': res_x + "_" + res_y
+            }
+            descriptors_ids[label(x,y)] = info  
 
         return contacts, names, descriptors_ids
     else:
@@ -237,7 +262,11 @@ def _DIHEDRALS(traj, kind, sincos=True):
         if "chi" in kind:
             name = "SIDECHAIN " + kind + " " + res
         names.append(name)
-        descriptors_ids[name] = list(idx)
+        info = {
+                'atoms': list(idx),
+                'group': res
+            }
+        descriptors_ids[name] = info  
         if sincos:
             for trig_transform in (np.sin, np.cos):
                 _trans_name = trig_transform.__name__ + "_"
@@ -247,7 +276,7 @@ def _DIHEDRALS(traj, kind, sincos=True):
                     name = "SIDECHAIN " + _trans_name + kind + " " + res
                 #Dirty trick
                 eval(_trans_name + "names.append(name)")
-                descriptors_ids[name] = list(idx) 
+                descriptors_ids[name] = info
     if sincos:
         angles = np.hstack([angles, np.sin(angles), np.cos(angles)])
         names = names + sin_names + cos_names

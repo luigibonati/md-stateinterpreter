@@ -4,71 +4,38 @@ Unit and regression test for the MD module.
 
 # Import package, test suite, and other packages as needed
 import pytest
-from stateinterpreter import MetastableStates
-from stateinterpreter.io import load_dataframe
+from stateinterpreter import Classifier, identify_metastable_states, load_dataframe, descriptors_from_traj, sample
 
-def test_load_colvar():
-    """Test loader initialization w/only collective variables"""
-
+@pytest.mark.parametrize("n_cvs", [1,2])
+@pytest.mark.parametrize("sort_minima_by", ['energy','cvs','cvs_grid'])
+@pytest.mark.parametrize("sampling_scheme", ['data_driven','uniform'])
+def test_chignolin_pipeline(sort_minima_by,n_cvs, sampling_scheme):
+    """Identify metastable states based on FES, clustering with differen no. of CVs"""
+    stride = 20
     folder = 'stateinterpreter/data/test-chignolin/'
     colvar_file = folder + 'COLVAR'
-
-    #load COLVAR from file
-    data = MetastableStates(colvar_file, kbt=2.8, stride=20)
-
-    #set COLVAR from dataframe
-    colvar_df = load_dataframe(colvar_file)
-    data2 = MetastableStates(colvar_df, kbt=2.8, stride=20)
-
-def test_compute_descriptors():
-    """Load compute descriptors"""
     
-    folder = 'stateinterpreter/data/test-chignolin/'
-    colvar_file = folder + 'COLVAR'
+    colvar = load_dataframe(colvar_file, stride=stride)
+
+    descr_file = folder + "DESCRIPTORS.csv"
+
     traj_dict = {
         'trajectory' : folder+'traj.dcd',
         'topology' : folder+'topology.pdb'
     }
 
-    # Compute descriptors from traj
-    data = MetastableStates(colvar_file, kbt=2.8, stride=20)
-    data.load_trajectory(traj_dict)
-
-    # Load descriptors from file
-    descr_file = folder+"DESCRIPTORS.csv"
-    #data.descriptors.to_csv(descr_file,index=False) #to create example, set stride to 1 above
-    data2 = MetastableStates(colvar_file, descr_file, kbt=2.8, stride=20)
-
-    assert data.descriptors.shape == data2.descriptors.shape
-
-@pytest.mark.parametrize("n_cvs", [1,2])
-@pytest.mark.parametrize("sort_minima_by", ['energy','cvs','cvs_grid'])
-@pytest.mark.parametrize("sampling_scheme", ['data_driven','uniform'])
-def test_identify_states_optimizer(sort_minima_by,n_cvs, sampling_scheme):
-    """Identify metastable states based on FES, clustering with differen no. of CVs"""
-
-    folder = 'stateinterpreter/data/test-chignolin/'
-    colvar_file = folder + 'COLVAR'
-    descr_file = folder + "DESCRIPTORS.csv"
-
+    descriptors, _ = descriptors_from_traj(traj_dict, stride= stride)
+    descriptors_loaded = load_dataframe(descr_file, stride = stride)
+    assert descriptors.shape == descriptors_loaded.shape
+    
     cvs_list = ['deep.node-4','deep.node-3','deep.node-2']
     selected_cvs = cvs_list[:n_cvs]
     print('cvs: '+" - ".join(selected_cvs))
-
-    data = MetastableStates(colvar_file, descr_file, kbt=2.8, stride=1)
     optimizer_kwargs = {
         'sampling': sampling_scheme
     }
-
-    data.identify_metastable_states(selected_cvs, optimizer_kwargs = optimizer_kwargs, sort_minima_by=sort_minima_by)
-    df = data.collect_data()
-
-    assert data.n_basins == 2 if n_cvs == 1 else 4
-    assert df.shape == (1050,794)
-    assert df.isnull().values.any() == False
+    kBT = 2.8
+    states_labels = identify_metastable_states(colvar, selected_cvs, kBT, optimizer_kwargs = optimizer_kwargs, sort_minima_by=sort_minima_by)
 
 if __name__ == "__main__":
-    print('>>>>> test_gaussian_kde')
-    test_load_colvar()
-    test_compute_descriptors()
-    test_identify_states_optimizer()
+    test_chignolin_pipeline()
