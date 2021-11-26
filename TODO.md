@@ -10,21 +10,21 @@
 
 ## Code
 
+* [X] [LUIGI] rewrite visualize functions based on residue num and atom indices
 * [X] [LUIGI] plot_relevant_features not working
-* [ ] [LUIGI] plot_residues given score
+* [X] [LUIGI] plot_residues given score
 * [x] [PIETRO] classifier.plot group mode (accuracy and number of unique feats)
 * [x] [PIETRO] warm start for classifier
 * [x] [PIETRO] define groups based on:
 * [x] classifier.prune overwrite=False by default
   1. [x] angles (ok)
   2. [x] distances N*(N-1)/2 groups  
-* [ ] sparse group lasso?
-* [ ] expose classifier for out-of-sample prediction ( PLUMED interface? )
-* [ ] [LUIGI] export relevant features in VMD-like style
-* [ ] [LUIGI?] rewrite plot functions based on residue num and atom indices
+* [ ] [PIETRO] sparse group lasso?
+* [ ] [PIETRO] expose classifier for out-of-sample prediction
+* [ ] [LUIGI] export relevant features in VMD-like styl
 * [ ] [PIETRO] add quadratic features to data / df ?  
-* [ ] isolines in plot_states
-* [ ] fix sort_minima_by in metastable_states ?
+* [ ] [LUIGI/PIETRO] fix isolines in plot_states
+* [ ] [LUIGI] fix sort_minima_by in metastable_states ?
 * [ ] 
 
 ## Tutorials
