@@ -304,11 +304,11 @@ def sample(descriptors, states_labels, n_configs, regex_filter = '.*', states_su
     if states_subset is None:
         states_subset = range(len(states_labels['labels'].unique()))
 
-    for i in states_subset:
+    for idx, i in enumerate(states_subset):
         if states_names is None:
             states[i] = i
         else:
-            states[i] = states_names[i]
+            states[i] = states_names[idx]
 
     for label in states_subset:
         #select label
