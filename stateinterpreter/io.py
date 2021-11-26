@@ -1,6 +1,7 @@
 import pandas as pd
+import mdtraj as md
 
-__all__ = ["load_dataframe", "plumed_to_pandas"]
+__all__ = ["load_dataframe", "load_trajectory", "plumed_to_pandas"]
 
 def is_plumed_file(filename):
     """
@@ -124,3 +125,36 @@ def load_dataframe(data, start = 0, stop = None, stride = 1, **kwargs):
         raise TypeError(f"{data}: Accepted types are 'pandas.Dataframe', 'str', or list")
 
     return df
+
+
+def load_trajectory(traj_dict, start=0, stop=None, stride=1):
+    """Load trajectory with mdtraj.
+
+    Parameters
+    ----------
+    traj_dict : dict
+        dictionary containing trajectory and topology (optional) file
+    """
+
+    traj_file = traj_dict["trajectory"]
+    topo_file = traj_dict["topology"] if "topology" in traj_dict else None
+
+    if type(traj_file) == list:
+        traj_list = []
+        for traj in traj_file:
+            tmp_traj = md.load(traj, top=topo_file, stride=stride)
+            if stop is not None:
+                tmp_traj = tmp_traj[int(start/stride) : int(stop/stride)]
+            else: 
+                tmp_traj = tmp_traj[int(start/stride) : ]
+            traj_list.append(tmp_traj)
+            
+        traj = md.join(traj_list)
+    else:
+        traj = md.load(traj_file, top=topo_file, stride=stride)
+        if stop is not None:
+            traj = traj[int(start/stride) : int(stop/stride)]
+        else: 
+            traj = traj[int(start/stride) : ]
+        
+    return traj
