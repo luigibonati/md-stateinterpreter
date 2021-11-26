@@ -5,17 +5,14 @@ import mdtraj as md
 import itertools
 from warnings import warn
 
-from .io import load_dataframe
+from .io import load_dataframe, load_trajectory
 from ._configs import *
 from ._compiled_numerics import contact_function
 
-
-
 __all__ = ["descriptors_from_traj", "sample"]
 
-
 def descriptors_from_traj(traj_dict, descriptors = ['ca', 'dihedrals', 'hbonds_distances', 'hbonds_contacts'], start=0, stop=None, stride=1):
-    """ "Load trajectory with mdtraj.
+    """ Load trajectory with mdtraj.
 
     Parameters
     ----------
@@ -26,29 +23,9 @@ def descriptors_from_traj(traj_dict, descriptors = ['ca', 'dihedrals', 'hbonds_d
         if False no descriptor is computed.
 
     """
-    traj_file = traj_dict["trajectory"]
-    topo_file = traj_dict["topology"] if "topology" in traj_dict else None
-
-    if type(traj_file) == list:
-        traj_list = []
-        for traj in traj_file:
-            tmp_traj = md.load(traj, top=topo_file, stride=stride)
-            if stop is not None:
-                tmp_traj = tmp_traj[int(start/stride) : int(stop/stride)]
-            else: 
-                tmp_traj = tmp_traj[int(start/stride) : ]
-            traj_list.append(tmp_traj)
-            
-        traj = md.join(traj_list)
-    else:
-        traj = md.load(traj_file, top=topo_file, stride=stride)
-        if stop is not None:
-            traj = traj[int(start/stride) : int(stop/stride)]
-        else: 
-            traj = traj[int(start/stride) : ]
-
+    traj = load_trajectory(traj_dict,start,stop,stride)
+    
     return _compute_descriptors(traj, descriptors)
-
 
 def _compute_descriptors(traj, descriptors):
 
