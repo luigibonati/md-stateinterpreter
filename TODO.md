@@ -10,7 +10,7 @@
 
 ## Code
 
-* [ ] [LUIGI] plot_relevant_features not working
+* [X] [LUIGI] plot_relevant_features not working
 * [ ] [LUIGI] plot_residues given score
 * [x] [PIETRO] classifier.plot group mode (accuracy and number of unique feats)
 * [x] [PIETRO] warm start for classifier
@@ -23,6 +23,9 @@
 * [ ] [LUIGI] export relevant features in VMD-like style
 * [ ] [LUIGI?] rewrite plot functions based on residue num and atom indices
 * [ ] [PIETRO] add quadratic features to data / df ?  
+* [ ] isolines in plot_states
+* [ ] fix sort_minima_by in metastable_states ?
+* [ ] 
 
 ## Tutorials
 
