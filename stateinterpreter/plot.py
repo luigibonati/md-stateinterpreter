@@ -151,28 +151,32 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
     plt.tight_layout()
     return fig, axs
 
-def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, save_folder=None,file_prefix='linear'):
+def plot_combination_states_relevant_features(colvar, descriptors, selected_cvs, relevant_features, state_labels = None, save_folder=None, file_prefix='linear'):
     
+    if len(selected_cvs) < 2: 
+        raise NotImplementedError('This plot is available only when selecting 2 or more CVs.')
+
     added_columns = False
     #Handle quadratic kernels
-    for _state in relevant_features:
+    for _state in relevant_features.values():
         for _feat_tuple in _state:
             feature = _feat_tuple[2]
             if "||" in feature:
-                if feature not in df.columns:
+                if feature not in descriptors.columns:
                     added_columns = True
                     i, j = feature.split(' || ')
-                    feat_ij = df[i].values * df[j].values
-                    df[feature] = feat_ij
+                    feat_ij = descriptors[i].values * descriptors[j].values
+                    descriptors[feature] = feat_ij
     if added_columns:
         print("Warning: detected quadratic kenel features, added quadratic features to the input dataframe", file=sys.stderr)
 
     pairs = combinations(selected_cvs, 2)
     n_pairs = sum(1 for _ in pairs)
 
-    for k,(cv_x,cv_y) in  enumerate(combinations(selected_cvs, 2)):
-
-        plot_cvs_relevant_features(df, cv_x, cv_y, relevant_features, max_nfeat = 3)
+    for k,(label_x,label_y) in  enumerate(combinations(selected_cvs, 2)):
+        cv_x = colvar[label_x].values
+        cv_y = colvar[label_y].values
+        plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_features, state_labels=state_labels, max_nfeat = 3)
 
         if save_folder is not None:
             plt.savefig(save_folder+file_prefix+f'-relevant_feats{k+1 if n_pairs > 1 else None}.png',
@@ -180,17 +184,20 @@ def plot_combination_cvs_relevant_features(df, selected_cvs, relevant_features, 
                         transparent=False,
                         bbox_inches='tight')
 
-def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
-    # retrieve basins
-    basins = df['basin'].unique()
+def plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = None, max_nfeat = 3):
     n_basins = len(relevant_feat)
 
-    fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=100, )
-                            #sharex=True, sharey=True)
+    # if state_labels are given plot only selection
+    if state_labels is not None:
+        mask = state_labels['selection']
+        cv_x = cv_x[mask]
+        cv_y = cv_y[mask]
+        descriptors = descriptors[mask]
+        state_labels = state_labels[mask]
 
+    fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=72)
     # for each state ...
-    for i, feat_list in enumerate(relevant_feat):
-        #This is wrong it should be modified with classes labels
+    for i, (state_name, feat_list) in enumerate( relevant_feat.items() ):
         state = i
         # ... color with the corresponding features ...
         for j,feat_array in enumerate(feat_list):
@@ -199,30 +206,25 @@ def plot_cvs_relevant_features(df, cv_x, cv_y, relevant_feat, max_nfeat = 3):
                 feat = feat_array[2]
                 importance = feat_array[1]
                 ax = axs[i,j]
-                pp = df[df['selection']==1].plot.hexbin(cv_x,cv_y,C=feat,cmap='coolwarm',ax=ax)
+                #pp = df[df['selection']==1].plot.hexbin(cv_x,cv_y,C=feat,cmap='coolwarm',ax=ax)
+                pp = ax.hexbin(cv_x,cv_y,C=descriptors[feat],cmap='coolwarm')
                 #set title
-                ax.set_title(f'[state {state}] {feat} - {np.round(importance*100)}%')
-                #add basins labels
-                for b in basins:
-                    mx,my = compute_basin_mean(df,b,cv_x,cv_y)
-                    bcolor = 'k' if b == state else 'w'
-                    fcolor = 'w' if b == state else 'k'            
-                    ax.scatter(mx,my,color=bcolor,s=250,alpha=0.7)
-                    text = ax.text(mx, my, b, ha="center", va="center", 
-                                color=fcolor, fontsize='large')
-        
-        #set labels
-        for ax in plt.gcf().axes:
-            try:
-                ax.label_outer()
-            except:
-                pass
+                if '_' in feat:
+                    feat = feat.replace('_','\_')
+                ax.set_title(f'[{state}: {state_name}] {feat} - {np.round(importance*100)}%')
+                #add basins labels if given
+                if state_labels is not None:
+                    states = state_labels['labels'].unique()
+                    z = state_labels['labels']
+                    #Add basins labels
+                    for b in states:
+                        #mask = np.logical_and(sel, z == b)
+                        mask = ( z == b ) 
+                        #If weighted not ok but functional
+                        mx,my = np.mean(cv_x[mask]), np.mean(cv_y[mask])
+                        ax.scatter(mx,my,color='w',s=300,alpha=0.7)
+                        _ = ax.text(mx, my, b, ha="center", va="center", color='k', fontsize='large')
 
-        #disable unused axis
-        for j in range(len(feat_list),max_nfeat):
-            axs[i,j].axis('off')
-
-    plt.tight_layout()
 
 def visualize_features(data,relevant_features,state=0,n_feat_per_state=3):
     

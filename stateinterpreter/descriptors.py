@@ -125,7 +125,7 @@ def _CA_DISTANCES(traj):
     dist = md.compute_distances(traj, np.array(pairs, dtype=int))
 
     # Labels
-    label = lambda i, j: "DIST. %s%s -- %s%s" % (
+    label = lambda i, j: "DIST %s%s -- %s%s" % (
         traj.top.atom(i),
         "s" if traj.top.atom(i).is_sidechain else "",
         traj.top.atom(j),
@@ -284,8 +284,7 @@ def _DIHEDRALS(traj, kind, sincos=True):
 
 def load_descriptors(descriptors, start = 0, stop = None, stride = 1, **kwargs):
     descriptors = load_dataframe(descriptors, **kwargs)
-    ##?? Luigi why no stop parameter?
-    descriptors = descriptors.iloc[start::stride, :]
+    descriptors = descriptors.iloc[start:stop:stride, :]
     if "time" in descriptors.columns:
         descriptors = descriptors.drop("time", axis="columns")
     if __DEV__:
