@@ -16,17 +16,29 @@ ctypedef fused real:
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def contact_function(real[:,:] x, real r0=1.0, real d0=0, int n=6, int m=12):
-    cdef float[:,:] result = np.zeros_like(x, dtype=np.single)
+    
+    if real is float:
+        dtype = np.single
+    elif real is double:
+        dtype = np.double
+    else:
+        dtype = np.longdouble
+
+    cdef real[:,:] result = np.zeros_like(x, dtype=dtype)
+
     cdef Py_ssize_t i, j
-    for i in prange(x.shape[1], nogil=True):
-        for j in range(x.shape[0]):
+    cdef int I, J
+    I = x.shape[1]
+    J = x.shape[0]
+    for i in prange(I, nogil=True, schedule='static'):
+        for j in range(J):
             result[j, i] += _contact(x, i, j, r0, d0, n, m)
     return np.asarray(result)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef float _contact(real[:,:] x, Py_ssize_t i, Py_ssize_t j, real r0, real d0, int n, int m) nogil:
-    cdef float y = (x[j,i] - d0) / r0
+cdef real _contact(real[:,:] x, Py_ssize_t i, Py_ssize_t j, real r0, real d0, int n, int m) nogil:
+    cdef real y = (x[j,i] - d0) / r0
     # (see formula for RATIONAL) https://www.plumed.org/doc-v2.6/user-doc/html/switchingfunction.html
     if y == 1:
         #Handling limiting case
