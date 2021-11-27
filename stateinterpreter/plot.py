@@ -16,7 +16,7 @@ if __useTeX__:
         "font.serif": ["Computer Modern Roman"]
     })
 
-__all__ = ["plot_states", "plot_regularization_path", "plot_classifier_complexity_vs_accuracy", "plot_combination_cvs_relevant_features", "plot_cvs_relevant_features", "visualize_features", "visualize_residues"]
+__all__ = ["plot_states", "plot_regularization_path", "plot_classifier_complexity_vs_accuracy", "plot_combination_states_features", "plot_states_features", "plot_histogram_features" ]
 
 # aux function to compute basins mean
 def compute_basin_mean(df, basin, label_x, label_y):
@@ -150,7 +150,7 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
     plt.tight_layout()
     return fig, axs
 
-def plot_combination_states_relevant_features(colvar, descriptors, selected_cvs, relevant_features, state_labels = None, save_folder=None, file_prefix='linear'):
+def plot_combination_states_features(colvar, descriptors, selected_cvs, relevant_features, state_labels = None, save_folder=None, file_prefix='linear'):
     
     if len(selected_cvs) < 2: 
         raise NotImplementedError('This plot is available only when selecting 2 or more CVs.')
@@ -175,7 +175,7 @@ def plot_combination_states_relevant_features(colvar, descriptors, selected_cvs,
     for k,(label_x,label_y) in  enumerate(combinations(selected_cvs, 2)):
         cv_x = colvar[label_x].values
         cv_y = colvar[label_y].values
-        plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_features, state_labels=state_labels, max_nfeat = 3)
+        plot_states_features(cv_x, cv_y, descriptors, relevant_features, state_labels=state_labels, max_nfeat = 3)
 
         if save_folder is not None:
             plt.savefig(save_folder+file_prefix+f'-relevant_feats{k+1 if n_pairs > 1 else None}.png',
@@ -183,7 +183,7 @@ def plot_combination_states_relevant_features(colvar, descriptors, selected_cvs,
                         transparent=False,
                         bbox_inches='tight')
 
-def plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = None, max_nfeat = 3):
+def plot_states_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = None, max_nfeat = 3):
     n_basins = len(relevant_feat)
 
     # if state_labels are given plot only selection
@@ -194,7 +194,8 @@ def plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_feat, state_
         descriptors = descriptors[mask]
         state_labels = state_labels[mask]
 
-    fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=72)
+    fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(4 * max_nfeat, 3.5* n_basins), 
+                            sharex=True, sharey=True)
     # for each state ...
     for i, (state_name, feat_list) in enumerate( relevant_feat.items() ):
         state = i
@@ -208,7 +209,7 @@ def plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_feat, state_
                 #pp = df[df['selection']==1].plot.hexbin(cv_x,cv_y,C=feat,cmap='coolwarm',ax=ax)
                 pp = ax.hexbin(cv_x,cv_y,C=descriptors[feat],cmap='coolwarm')
                 #set title
-                if '_' in feat:
+                if (__useTeX__) and ('_' in feat):
                     feat = feat.replace('_','\_')
                 ax.set_title(f'[{state}: {state_name}] {feat} - {np.round(importance*100)}%')
                 #add basins labels if given
@@ -224,3 +225,53 @@ def plot_states_relevant_features(cv_x, cv_y, descriptors, relevant_feat, state_
                         ax.scatter(mx,my,color='w',s=300,alpha=0.7)
                         _ = ax.text(mx, my, b, ha="center", va="center", color='k', fontsize='large')
 
+
+def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat,hist_offset = -0.2,n_bins = 50,ylog = False, height=0.75,width=6):
+    #TODO MOVE PLOT KEYWORDS inTO DICT
+
+    features_per_class = [len(feat_list) for feat_list in relevant_feat.values()]
+    fig,axs = plt.subplots(len(classes_names), 1,
+                            figsize=(width, sum(features_per_class)*height ),
+                            gridspec_kw={'height_ratios': features_per_class})
+
+    for b, (basin, basin_name) in enumerate( classes_names.items() ):
+        feat_list = relevant_feat[basin_name]
+
+        #fig,ax = plt.subplots( figsize = (4,0.5*len(feat_list)) )
+        ax = axs[b]
+        feature_labels = []
+        for h, feature in enumerate( feat_list ):
+            feature_name = feature[2]
+            if (__useTeX__) and ('_' in feature_name):
+                feature_label = feature_name.replace('_','\_')
+            else:
+                feature_label = feature_name
+            feature_labels.append(feature_label)
+            #coordinate = descriptors[feature_name]
+            #hist, edges = np.histogram(coordinate, bins=n_bins)
+            for i in classes_names.keys():
+                x_i = descriptors[ ( states_labels['labels'] == i ) & ( states_labels['selection'] ) ][feature_name]
+                hist, edges = np.histogram(x_i, bins=n_bins)
+                if not ylog:
+                    y = hist / hist.max()
+                else:
+                    y = np.zeros_like(hist) + np.NaN
+                    pos_idx = hist > 0
+                    y[pos_idx] = np.log(hist[pos_idx]) / np.log(hist[pos_idx]).max()
+                color = 'tab:red' if basin == i else 'dimgray'
+                ax.fill_between(edges[:-1], y + h + hist_offset, y2=h + hist_offset, color=color, alpha=0.5) #, **kwargs)
+
+            ax.axhline(y=h + hist_offset, xmin=0, xmax=1, color='k', linewidth=.2)
+        ax.set_ylim(hist_offset, h + hist_offset + 1)
+
+        # formatting
+        if feature_labels is None:
+            feature_labels = [str(n) for n in range(len(feat_list))]
+            ax.set_ylabel('Feature histograms')
+
+        ax.set_yticks(np.array(range(len(feature_labels))) + .3)
+        ax.set_yticklabels(feature_labels)
+        #ax.set_xlabel('Feature values')
+        ax.set_title(f'{basin}: {basin_name}')
+
+    plt.tight_layout()
