@@ -194,7 +194,8 @@ def plot_states_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = 
         descriptors = descriptors[mask]
         state_labels = state_labels[mask]
 
-    fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(6 * max_nfeat, 5* n_basins),dpi=72)
+    fig, axs = plt.subplots(n_basins,max_nfeat,figsize=(4 * max_nfeat, 3.5* n_basins), 
+                            sharex=True, sharey=True)
     # for each state ...
     for i, (state_name, feat_list) in enumerate( relevant_feat.items() ):
         state = i
@@ -208,7 +209,7 @@ def plot_states_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = 
                 #pp = df[df['selection']==1].plot.hexbin(cv_x,cv_y,C=feat,cmap='coolwarm',ax=ax)
                 pp = ax.hexbin(cv_x,cv_y,C=descriptors[feat],cmap='coolwarm')
                 #set title
-                if '_' in feat:
+                if (__useTeX__) and ('_' in feat):
                     feat = feat.replace('_','\_')
                 ax.set_title(f'[{state}: {state_name}] {feat} - {np.round(importance*100)}%')
                 #add basins labels if given
