@@ -104,7 +104,7 @@ def _basin_selection(
     return df
 
 def approximate_FES(
-        colvar, selected_cvs, kBT, bw_method=None, logweights=None
+        colvar, selected_cvs=None, kBT=2.5, bw_method=None, logweights=None
     ):
     """Approximate Free Energy Surface (FES) in the space of selected_cvs through Gaussian Kernel Density Estimation
 
@@ -120,7 +120,9 @@ def approximate_FES(
     if __DEV__:
         print("DEV >>> Approximating FES")
     w = _sanitize_logweights(logweights, colvar=colvar, kBT=kBT)
-    empirical_centers = colvar[selected_cvs].to_numpy()
+        
+    empirical_centers = colvar[selected_cvs] if selected_cvs is not None else colvar
+    empirical_centers = empirical_centers.to_numpy()
     KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=w)
     return lambda x: -kBT*KDE.logpdf(x)
 

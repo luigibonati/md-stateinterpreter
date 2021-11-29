@@ -25,7 +25,9 @@
 * [ ] [PIETRO] add quadratic features to data / df ?  
 * [ ] [LUIGI/PIETRO] fix isolines in plot_states
 * [ ] [LUIGI] fix sort_minima_by in metastable_states ?
-* [ ] 
+* [ ] [LUIGI] function approximate_fes
+* [ ] [LUIGI] clean up mess in plot / visualize func (keywords as dict)
+
 
 ## Tutorials
 

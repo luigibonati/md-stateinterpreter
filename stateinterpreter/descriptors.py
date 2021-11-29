@@ -304,6 +304,9 @@ def sample(descriptors, states_labels, n_configs, regex_filter = '.*', states_su
     if states_subset is None:
         states_subset = range(len(states_labels['labels'].unique()))
 
+    if states_names is not None:
+        assert len(states_names) == len(states_subset), "Length mismatch between states_names and number of unique states."
+
     for idx, i in enumerate(states_subset):
         if states_names is None:
             states[i] = i
