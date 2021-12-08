@@ -2,6 +2,9 @@ import nglview
 import matplotlib
 import matplotlib.cm as cm
 import numpy as np
+from scipy.sparse import csr_matrix
+from ._configs import *
+
 
 def visualize_features(trajectory, states_labels, classes_names, relevant_features, feats_info, state = 0, n_feat_per_state=3, representation = 'licorice'):
     # sample one frame per state
@@ -52,27 +55,30 @@ def visualize_features(trajectory, states_labels, classes_names, relevant_featur
     return view
 
 def compute_residue_score(classifier,reg,feats_info,n_residues):
-    # get relevant features with feature_mode=True
-    relevant_feat = classifier._get_selected(reg,feature_mode=True)
-    
-    residue_score = {} 
-    #loop over states
-    for state in relevant_feat.keys():
+    reg_idx = classifier._closest_reg_idx(reg)
+    coefficients = classifier._coeffs[reg_idx]
+    _classes = classifier._classes_labels[reg_idx]
+    residue_score = dict()
+    for idx, coef in enumerate(coefficients):
         score = np.zeros(n_residues)
-        basin_data = relevant_feat[state]
-        # loop over relevant features per state
-        for feat in basin_data:
-            # feature name 
-            feat_name = feat[2]
-            # get residue from group
-            resname = feats_info[feat_name]['group']
-            #resname = feat[2].split(' ')[-1]
-            for res in resname.split('_'):
-                resnum = int ( ''.join([n for n in resname if n.isdigit()]) )
-                # increase score with weight
-                score [resnum - 1] += feat[1]
-        residue_score[state] = score
-
+        state_name = classifier.classes[_classes[idx]]
+        coef = coef**2
+        nrm = np.sum(coef)
+        coef = coef/nrm
+        if nrm < __EPS__:
+            pass
+        else:
+            indices = csr_matrix(coef/nrm).indices
+            for idx in indices:
+                if classifier._quadratic_kernel:
+                    raise NotImplementedError("Residue Score not implemented for quadratic features")
+                else:
+                    feature_name = classifier.features[idx]
+                resnames = feats_info[feature_name]['group'].split('_')
+                for res in resnames:
+                    res_idx = int ( ''.join([n for n in res if n.isdigit()]) ) - 1
+                    score[res_idx] += coef[idx]/len(resnames)  
+        residue_score[state_name] = score 
     return residue_score
 
 def visualize_residue_score(trajectory, states_labels, classes_names, residue_score, representation = 'licorice', palette = 'Reds'):

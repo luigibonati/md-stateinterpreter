@@ -95,7 +95,7 @@ class Classifier():
             _is_group = False
             _reg_name = 'C'
             reg = (reg*self._n_samples)**-1
-            model = LogisticRegression(penalty='l1', C=reg[0], solver='saga', multi_class='ovr', fit_intercept=False, max_iter=max_iter, warm_start=warm_start)
+            model = LogisticRegression(penalty='l1', C=reg[0], solver='liblinear', multi_class='ovr', fit_intercept=False, max_iter=max_iter, warm_start=warm_start)
 
         coeffs =  np.empty((_num_reg, _n_basins, _n_features))
         crossval = np.empty((_num_reg,))
