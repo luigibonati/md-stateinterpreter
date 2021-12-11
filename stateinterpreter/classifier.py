@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.multiclass import OneVsRestClassifier
 from scipy.sparse import csr_matrix
 from scipy.spatial.distance import squareform
 from group_lasso import LogisticGroupLasso
@@ -88,9 +89,10 @@ class Classifier():
             else:
                 assert len(groups) == len(self.features), "Length of group array does not match features number."
             _is_group = True
-            _reg_name = 'group_reg'
-            model = LogisticGroupLasso(groups, group_reg = reg[0], l1_reg=0, n_iter=max_iter, supress_warning=True, scale_reg='none', warm_start=warm_start) 
-
+            _reg_name = 'estimator__group_reg'
+            tmp_model = LogisticGroupLasso(groups, group_reg = reg[0], l1_reg=0, n_iter=max_iter, supress_warning=True, scale_reg='none', warm_start=False) 
+            model = OneVsRestClassifier(tmp_model, n_jobs=2)
+            
         else:
             _is_group = False
             _reg_name = 'C'
@@ -107,8 +109,15 @@ class Classifier():
             model.fit(train_in,self._train_out)
             crossval[reg_idx] = model.score(val_in,self._val_out)
             _classes_labels[reg_idx] = model.classes_.astype(int)
-            coeffs[reg_idx] = model.coef_.T if _is_group else model.coef_
-        
+            if _is_group:
+                assert _n_basins == model.classes_.shape[0]
+                tmp_coeffs = np.empty((_n_basins, _n_features))
+                for est_idx, _e in enumerate(model.estimators_):
+                    tmp_coeffs[est_idx] = _e.coef_[:,0]
+                coeffs[reg_idx] = tmp_coeffs
+            else:
+                coeffs[reg_idx] = model.coef_
+
         self._quadratic_kernel=quadratic_kernel 
         self._coeffs = coeffs
         self._crossval = crossval
