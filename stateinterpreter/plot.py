@@ -7,6 +7,7 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import MaxNLocator
 import sys
 from ._configs import *
+from .numerical_utils import gaussian_kde
 
 if __useTeX__:
     plt.rcParams.update({
@@ -84,7 +85,7 @@ def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False):
     ax1.set_xmargin(0)
     return fig, (ax1, ax2)
 
-def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, save_folder=None):
+def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, alpha=0.3, save_folder=None, **kde_kwargs):
     states = state_labels['labels'].unique()
     n_states = len(states)
 
@@ -95,6 +96,7 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
     fig, axs = plt.subplots(1,n_pairs,figsize=(4.8*n_pairs,4), dpi=100)
 
     for k, (x_idx,y_idx) in enumerate(idxs_pairs):
+        
         label_x = selected_cvs[x_idx]
         label_y = selected_cvs[y_idx]
         # select ax
@@ -102,22 +104,26 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
 
         # FES isolines (if 2D)
         if fes_isolines:
-            raise NotImplementedError('Isolines not implemented.')
-            '''
-            if len(selected_cvs) == 2:
-                cmap = matplotlib.cm.get_cmap('Greys_r', n_iso_fes)
-                color_list = [cmap((i+1)/(n_iso_fes+3)) for i in range(n_iso_fes)]
-                num_samples = 100
-                bounds = [(x.min(), x.max()) for x in data.KDE.dataset.T]
-                mesh = np.meshgrid(*[np.linspace(b[0], b[1], num_samples) for b in bounds])
-                positions = np.vstack([g.ravel() for g in mesh]).T
-                fes = -data.KDE.logpdf(positions).reshape(num_samples,num_samples)
-                fes -= fes.min()
-                CS = ax.contour(*mesh, fes, levels=np.linspace(0,n_iso_fes-1,n_iso_fes), colors = color_list)
-                ax.clabel(CS, CS.levels[::ev_iso_labels], fmt = lambda x: str(int(x))+ r'$k_{{\rm B}}T$', inline=True, fontsize=10)
-            else:
-                raise NotImplementedError('Isolines are implemented only for 2D FES.')
-            ''' 
+            #logweights = None
+            #bw_method = 0.15
+
+            num_samples = 100
+
+            cmap = matplotlib.cm.get_cmap('Greys_r', n_iso_fes)
+            color_list = [cmap((i+1)/(n_iso_fes+3)) for i in range(n_iso_fes)]
+
+            empirical_centers = colvar[[label_x,label_y]].to_numpy()
+            KDE = gaussian_kde(empirical_centers,**kde_kwargs)
+
+            bounds = [(x.min(), x.max()) for x in KDE.dataset.T]
+            mesh = np.meshgrid(*[np.linspace(b[0], b[1], num_samples) for b in bounds])
+
+            positions = np.vstack([g.ravel() for g in mesh]).T
+            fes = -KDE.logpdf(positions).reshape(num_samples,num_samples)
+            fes -= fes.min()
+
+            CS = ax.contour(*mesh, fes, levels=np.linspace(0,n_iso_fes-1,n_iso_fes), colors = color_list)
+            ax.clabel(CS, CS.levels[::ev_iso_labels], fmt = lambda x: str(int(x))+ r'$k_{{\rm B}}T$', inline=True, fontsize=8)
 
         # Hexbin plot
         x = colvar[label_x]
@@ -130,7 +136,7 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
         cmap = matplotlib.cm.get_cmap(cmap_name, n_states)
         color_list = [cmap(i/(n_states)) for i in range(n_states)] 
       
-        ax.hexbin(x[not_sel],y[not_sel],C=z[not_sel],cmap=cmap_name,alpha=0.3)
+        ax.hexbin(x[not_sel],y[not_sel],C=z[not_sel],cmap=cmap_name,alpha=alpha)
         ax.hexbin(x[sel],y[sel],C=z[sel],cmap=cmap_name)
      
         ax.set_title('Metastable states identification')
