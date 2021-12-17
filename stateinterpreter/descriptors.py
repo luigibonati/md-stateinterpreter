@@ -34,6 +34,7 @@ def _compute_descriptors(traj, descriptors):
     - CA distances
     - Hydrogen bonds distances
     - Hydrogen bonds contacts
+    - Disulfide bonds dihedrals
 
     Parameters
     ----------
@@ -78,13 +79,18 @@ def _compute_descriptors(traj, descriptors):
                 res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'contacts', _cached_dists=_dsts)
             else:
                 res, names, descriptors_ids = _HYDROGEN_BONDS(traj, 'contacts')
+        elif d == 'disulfide':
+            res, names, descriptors_ids = _DISULFIDE_DIHEDRALS(traj, sincos=True)
+            print(names)
+            print(descriptors_ids)
         else:
-            raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds' are allowed.")
+            raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds','disulfide' are allowed.")
         
         if d != 'dihedrals': #(Done previously)
             _raw_data.append(res)
             _feats.extend(names)
             _feats_info.update(descriptors_ids)
+    
     df = pd.DataFrame(np.hstack(_raw_data), columns=_feats)    
     if __DEV__:
         print(f"Descriptors: {df.shape}")
@@ -257,6 +263,60 @@ def _DIHEDRALS(traj, kind, sincos=True):
     if sincos:
         angles = np.hstack([angles, np.sin(angles), np.cos(angles)])
         names = names + sin_names + cos_names
+    
+    return angles, names, descriptors_ids
+
+def _DISULFIDE_DIHEDRALS(traj, sincos = True):
+
+    table, bonds = traj.top.to_dataframe()
+
+    # filter S atoms belonging to CYS
+    s_cys = table[ (table['element'] == 'S') & (table['resName'] == 'CYS') ].index
+
+    # define arrays
+    names = []
+    angles = []
+    descriptors_ids = {}
+
+    # Loop over every pair of S atoms
+    for i,j in itertools.combinations(s_cys,2):
+        # Check if bond is formed
+        d_ij = md.compute_distances(traj[0],[[i,j]])[0][0]
+        if d_ij < 0.25:
+            # look for C atoms bonded with S
+            for k,l,_,_ in bonds:
+                if int(k) == i:
+                    c_i = int(l)
+                elif int(l) == i:
+                    c_i = int(k)
+                if int(k) == j:
+                    c_j = int(l)
+                elif int(l) == j:
+                    c_j = int(k)
+
+            # compute feature
+            group = str(traj.top.atom(i).residue)+'_'+str(traj.top.atom(j).residue)
+            
+            desc = md.compute_dihedrals(traj,[[c_i,i,j,c_j]])[:,0]
+
+            name = 'DISULFIDE dih '+group 
+            descriptors_ids[name] = {'atoms': [c_i,i,j,c_j], 'group' : group}
+            angles.append(desc)
+            names.append(name)
+
+            if sincos:
+                name = 'DISULFIDE sin_dih '+group 
+                descriptors_ids[name] = {'atoms': [c_i,i,j,c_j], 'group' : group}
+                angles.append(np.sin(desc))
+                names.append(name)
+
+                name = 'DISULFIDE cos_dih '+group 
+                descriptors_ids[name] = {'atoms': [c_i,i,j,c_j], 'group' : group}
+                angles.append(np.cos(desc))
+                names.append(name)
+
+    angles = np.asarray(angles).T
+
     return angles, names, descriptors_ids
 
 def load_descriptors(descriptors, start = 0, stop = None, stride = 1, **kwargs):
