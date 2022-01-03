@@ -19,6 +19,43 @@ if __useTeX__:
 
 __all__ = ["plot_states", "plot_regularization_path", "plot_classifier_complexity_vs_accuracy", "plot_combination_states_features", "plot_states_features", "plot_histogram_features" ]
 
+##########################################################################
+## FESSA COLOR PALETTE
+#  https://github.com/luigibonati/fessa-color-palette/blob/master/fessa.py
+##########################################################################
+
+from matplotlib.colors import LinearSegmentedColormap, ColorConverter
+from matplotlib.cm import register_cmap
+
+paletteFessa = [
+    '#1F3B73', # dark-blue
+    '#2F9294', # green-blue
+    '#50B28D', # green
+    '#A7D655', # pisello
+    '#FFE03E', # yellow
+    '#FFA955', # orange
+    '#D6573B', # red
+]
+
+cm_fessa = LinearSegmentedColormap.from_list('fessa', paletteFessa)
+register_cmap(cmap=cm_fessa)
+register_cmap(cmap=cm_fessa.reversed())
+
+for i in range(len(paletteFessa)):
+    ColorConverter.colors[f'fessa{i}'] = paletteFessa[i]
+
+### To set it as default
+# import fessa
+# plt.set_cmap('fessa')
+### or the reversed one
+# plt.set_cmap('fessa_r')
+### For contour plots
+# plt.contourf(X, Y, Z, cmap='fessa')
+### For standard plots
+# plt.plot(x, y, color='fessa0')
+
+##########################################################################
+
 # aux function to compute basins mean
 def compute_basin_mean(df, basin, label_x, label_y):
     mx = df[df['basin'] == basin][label_x].mean()
@@ -60,7 +97,7 @@ def plot_regularization_path(classifier, reg):
     ax.set_title(r"Accuracy")
     return fig, axes
 
-def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False):
+def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False, ax = None):
     assert classifier._computed, "You have to run Classifier.compute first."
     num_groups = []
     for reg in classifier._reg:
@@ -71,7 +108,11 @@ def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False):
                 unique_idxs.add(data[0])
         num_groups.append(len(unique_idxs)) 
     
-    fig, ax1 = plt.subplots(figsize=(3,2))
+    if ax is not None:
+        ax1 = ax
+    else:
+        fig, ax1 = plt.subplots(figsize=(3,2))
+
     ax2 = ax1.twinx()
     ax2.grid(alpha=0.3)
     ax2.plot(np.log10(classifier._reg), num_groups, '-', color='steelblue')
@@ -83,9 +124,13 @@ def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False):
     desc = "Groups" if classifier._groups is not None else "Features"
     ax2.set_ylabel(f'Number of {desc}', color='b')
     ax1.set_xmargin(0)
-    return fig, (ax1, ax2)
 
-def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, alpha=0.3, save_folder=None, **kde_kwargs):
+    if ax is not None:
+        return (ax1, ax2)
+    else:
+        return fig, (ax1, ax2)
+
+def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_fes = 9, ev_iso_labels = 2, alpha=0.3, cmap_name = 'Set2', save_folder=None, axs = None, **kde_kwargs):
     states = state_labels['labels'].unique()
     n_states = len(states)
 
@@ -93,7 +138,8 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
     idxs_pairs = [p for p in combinations(np.arange(len(selected_cvs)), 2)]
     n_pairs = len(idxs_pairs)
 
-    fig, axs = plt.subplots(1,n_pairs,figsize=(4.8*n_pairs,4), dpi=100)
+    if axs is None:
+        fig, axs = plt.subplots(1,n_pairs,figsize=(4.8*n_pairs,4), dpi=100)
 
     for k, (x_idx,y_idx) in enumerate(idxs_pairs):
         
@@ -132,14 +178,14 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
         sel = state_labels['selection']
         not_sel = np.logical_not(sel)
 
-        cmap_name = 'Set2'
         cmap = matplotlib.cm.get_cmap(cmap_name, n_states)
         color_list = [cmap(i/(n_states)) for i in range(n_states)] 
       
         ax.hexbin(x[not_sel],y[not_sel],C=z[not_sel],cmap=cmap_name,alpha=alpha)
         ax.hexbin(x[sel],y[sel],C=z[sel],cmap=cmap_name)
      
-        ax.set_title('Metastable states identification')
+        if axs is None:
+            ax.set_title('Metastable states identification')
         ax.set_xlabel(label_x)
         ax.set_ylabel(label_y)
     
@@ -153,8 +199,10 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
 
     if save_folder is not None:
         plt.savefig(save_folder+'states.pdf',bbox_inches='tight')
-    plt.tight_layout()
-    return fig, axs
+    
+    if axs is None:
+        plt.tight_layout()
+        return fig, axs
 
 def plot_combination_states_features(colvar, descriptors, selected_cvs, relevant_features, state_labels = None, save_folder=None, file_prefix='linear'):
     
@@ -232,10 +280,26 @@ def plot_states_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = 
                         _ = ax.text(mx, my, b, ha="center", va="center", color='k', fontsize='large')
 
 
-def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat,hist_offset = -0.2,n_bins = 50,ylog = False, height=0.75,width=6):
+def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat, hist_offset = -0.2, n_bins = 50, ylog = False, height=0.75, width=6):
     #TODO MOVE PLOT KEYWORDS inTO DICT
 
     features_per_class = [len(feat_list) for feat_list in relevant_feat.values()]
+
+    added_columns = False
+    #Handle quadratic kernels
+    for _state in relevant_feat.values():
+        for _feat_tuple in _state:
+            feature = _feat_tuple[2]
+            if "||" in feature:
+                if feature not in descriptors.columns:
+                    added_columns = True
+                    i, j = feature.split(' || ')
+                    feat_ij = descriptors[i].values * descriptors[j].values
+                    descriptors[feature] = feat_ij
+    if added_columns:
+        print("Warning: detected quadratic kenel features, added quadratic features to the input dataframe", file=sys.stderr)
+
+
     fig,axs = plt.subplots(len(classes_names), 1,
                             figsize=(width, sum(features_per_class)*height ),
                             gridspec_kw={'height_ratios': features_per_class})
@@ -246,7 +310,7 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
         #fig,ax = plt.subplots( figsize = (4,0.5*len(feat_list)) )
         ax = axs[b]
         feature_labels = []
-        for h, feature in enumerate( feat_list ):
+        for h, feature in enumerate( feat_list[::-1] ):
             feature_name = feature[2]
             if (__useTeX__) and ('_' in feature_name):
                 feature_label = feature_name.replace('_','\_')
