@@ -3,9 +3,9 @@ Documentation
 
 Here goes a high-level description of the code structure.
 
-.. rubric:: Classifier (``stateinterpreter.classifier``)
+.. rubric:: ML (``stateinterpreter.classifier``)
 
-.. currentmodule:: stateinterpreter.classifier
+.. currentmodule:: stateinterpreter.ml
 
 .. autosummary::
    :toctree: autosummary
@@ -21,6 +21,5 @@ Here goes a high-level description of the code structure.
    :toctree: autosummary
    :template: custom-class-template.rst
 
-   descriptors_from_traj
+   compute_descriptors
    load_descriptors
-   sample

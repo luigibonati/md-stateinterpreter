@@ -1,9 +1,9 @@
-﻿stateinterpreter.descriptors.descriptors\_from\_traj
-====================================================
+﻿stateinterpreter.descriptors.compute\_descriptors
+=================================================
 
 .. currentmodule:: stateinterpreter.descriptors
 
-.. autoclass:: descriptors_from_traj
+.. autoclass:: compute_descriptors
    :members:                                   
    :show-inheritance:                           
    :inherited-members: Module                       

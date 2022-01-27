@@ -1,7 +1,7 @@
-﻿stateinterpreter.classifier.Classifier
-======================================
+﻿stateinterpreter.ml.Classifier
+==============================
 
-.. currentmodule:: stateinterpreter.classifier
+.. currentmodule:: stateinterpreter.ml
 
 .. autoclass:: Classifier
    :members:                                   
