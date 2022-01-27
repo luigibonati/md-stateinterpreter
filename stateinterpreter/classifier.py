@@ -2,13 +2,13 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-import concurrent.futures
+from sklearn.multiclass import OneVsRestClassifier
 from scipy.sparse import csr_matrix
 from scipy.spatial.distance import squareform
 from group_lasso import LogisticGroupLasso
 from tqdm import tqdm
 import warnings
-from .plot import plot_regularization_path, plot_groups
+from .plot import plot_regularization_path, plot_classifier_complexity_vs_accuracy
 from ._configs import *
 
 __all__ = ["Classifier"]
@@ -65,7 +65,7 @@ class Classifier():
         self.classes = classes_names
         self._computed = False
 
-    def compute(self, reg, max_iter = 100,  quadratic_kernel=False, groups=None):
+    def compute(self, reg, max_iter = 100,  quadratic_kernel=False, groups=None, warm_start = True):
         if self._computed:
             warnings.warn("Warning: deleting old computed data")
             self._purge()
@@ -73,6 +73,7 @@ class Classifier():
             reg = np.array([reg])
         _num_reg = len(reg)
         _n_basins = len(np.unique(self._train_out))
+        self._reg = reg
 
         if quadratic_kernel:
             train_in, val_in = quadratic_kernel_featuremap(self._train_in), quadratic_kernel_featuremap(self._val_in)
@@ -88,48 +89,36 @@ class Classifier():
             else:
                 assert len(groups) == len(self.features), "Length of group array does not match features number."
             _is_group = True
-            def _train_model(idx):
-                model = LogisticGroupLasso(groups,group_reg = reg[idx], l1_reg=0, n_iter=max_iter, supress_warning=True, scale_reg='none') 
-                #Model Fit
-                model.fit(train_in,self._train_out)
-                score = model.score(val_in,self._val_out)
-                return (idx, model.coef_.T,score, model.classes_)
+            _reg_name = 'estimator__group_reg'
+            tmp_model = LogisticGroupLasso(groups, group_reg = reg[0], l1_reg=0, n_iter=max_iter, supress_warning=True, scale_reg='none', warm_start=False) 
+            model = OneVsRestClassifier(tmp_model, n_jobs=2)
+            
         else:
             _is_group = False
-            def _train_model(idx):
-                C = (reg[idx]*self._n_samples)**-1
-                model = LogisticRegression(penalty='l1', C=C, solver='saga', multi_class='ovr', fit_intercept=False, max_iter=max_iter) 
-                #Model Fit
-                model.fit(train_in,self._train_out)
-                score = model.score(val_in,self._val_out)
-                return (idx, model.coef_,score, model.classes_)
+            _reg_name = 'C'
+            reg = (reg*self._n_samples)**-1
+            model = LogisticRegression(penalty='l1', C=reg[0], solver='liblinear', multi_class='ovr', fit_intercept=False, max_iter=max_iter, warm_start=warm_start)
 
         coeffs =  np.empty((_num_reg, _n_basins, _n_features))
         crossval = np.empty((_num_reg,))
         _classes_labels = np.empty((_num_reg, _n_basins), dtype=np.int_)
 
-        if _is_group:
-            _raw_data = []
-            for reg_idx in tqdm(range(len(reg)), desc='Group Lasso'):
-                _raw_data.append(_train_model(reg_idx))
-        else:
-            _raw_data = []
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                fut = [executor.submit(_train_model, reg_idx) for reg_idx in range(len(reg))]
-                for fut_result in concurrent.futures.as_completed(fut):
-                    _raw_data.append(fut_result.result())
-                    
-        for _datapoint in _raw_data:
-            if _is_group:
-                idx, coeff, score, _classes = _datapoint
-            else:
-                idx, coeff, score, _classes = _datapoint
-            coeffs[idx] = coeff
-            crossval[idx] = score
-            _classes_labels[idx] = _classes.astype(int)
         
+        for reg_idx in tqdm(range(len(reg)), desc='Optimizing Lasso Estimator'):
+            model.set_params(**{_reg_name: reg[reg_idx]})
+            model.fit(train_in,self._train_out)
+            crossval[reg_idx] = model.score(val_in,self._val_out)
+            _classes_labels[reg_idx] = model.classes_.astype(int)
+            if _is_group:
+                assert _n_basins == model.classes_.shape[0]
+                tmp_coeffs = np.empty((_n_basins, _n_features))
+                for est_idx, _e in enumerate(model.estimators_):
+                    tmp_coeffs[est_idx] = _e.coef_[:,0]
+                coeffs[reg_idx] = tmp_coeffs
+            else:
+                coeffs[reg_idx] = model.coef_
+
         self._quadratic_kernel=quadratic_kernel 
-        self._reg = reg
         self._coeffs = coeffs
         self._crossval = crossval
         self._classes_labels = _classes_labels
@@ -212,14 +201,14 @@ class Classifier():
             for _row in _intra_state_queue:
                 if len(str(_row[0])) > col_width:
                     col_width = len(str(_row[0]))
-        
+        print(f"Accuracy: {int(self._crossval[self._closest_reg_idx(reg)]*100)}%")
         for state in print_queue.keys():
             state_name = 'State ' +  f'{state}' + ':'
             print(state_name)
             for row in print_queue[state]:
-                print(f"\t {row[0].ljust(col_width)} | {row[1]}")
+                print(f"[{row[0].ljust(col_width)}]  {row[1]}")
 
-    def prune(self, reg, overwrite=True):    
+    def prune(self, reg, overwrite=False):    
         selected = self._get_selected(reg)
         if self._quadratic_kernel:
             AttributeError("Pruning is not possible on classifiers trained with quadratic kernels.")
@@ -244,9 +233,13 @@ class Classifier():
             X = self._X[:, mask]
             dset = (X, self._labels)
             pruned_features = self.features[mask]
-            return Classifier(dset, pruned_features, self._classes_names, self._rescale, self._test_size)
+            return Classifier(dset, pruned_features, self.classes, self._rescale, self._test_size)
 
-    def plot(self, reg):
+    def plot_regularization_path(self, reg):
         return plot_regularization_path(self, reg)
-    def plot_groups(self):
-        return plot_groups(self)
+
+    def plot(self):
+        return plot_classifier_complexity_vs_accuracy(self)
+    
+    def save(self, filename):
+        pass

@@ -1,12 +1,25 @@
 name: docs
 channels:
 dependencies:
-    # Base depends
+  # Base depends
   - python
   - pip
 
+  # Package dependencies
+  - pandas
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - mdtraj
+  - nglview
+  - cython
+  - nbsphinx
 
-
-    # Pip-only installs
-  #- pip:
+  # Pip-only installs
+  - pip:
+    - tdqm
+    - group-lasso
+    - sphinx-copybutton  
+    - furo
 

@@ -1,7 +1,8 @@
 """Interpret metastable states from MD simulations"""
 
 # Add imports here
-from .MD import *
+from .descriptors import *
+from .metastable import *
 from .classifier import *
 from .io import *
 

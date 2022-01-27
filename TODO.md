@@ -3,26 +3,31 @@
 ## Ristrutturazione delle fondamenta
 
 * [ ] MD
-  1. [ ] Calcolo descrittori ( traj ) --> ( df[features], dict[residue,atom_ids, group] )
-  2. [ ] Identify_states (colvar) --> df[basins,selection]
-  3. [ ] Assert lenghts 
-  4. [ ] Sample (1,2, chiamando 3) --> subsample
+  1. [x] Calcolo descrittori ( traj ) --> ( df[features], dict[residue,atom_ids, group] )
+  2. [x] Identify_states (colvar) --> df[basins,selection]
+  3. [x] Assert lenghts 
+  4. [x] Sample (1,2, chiamando 3) --> subsample
 
 ## Code
 
-* [ ] [LUIGI] plot_relevant_features not working
-* [ ] [LUIGI] plot_residues given score
-* [ ] [PIETRO] classifier.plot group mode (accuracy and number of unique feats)
-* [ ] [PIETRO] warm start for classifier
-* [ ] [PIETRO] define groups based on:
-* [ ] classifier.prune overwrite=False by default
-  1. [ ] angles (ok)
-  2. [ ] distances N*(N-1)/2 groups  
-* [ ] sparse group lasso?
-* [ ] expose classifier for out-of-sample prediction ( PLUMED interface? )
-* [ ] [LUIGI] export relevant features in VMD-like style
-* [ ] [LUIGI?] rewrite plot functions based on residue num and atom indices
+* [X] [LUIGI] rewrite visualize functions based on residue num and atom indices
+* [X] [LUIGI] plot_relevant_features not working
+* [X] [LUIGI] plot_residues given score
+* [x] [PIETRO] classifier.plot group mode (accuracy and number of unique feats)
+* [x] [PIETRO] warm start for classifier
+* [x] [PIETRO] define groups based on:
+* [x] classifier.prune overwrite=False by default
+  1. [x] angles (ok)
+  2. [x] distances N*(N-1)/2 groups  
+* [ ] [PIETRO] sparse group lasso?
+* [ ] [PIETRO] expose classifier for out-of-sample prediction
+* [ ] [LUIGI] export relevant features in VMD-like styl
 * [ ] [PIETRO] add quadratic features to data / df ?  
+* [ ] [LUIGI/PIETRO] fix isolines in plot_states
+* [ ] [LUIGI] fix sort_minima_by in metastable_states ?
+* [ ] [LUIGI] function approximate_fes
+* [ ] [LUIGI] clean up mess in plot / visualize func (keywords as dict)
+
 
 ## Tutorials
 

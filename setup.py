@@ -5,9 +5,22 @@ Interpretation of metastable states from MD simulations
 """
 import sys
 from setuptools import setup, find_packages, Extension
-from Cython.Build import cythonize
 import versioneer
 import numpy
+
+os_name = sys.platform
+compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp" ]
+libraries = ["m"]
+link_args = ['-fopenmp']
+if os_name.startswith('darwin'):
+    #clang compilation
+    compile_args.insert(-1, "-Xpreprocessor")
+    libraries.append("omp")
+    link_args.insert(-1, "-Xpreprocessor")
+
+__cython__ = False   # command line option, try-import, ...
+ext = '.pyx' if __cython__ else '.c'
+
 
 short_description = "Interpretation of metastable states from MD simulations".split("\n")[0]
 
@@ -22,20 +35,23 @@ except:
     long_description = None
 
 ext_modules=[
-    Extension("stateinterpreter._numerics",
-            ["stateinterpreter/_numerics.pyx"],
-            libraries=["m"],
+    Extension("stateinterpreter._compiled_numerics",
+            ["stateinterpreter/_compiled_numerics.pyx"],
+            libraries=libraries,
             include_dirs=[numpy.get_include()],
-            extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp" ],
-            extra_link_args=['-fopenmp']
+            extra_compile_args = compile_args,
+            extra_link_args= link_args
     ) 
 ]
+
+if __cython__:
+    from Cython.Build import cythonize
+    ext_modules = cythonize(ext_modules)
 
 setup(
     # Self-descriptive entries which should always be present
     name='stateinterpreter',
     author='Luigi Bonati <luigi.bonati@iit.it>, Pietro Novelli <pietro.novelli.iit>"',
-    #author_email='luigi.bonati@iit.it',
     description=short_description,
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -55,7 +71,7 @@ setup(
 
     # Allows `setup.py test` to work correctly with pytest
     setup_requires=[] + pytest_runner,
-    ext_modules = cythonize(ext_modules),
+    ext_modules = ext_modules,
     zip_safe = False,
 
     # Additional entries you may want simply uncomment the lines you want and fill in the data
