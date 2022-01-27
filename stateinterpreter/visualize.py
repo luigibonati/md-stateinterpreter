@@ -7,6 +7,32 @@ from ._configs import *
 
 
 def visualize_features(trajectory, states_labels, classes_names, relevant_features, feats_info, state = 0, n_feat_per_state=3, representation = 'licorice'):
+    """Visualize snapshots of each state highlighting the relevant features for a given state. 
+
+    Parameters
+    ----------
+    trajectory : mdtraj.Trajectory
+        MD trajectory
+    states_labels : pd.DataFrame
+        labels
+    classes_names : list
+        names of the classes
+    relevant_features : dict
+        features selected by Lasso
+    feats_info : pd.DataFrame
+        descriptors information (atoms involved)
+    state : int, optional
+        state for which the features are displayed, by default 0
+    n_feat_per_state : int, optional
+        number of features to be highlighted, by default 3
+    representation : str, optional
+        type of representation (licorice,cartoon,ball-and-stick), by default 'licorice'
+
+    Returns
+    -------
+    nglview viewer
+        View object
+    """
     # sample one frame per state
     frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.keys() ]
     traj = trajectory[frames]
@@ -55,6 +81,25 @@ def visualize_features(trajectory, states_labels, classes_names, relevant_featur
     return view
 
 def compute_residue_score(classifier,reg,feats_info,n_residues):
+    """Compute a residue score by aggregating all the features relevances by residues.
+
+    Parameters
+    ----------
+    classifier : Classifier
+        classifier object
+    reg : float
+        regularization magnitude
+    feats_info : DataFrame
+        descriptors information
+    n_residues : int
+        number of residues
+
+    Returns
+    -------
+    dictionary
+        residue score per each state
+    """
+
     reg_idx = classifier._closest_reg_idx(reg)
     coefficients = classifier._coeffs[reg_idx]
     _classes = classifier._classes_labels[reg_idx]
@@ -82,6 +127,28 @@ def compute_residue_score(classifier,reg,feats_info,n_residues):
     return residue_score
 
 def visualize_residue_score(trajectory, states_labels, classes_names, residue_score, representation = 'licorice', palette = 'Reds'):
+    """Visualize snapshots of each state coloring the residues with the score per each state.
+
+    Parameters
+    ----------
+    trajectory : mdtraj.Trajectory
+        MD trajectory
+    states_labels : pd.DataFrame
+        labels
+    classes_names : list
+        names of the classes
+    residue_score : dict
+        dictionary with the scores per each state
+    representation : str, optional
+        type of representation (licorice,cartoon,ball-and-stick), by default 'licorice'
+    palette : str, optional
+        color scheme, by default 'Reds'
+
+    Returns
+    -------
+    nglview viewer
+        View object
+    """
     # sample one frame per state
     frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.keys() ]
     traj = trajectory[frames]

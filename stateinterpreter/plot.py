@@ -13,8 +13,10 @@ if __useTeX__:
     plt.rcParams.update({
         "text.usetex": True,
         "mathtext.fontset": "cm",
-        "font.family": "serif",
-        "font.serif": ["Computer Modern Roman"]
+        #"font.family": "serif",
+        #"font.serif": ["Computer Modern Roman"]
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Computer Modern Serif"]
     })
 
 __all__ = ["plot_states", "plot_regularization_path", "plot_classifier_complexity_vs_accuracy", "plot_combination_states_features", "plot_states_features", "plot_histogram_features" ]

@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to stateinterpreter's documentation!
+md-stateinterpreter documentation
 =========================================================
+
+``stateinterpreter`` is a Python package devised to assist the characterization and interpretation of metastable states from MD-simulations.
 
 .. toctree::
    :maxdepth: 2
@@ -12,8 +14,6 @@ Welcome to stateinterpreter's documentation!
 
    getting_started
    api
-
-
 
 Indices and tables
 ==================
