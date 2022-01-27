@@ -5,29 +5,13 @@ import mdtraj as md
 import itertools
 from warnings import warn
 
-from .io import load_dataframe, load_trajectory
+from .utils.io import load_dataframe
 from ._configs import *
-from ._compiled_numerics import contact_function
+from .utils._compiled_numerics import contact_function
 
-__all__ = ["descriptors_from_traj", "sample"]
+__all__ = ["compute_descriptors", "load_descriptors"]
 
-def descriptors_from_traj(traj_dict, descriptors = ['ca', 'dihedrals', 'hbonds_distances', 'hbonds_contacts'], start=0, stop=None, stride=1):
-    """ Load trajectory with mdtraj.
-
-    Parameters
-    ----------
-    traj_dict : dict
-        dictionary containing trajectory and topology (optional) file
-    descriptors : bool or list, default True
-        compute list of descriptors. if True compute all descriptors: ['ca','dihedral','hbonds'].
-        if False no descriptor is computed.
-
-    """
-    traj = load_trajectory(traj_dict,start,stop,stride)
-    
-    return _compute_descriptors(traj, descriptors)
-
-def _compute_descriptors(traj, descriptors):
+def compute_descriptors(traj, descriptors = ['ca', 'dihedrals', 'hbonds_distances', 'hbonds_contacts']):
 
     """Compute descriptors from trajectory:
     - Dihedral angles
@@ -38,8 +22,8 @@ def _compute_descriptors(traj, descriptors):
 
     Parameters
     ----------
-    descriptors : string or list
-        compute a single descriptor or a list ot them
+    descriptors : bool or list
+        compute list of descriptors. by default compute all the following descriptors: ['ca', 'dihedrals', 'hbonds_distances', 'hbonds_contacts'].
 
     Raises
     ------
@@ -95,6 +79,15 @@ def _compute_descriptors(traj, descriptors):
     if __DEV__:
         print(f"Descriptors: {df.shape}")
     return df, _feats_info  
+
+def load_descriptors(descriptors, start = 0, stop = None, stride = 1, **kwargs):
+    descriptors = load_dataframe(descriptors, **kwargs)
+    descriptors = descriptors.iloc[start:stop:stride, :]
+    if "time" in descriptors.columns:
+        descriptors = descriptors.drop("time", axis="columns")
+    if __DEV__:
+        print(f"Descriptors: {descriptors.shape}")
+    return descriptors
 
 # DESCRIPTORS COMPUTATION
 def _CA_DISTANCES(traj):
@@ -319,71 +312,3 @@ def _DISULFIDE_DIHEDRALS(traj, sincos = True):
 
     return angles, names, descriptors_ids
 
-def load_descriptors(descriptors, start = 0, stop = None, stride = 1, **kwargs):
-    descriptors = load_dataframe(descriptors, **kwargs)
-    descriptors = descriptors.iloc[start:stop:stride, :]
-    if "time" in descriptors.columns:
-        descriptors = descriptors.drop("time", axis="columns")
-    if __DEV__:
-        print(f"Descriptors: {descriptors.shape}")
-    return descriptors
-
-def sample(descriptors, states_labels, n_configs, regex_filter = '.*', states_subset=None, states_names=None):
-    """Sample points from trajectory
-
-    Args:
-        n_configs (int): number of points to sample for each metastable state
-        regex_filter (str, optional): regex to filter the features. Defaults to '.*'.
-        states_subset (list, optional): list of integers corresponding to the metastable states to sample. Defaults to None take all states.
-        states_names (list, optional): list of strings corresponding to the name of the states. Defaults to None.
-
-    Returns:
-        (configurations, labels), features_names, states_names
-    """
-    assert len(descriptors) == len(states_labels), "Length mismatch between descriptors and states_labels."
-    features = descriptors.filter(regex=regex_filter).columns.values
-    config_list = []
-    labels = []
-    
-    if isinstance(states_labels, pd.DataFrame):
-        pass 
-    elif isinstance(states_labels, np.ndarray):
-        states_labels = np.squeeze(states_labels)
-        columns = ['labels']
-        if states_labels.ndim == 2:
-            columns.append('selection')
-        states_labels = pd.DataFrame(data=states_labels, columns=columns)
-    else:
-        raise TypeError(
-            f"{states_labels}: Accepted types are 'pandas.Dataframe' or 'numpy.ndarray' "
-        )
-    if not ('selection' in states_labels):
-        states_labels['selection'] = np.ones(len(states_labels), dtype=bool)
-
-    states = dict()
-    if states_subset is None:
-        states_subset = range(len(states_labels['labels'].unique()))
-
-    if states_names is not None:
-        assert len(states_names) == len(states_subset), "Length mismatch between states_names and number of unique states."
-
-    for idx, i in enumerate(states_subset):
-        if states_names is None:
-            states[i] = i
-        else:
-            states[i] = states_names[idx]
-
-    for label in states_subset:
-        #select label
-        df = descriptors.loc[ (states_labels['labels'] == label) & (states_labels['selection'] == True)]
-        #select descriptors and sample
-        replace = False
-        if n_configs > len(df):
-            warn("The asked number of samples is higher than the possible unique values. Sampling with replacement")
-            replace = True
-        config_i = df.filter(regex=regex_filter).sample(n=n_configs, replace=replace).values   
-        config_list.append(config_i)
-        labels.extend([label]*n_configs)
-    labels = np.array(labels, dtype=int)
-    configurations = np.vstack(config_list)
-    return (configurations, labels), features, states

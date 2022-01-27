@@ -3,7 +3,7 @@ import matplotlib
 import matplotlib.cm as cm
 import numpy as np
 from scipy.sparse import csr_matrix
-from ._configs import *
+from .._configs import *
 
 
 def visualize_features(trajectory, states_labels, classes_names, relevant_features, feats_info, state = 0, n_feat_per_state=3, representation = 'licorice'):
@@ -114,15 +114,15 @@ def compute_residue_score(classifier,reg,feats_info,n_residues):
             pass
         else:
             indices = csr_matrix(coef/nrm).indices
-            for idx in indices:
+            for i in indices:
                 if classifier._quadratic_kernel:
                     raise NotImplementedError("Residue Score not implemented for quadratic features")
                 else:
-                    feature_name = classifier.features[idx]
+                    feature_name = classifier.features[i]
                 resnames = feats_info[feature_name]['group'].split('_')
                 for res in resnames:
                     res_idx = int ( ''.join([n for n in res if n.isdigit()]) ) - 1
-                    score[res_idx] += coef[idx]/len(resnames)  
+                    score[res_idx] += coef[i]/len(resnames)  
         residue_score[state_name] = score 
     return residue_score
 

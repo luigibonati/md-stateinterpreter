@@ -1,7 +1,7 @@
 
 import numpy as np
 from scipy.optimize import minimize
-from ._configs import *
+from .._configs import *
 from ._compiled_numerics import _evaluate_kde_args, _evaluate_logkde_args, logsumexp
 
 def cov(points, weights=None):
@@ -126,7 +126,7 @@ class gaussian_kde:
         )
         return self.dataset[centers] + displacements
 
-    def local_minima(self, num_init=100, decimals_tolerance=4, sampling='data_driven'):
+    def local_minima(self, num_init=100, decimals_tolerance=4, sampling='uniform'):
         assert type(num_init) == int, '"num_init" should be an int.'
         if sampling == 'data_driven':
             init_pts = self.sample(size=num_init)

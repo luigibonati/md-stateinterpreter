@@ -6,7 +6,7 @@ from itertools import combinations
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import MaxNLocator
 import sys
-from ._configs import *
+from .._configs import *
 from .numerical_utils import gaussian_kde
 
 if __useTeX__:

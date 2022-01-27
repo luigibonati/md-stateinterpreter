@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from .numerical_utils import gaussian_kde
+from .utils.numerical_utils import gaussian_kde
 from ._configs import *
 import sys
 
@@ -52,7 +52,7 @@ def identify_metastable_states(
 
         # Compute KDE
         empirical_centers = colvar[selected_cvs].to_numpy()
-        KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=logweights)
+        KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=w)
 
         if __DEV__:
             print("DEV >>> Finding Local Minima") 
@@ -156,3 +156,4 @@ def _sanitize_logweights(logweights, colvar=None, kBT=None):
         if w.ndim != 1:
             raise ValueError(f"{logweights}: 1D array is required for logweights")
     return w
+

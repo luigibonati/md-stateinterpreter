@@ -4,7 +4,7 @@ Unit and regression test for the stateinterpreter package.
 
 # Import package, test suite, and other packages as needed
 from scipy.stats import gaussian_kde as scipy_gaussian_kde
-from stateinterpreter.numerical_utils import gaussian_kde
+from stateinterpreter.utils.numerical_utils import gaussian_kde
 import numpy as np
 
 def test_gaussian_kde():

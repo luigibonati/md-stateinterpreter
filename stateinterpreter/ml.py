@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -8,44 +9,76 @@ from scipy.spatial.distance import squareform
 from group_lasso import LogisticGroupLasso
 from tqdm import tqdm
 import warnings
-from .plot import plot_regularization_path, plot_classifier_complexity_vs_accuracy
+from .utils.plot import plot_regularization_path, plot_classifier_complexity_vs_accuracy
 from ._configs import *
 
-__all__ = ["Classifier"]
+__all__ = ["Classifier","prepare_training_dataset"]
 
-def quadratic_kernel_featuremap(X):
-    n_pts, n_feats = X.shape
-    n_feats +=1
-    transformed_X = np.empty((n_pts, n_feats + n_feats*(n_feats - 1)//2), dtype=np.float_)
-    X = np.c_[X, np.ones(n_pts)]
+def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter = None, states_subset=None, states_names=None):
+    """Sample points from trajectory
+
+    Args:
+        n_configs (int): number of points to sample for each metastable state
+        regex_filter (str, optional): regex to filter the features. Defaults to '.*'.
+        states_subset (list, optional): list of integers corresponding to the metastable states to sample. Defaults to None take all states.
+        states_names (list, optional): list of strings corresponding to the name of the states. Defaults to None.
+
+    Returns:
+        (configurations, labels), features_names, states_names
+    """
+    assert len(descriptors) == len(states_labels), "Length mismatch between descriptors and states_labels."
+    if regex_filter is not None:
+        features = descriptors.filter(regex=regex_filter).columns.values
+    else:
+        features = descriptors.columns.values
+    config_list = []
+    labels = []
     
-    def _compute_repr(x):
-        mat = np.outer(x,x)
-        diag = np.diag(mat)
-        mat = (mat - np.diag(diag))*np.sqrt(2)
-        off_diag = squareform(mat)
-        return np.r_[diag, off_diag]
+    if isinstance(states_labels, pd.DataFrame):
+        pass 
+    elif isinstance(states_labels, np.ndarray):
+        states_labels = np.squeeze(states_labels)
+        columns = ['labels']
+        if states_labels.ndim == 2:
+            columns.append('selection')
+        states_labels = pd.DataFrame(data=states_labels, columns=columns)
+    else:
+        raise TypeError(
+            f"{states_labels}: Accepted types are 'pandas.Dataframe' or 'numpy.ndarray' "
+        )
+    if not ('selection' in states_labels):
+        states_labels['selection'] = np.ones(len(states_labels), dtype=bool)
 
-    for idx, x in enumerate(X):
-        transformed_X[idx] = _compute_repr(x)
-    return transformed_X
+    states = dict()
+    if states_subset is None:
+        states_subset = range(len(states_labels['labels'].unique()))
 
-def decode_quadratic_features(idx, features_names):
-    num_feats = features_names.shape[0]
-    s = ''
-    if idx < num_feats:
-        s = f"{features_names[idx]} || {features_names[idx]}"
-    elif idx > num_feats:
-        rows, cols = np.triu_indices(num_feats + 1, k = 1)
-        offset_idx  = idx -  num_feats - 1
-        i, j = rows[offset_idx], cols[offset_idx]
-        if i == num_feats:
-            s = f"{features_names[j]}"
-        elif j == num_feats:
-            s = f"{features_names[i]}"
+    if states_names is not None:
+        assert len(states_names) == len(states_subset), "Length mismatch between states_names and number of unique states."
+
+    for idx, i in enumerate(states_subset):
+        if states_names is None:
+            states[i] = i
         else:
-            s = f"{features_names[i]} || {features_names[j]}"
-    return s
+            states[i] = states_names[idx]
+
+    for label in states_subset:
+        #select label
+        df = descriptors.loc[ (states_labels['labels'] == label) & (states_labels['selection'] == True)]
+        #select descriptors and sample
+        replace = False
+        if n_configs > len(df):
+            warn("The asked number of samples is higher than the possible unique values. Sampling with replacement")
+            replace = True
+        if regex_filter is not None:
+            config_i = df.filter(regex=regex_filter).sample(n=n_configs, replace=replace).values   
+        else:
+            config_i = df.sample(n=n_configs, replace=replace).values 
+        config_list.append(config_i)
+        labels.extend([label]*n_configs)
+    labels = np.array(labels, dtype=int)
+    configurations = np.vstack(config_list)
+    return (configurations, labels), features, states
 
 class Classifier():
     def __init__(self, dataset, features_names, classes_names, rescale=True, test_size=0.25):
@@ -243,3 +276,37 @@ class Classifier():
     
     def save(self, filename):
         pass
+
+def quadratic_kernel_featuremap(X):
+    n_pts, n_feats = X.shape
+    n_feats +=1
+    transformed_X = np.empty((n_pts, n_feats + n_feats*(n_feats - 1)//2), dtype=np.float_)
+    X = np.c_[X, np.ones(n_pts)]
+    
+    def _compute_repr(x):
+        mat = np.outer(x,x)
+        diag = np.diag(mat)
+        mat = (mat - np.diag(diag))*np.sqrt(2)
+        off_diag = squareform(mat)
+        return np.r_[diag, off_diag]
+
+    for idx, x in enumerate(X):
+        transformed_X[idx] = _compute_repr(x)
+    return transformed_X
+
+def decode_quadratic_features(idx, features_names):
+    num_feats = features_names.shape[0]
+    s = ''
+    if idx < num_feats:
+        s = f"{features_names[idx]} || {features_names[idx]}"
+    elif idx > num_feats:
+        rows, cols = np.triu_indices(num_feats + 1, k = 1)
+        offset_idx  = idx -  num_feats - 1
+        i, j = rows[offset_idx], cols[offset_idx]
+        if i == num_feats:
+            s = f"{features_names[j]}"
+        elif j == num_feats:
+            s = f"{features_names[i]}"
+        else:
+            s = f"{features_names[i]} || {features_names[j]}"
+    return s
