@@ -19,6 +19,12 @@ if os_name.startswith('darwin'):
     link_args.insert(-1, "-Xpreprocessor")
 
 __cython__ = False   # command line option, try-import, ...
+try: 
+    import Cython
+    __cython__ = True
+except ModuleNotFoundError:
+    __cython__ = False
+
 ext = '.pyx' if __cython__ else '.c'
 
 short_description = "Interpretation of metastable states from MD simulations".split("\n")[0]
@@ -35,7 +41,7 @@ except:
 
 ext_modules=[
     Extension("stateinterpreter.utils._compiled_numerics",
-            ["stateinterpreter/utils/_compiled_numerics.pyx"],
+            ["stateinterpreter/utils/_compiled_numerics"+ext],
             libraries=libraries,
             include_dirs=[numpy.get_include()],
             extra_compile_args = compile_args,

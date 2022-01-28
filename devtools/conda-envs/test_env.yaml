@@ -17,6 +17,7 @@ dependencies:
   - mdtraj
   - nglview
   - cython
+  - tdqm
 
     # Testing
   - pytest
@@ -25,5 +26,4 @@ dependencies:
 
     # Pip-only installs
   - pip:
-    - tdqm
     - group-lasso

@@ -68,7 +68,7 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
         #select descriptors and sample
         replace = False
         if n_configs > len(df):
-            warn("The asked number of samples is higher than the possible unique values. Sampling with replacement")
+            warnings.warn("The asked number of samples is higher than the possible unique values. Sampling with replacement")
             replace = True
         if regex_filter is not None:
             config_i = df.filter(regex=regex_filter).sample(n=n_configs, replace=replace).values   
