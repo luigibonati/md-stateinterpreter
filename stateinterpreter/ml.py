@@ -217,7 +217,7 @@ class Classifier():
 
             #If only two states the learned models are the same.
             if len(selected.keys()) == 2:
-                del_key = selected.keys()[0]
+                del_key = list(selected.keys())[0]
                 selected.pop(del_key)
         return selected
     
