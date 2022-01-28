@@ -214,6 +214,11 @@ class Classifier():
                 #idx, weight, name
                 names = np.array(names)
                 selected[state_name]= list(zip(coef.indices[sort_perm], coef.data[sort_perm], names[sort_perm]))
+
+            #If only two states the learned models are the same.
+            if len(selected.keys()) == 2:
+                del_key = selected.keys()[0]
+                selected.pop(del_key)
         return selected
     
     def feature_summary(self, reg):
@@ -222,24 +227,13 @@ class Classifier():
     def print_selected(self, reg):
         selected = self._get_selected(reg)
 
-        print_queue = dict()
-        for state in selected.keys():
-            _intra_state_queue = []
-            for data in selected[state]:
-                _intra_state_queue.append([f"{np.around(data[1]*100, decimals=3)}%", f"{data[2]}"])
-            print_queue[state] = _intra_state_queue
-        
-        col_width = 0
-        for _intra_state_queue in print_queue.values():
-            for _row in _intra_state_queue:
-                if len(str(_row[0])) > col_width:
-                    col_width = len(str(_row[0]))
         print(f"Accuracy: {int(self._crossval[self._closest_reg_idx(reg)]*100)}%")
-        for state in print_queue.keys():
+
+        for state in selected.keys():
             state_name = 'State ' +  f'{state}' + ':'
             print(state_name)
-            for row in print_queue[state]:
-                print(f"[{row[0].ljust(col_width)}]  {row[1]}")
+            for row in selected[state]:
+                print(" " + row[2])
 
     def prune(self, reg, overwrite=False):    
         selected = self._get_selected(reg)
