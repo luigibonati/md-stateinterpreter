@@ -52,13 +52,13 @@ cpdef logsumexp(real[:] X):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
+cpdef _evaluate_kde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, dtype):
     cdef int data_dim = dataset.shape[0]
     cdef int x_dim = points.shape[0]
     cdef int d = points.shape[1]
     cdef Py_ssize_t i, j
     cdef real[:] result = np.zeros(x_dim, dtype)
-    cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
+    cdef double norm = _logweights_norm + 0.5*d*math.log(2*PI*(bwidth*bwidth))
     cdef double res
     for i in range(x_dim):
         res = 0
@@ -80,13 +80,13 @@ cdef real _get_arg(Py_ssize_t i, Py_ssize_t j, real[:,:] points, real[:,:] datas
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, real _sqrt_inv_cov_log_det, dtype):
+def _evaluate_logkde_args(real[:,:] points, real[:,:] dataset, real bwidth, real[:] logweights, real _logweights_norm, dtype):
     cdef int data_dim = dataset.shape[0]
     cdef int x_dim = points.shape[0]
     cdef int d = points.shape[1]
     cdef Py_ssize_t i, j
     cdef real[:] result = np.zeros(x_dim, dtype)
-    cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth)) - _sqrt_inv_cov_log_det
+    cdef double norm = _logweights_norm + 0.5*d*np.log(2*PI*(bwidth*bwidth))
     cdef double bwidth_ = bwidth
     for i in prange(x_dim, nogil=True):
         result[i] = _get_log_arg(i, points, dataset , bwidth, norm, logweights, d, data_dim)

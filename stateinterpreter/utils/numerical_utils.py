@@ -57,9 +57,6 @@ class gaussian_kde:
         self.covariance = cov(dataset, weights=self.weights)
         self.inv_cov = np.linalg.inv(self.covariance)
         
-        self._sqrt_inv_cov = np.linalg.cholesky(self.inv_cov)
-        self._sqrt_inv_cov_det = np.prod(np.diag(self._sqrt_inv_cov))
-        self._sqrt_inv_cov_log_det = np.sum(np.log(np.diag(self._sqrt_inv_cov)))
 
         
     def __call__(self, points, logpdf=False):
@@ -81,13 +78,12 @@ class gaussian_kde:
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
 
-        points = np.dot(points, self._sqrt_inv_cov)
-        dataset = np.dot(self.dataset, self._sqrt_inv_cov)
+        dataset = self.dataset
         dtype = points.dtype
         if logpdf:
-            return _evaluate_logkde_args(points, dataset, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_inv_cov_log_det, dtype)
+            return _evaluate_logkde_args(points, dataset, self.bwidth, self.logweights, self._logweights_norm, dtype)
         else:
-            return _evaluate_kde_args(points, dataset, self.bwidth, self.logweights, self._logweights_norm, self._sqrt_inv_cov_log_det, dtype)          
+            return _evaluate_kde_args(points, dataset, self.bwidth, self.logweights, self._logweights_norm, dtype)          
 
     @property
     def neff(self):
