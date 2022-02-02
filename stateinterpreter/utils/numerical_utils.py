@@ -54,7 +54,6 @@ class gaussian_kde:
         if bandwidth.ndim == 0:
             self.bwidth = np.eye(self.dims)*bandwidth
             self._bwidth_norm = self.dims*np.log(bandwidth)
-
         elif bandwidth.ndim == 1:
             assert bandwidth.shape[0] == self.ndim, "Dimensions of bandwidth vector do not match data dimensions."
             self._bwidth_norm = np.sum(np.log(bandwidth))
@@ -84,8 +83,8 @@ class gaussian_kde:
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
 
-        dataset = self.dataset@self.bwidth
-        points = points@self.bwidth
+        dataset = np.dot(self.dataset, self.bwidth**-1)
+        points = np.dot(points, self.bwidth**-1)
         dtype = points.dtype
         if logpdf:
             return _evaluate_logkde_args(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)
