@@ -17,8 +17,8 @@ dependencies:
   - mdtraj
   - nglview
   - cython
-  - tdqm
-
+  - tqdm
+  
     # Testing
   - pytest
   - pytest-cov
