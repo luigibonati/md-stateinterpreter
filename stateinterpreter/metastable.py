@@ -10,8 +10,8 @@ def identify_metastable_states(
         colvar,
         selected_cvs,
         kBT,
+        bandwidth,
         logweights=None,
-        bw_method=None,
         fes_cutoff=None,
         sort_minima_by = 'cvs_grid',
         optimizer_kwargs=dict(),
@@ -26,10 +26,10 @@ def identify_metastable_states(
             Names of the collective variables used for clustering
         kBT : scalar
             Temperature
+        bandwidth : scalar
+            Bandwidth method for FES calculations
         logweights : pandas.DataFrame, np.array or string , optional
             Logweights used for FES calculation, by default None
-        bw_method : string, optional
-            Bandwidth method for FES calculations
         fes_cutoff : float, optional
             Cutoff used to select only low free-energy configurations, if None fes_cutoff is 2k_BT
         sort_minima_by : string, optional
@@ -52,7 +52,7 @@ def identify_metastable_states(
 
         # Compute KDE
         empirical_centers = colvar[selected_cvs].to_numpy()
-        KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=w)
+        KDE = gaussian_kde(empirical_centers,bandwidth=bandwidth,logweights=w)
 
         if __DEV__:
             print("DEV >>> Finding Local Minima") 
@@ -104,14 +104,14 @@ def _basin_selection(
     return df
 
 def approximate_FES(
-        colvar, selected_cvs=None, kBT=2.5, bw_method=None, logweights=None
+        colvar, bandwidth, selected_cvs=None, kBT=2.5, logweights=None
     ):
     """Approximate Free Energy Surface (FES) in the space of selected_cvs through Gaussian Kernel Density Estimation
 
     Args:
+        bandwidth (scalar, vector or matrix):
         selected_cvs (numpy.ndarray or pd.Dataframe): List of sampled collective variables with dimensions [num_timesteps, num_CVs]
         kBT (scalar): Temperature
-        bw_method ('scott', 'silverman' or a scalar, optional): Bandwidth method used in GaussianKDE. Defaults to None ('scotts' factor).
         logweights (arraylike log weights, optional): Logarithm of the weights. Defaults to None (uniform weights).
 
     Returns:
@@ -123,7 +123,7 @@ def approximate_FES(
         
     empirical_centers = colvar[selected_cvs] if selected_cvs is not None else colvar
     empirical_centers = empirical_centers.to_numpy()
-    KDE = gaussian_kde(empirical_centers,bw_method=bw_method,logweights=w)
+    KDE = gaussian_kde(empirical_centers, bandwidth,logweights=w)
     return lambda x: -kBT*KDE.logpdf(x)
 
 def _sanitize_logweights(logweights, colvar=None, kBT=None):

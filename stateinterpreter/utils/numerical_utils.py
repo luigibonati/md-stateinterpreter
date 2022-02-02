@@ -27,7 +27,7 @@ def weights_from_logweights(logweights):
     return np.exp(logweights - C)
 
 class gaussian_kde:
-    def __init__(self, dataset, bw_method=None, logweights=None):
+    def __init__(self, dataset, bandwidth, logweights=None):
         assert len(dataset.shape) == 2
         self.dataset = dataset #[# of pts, # of dims]
         self.n_centers, self.dims = self.dataset.shape
@@ -42,22 +42,28 @@ class gaussian_kde:
         self._logweights_norm = logsumexp(self.logweights)
         self.weights = weights_from_logweights(self.logweights)
 
-        if bw_method is None:
-            self.bwidth = self.scotts_factor()
-        elif bw_method == 'scott':
-            self.bwidth = self.scotts_factor()
-        elif bw_method == 'silverman':
-            self.bwidth = self.silverman_factor()
-        elif np.isscalar(bw_method) and not isinstance(bw_method, str):
-            self.bwidth = bw_method
-        else:
-            msg = "`bw_method` should be 'scott', 'silverman' or a scalar "
-            raise ValueError(msg)
-         
-        self.covariance = cov(dataset, weights=self.weights)
-        self.inv_cov = np.linalg.inv(self.covariance)
+        self._sqrt_inv_cov = np.linalg.cholesky(self.inv_cov)
+         self._sqrt_inv_cov_det = np.prod(np.diag(self._sqrt_inv_cov))
+         self._sqrt_inv_cov_log_det = np.sum(np.log(np.diag(self._sqrt_inv_cov)))
         
+        try:
+            bandwidth = np.array(bandwidth)
+        except:
+            ValueError("Unable to convert bandwidth to np.array")
 
+        if bandwidth.ndim == 0:
+            self.bwidth = np.eye(self.dims)*bandwidth
+            self._bwidth_norm = self.dims*np.log(bandwidth)
+
+        elif bandwidth.ndim == 1:
+            assert bandwidth.shape[0] == self.ndim, "Dimensions of bandwidth vector do not match data dimensions."
+            self._bwidth_norm = np.sum(np.log(bandwidth))
+            self.bwidth = np.diag(bandwidth)     
+        else:
+            msg = "`bandwidth` should be scalar, matrix or vector"
+            raise ValueError(msg)
+    
+        self.covariance = cov(dataset, weights=self.weights)
         
     def __call__(self, points, logpdf=False):
         #Evaluate the estimated pdf on a provided set of points.
@@ -78,40 +84,14 @@ class gaussian_kde:
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
 
-        dataset = self.dataset
+        dataset = self.dataset@self.bwidth
+        points = points@self.bwidth
         dtype = points.dtype
         if logpdf:
-            return _evaluate_logkde_args(points, dataset, self.bwidth, self.logweights, self._logweights_norm, dtype)
+            return _evaluate_logkde_args(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)
         else:
-            return _evaluate_kde_args(points, dataset, self.bwidth, self.logweights, self._logweights_norm, dtype)          
+            return _evaluate_kde_args(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)          
 
-    @property
-    def neff(self):
-        try:
-            return self._neff
-        except AttributeError:
-            self._neff = 1/sum(self.weights**2)
-            return self._neff
-        
-    def scotts_factor(self):
-        """Compute Scott's factor.
-            +++ From scipy.stats.gaussian_kde +++
-            Returns
-            -------
-            s : float
-                Scott's factor.
-        """
-        return np.power(self.neff, -1./(self.dims+4))
-
-    def silverman_factor(self):
-        """Compute the Silverman factor.
-            +++ From scipy.stats.gaussian_kde +++
-            Returns
-            -------
-            s : float
-                The silverman factor.
-        """
-        return np.power(self.neff*(self.dims+2.0)/4.0, -1./(self.dims+4))
     
     def sample(self, size = 1):
         centers = np.random.choice(self.n_centers, size=size, p=self.weights)
