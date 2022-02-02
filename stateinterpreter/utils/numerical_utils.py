@@ -42,10 +42,6 @@ class gaussian_kde:
         self._logweights_norm = logsumexp(self.logweights)
         self.weights = weights_from_logweights(self.logweights)
 
-        self._sqrt_inv_cov = np.linalg.cholesky(self.inv_cov)
-         self._sqrt_inv_cov_det = np.prod(np.diag(self._sqrt_inv_cov))
-         self._sqrt_inv_cov_log_det = np.sum(np.log(np.diag(self._sqrt_inv_cov)))
-        
         try:
             bandwidth = np.array(bandwidth)
         except:
