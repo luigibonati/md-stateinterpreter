@@ -13,6 +13,7 @@ def identify_metastable_states(
         bandwidth,
         logweights=None,
         fes_cutoff=None,
+        gradient_descent_iterates = 0,
         sort_minima_by = 'cvs_grid',
         optimizer_kwargs=dict(),
     ):
@@ -79,7 +80,7 @@ def identify_metastable_states(
             raise KeyError(f'Key {sort_minima_by} not allowed. Valid values: "energy","cvs","cvs_grid".')
 
         # Assign basins and select based on FES cutoff
-        basins = _basin_selection(KDE, minima, fes_cutoff)
+        basins = _basin_selection(KDE, minima, fes_cutoff, gradient_descent_iterates)
 
         n_basins = len(basins['labels'].unique())
         print(f"Found {n_basins} local minima with selected populations:")
@@ -89,11 +90,19 @@ def identify_metastable_states(
         return basins
 
 def _basin_selection(
-    KDE, minima, fes_cutoff
+    KDE, minima, fes_cutoff, gradient_descent_iterates
 ):
     if __DEV__:
         print("DEV >>> Basin Assignment")
-    norms = np.linalg.norm((KDE.dataset[:,np.newaxis,:] - minima), axis=2)
+    pts = np.copy(KDE.dataset)
+    v = np.zeros_like(pts)
+    beta = 0.9 #Default
+    learning_rate = np.diag(np.diag(KDE.inv_bwidth)**-1)
+    for _ in range(gradient_descent_iterates): 
+        v*= beta
+        v += -(1 - beta)*KDE.grad(pts, logpdf=True)
+        pts -= np.dot(v,learning_rate)
+    norms = np.linalg.norm((pts[:,np.newaxis,:] - minima), axis=2)
     classes = np.argmin(norms, axis=1)
     fes_at_minima = - KDE.logpdf(minima)
     ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])

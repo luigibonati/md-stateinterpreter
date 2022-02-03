@@ -2,7 +2,7 @@
 import numpy as np
 from scipy.optimize import minimize
 from .._configs import *
-from ._compiled_numerics import _evaluate_kde_args, _evaluate_logkde_args, logsumexp
+from ._compiled_numerics import GaussianKDE_pdf, GaussianKDE_logpdf, GaussianKDE_grad, GaussianKDE_loggrad, logsumexp
 
 def cov(points, weights=None):
     assert len(points.shape) == 2
@@ -48,12 +48,12 @@ class gaussian_kde:
             ValueError("Unable to convert bandwidth to np.array")
 
         if bandwidth.ndim == 0:
-            self.bwidth = np.eye(self.dims)*bandwidth
+            self.inv_bwidth = np.eye(self.dims)/bandwidth
             self._bwidth_norm = self.dims*np.log(bandwidth)
         elif bandwidth.ndim == 1:
             assert bandwidth.shape[0] == self.ndim, "Dimensions of bandwidth vector do not match data dimensions."
             self._bwidth_norm = np.sum(np.log(bandwidth))
-            self.bwidth = np.diag(bandwidth)     
+            self.inv_bwidth = np.diag(bandwidth**-1)     
         else:
             msg = "`bandwidth` should be scalar, matrix or vector"
             raise ValueError(msg)
@@ -72,27 +72,37 @@ class gaussian_kde:
         return self.__call__(points, logpdf=True)
     
     def grad(self, points, logpdf=False):
-        return self.__call__(points, logpdf=logpdf, grads=True)
+        res = self._kde_eval(points, logpdf=logpdf, grad=True)
+        if res.shape[0] == 1:
+            return res[0]
+        else:
+            return res
 
-    def _kde_eval(self, points, logpdf=False):
+    def _kde_eval(self, points, logpdf=False, grad=False):
         if (points.ndim ==1):
             assert points.shape[0] == self.dims
             points = points[np.newaxis, :]
-
-        dataset = np.dot(self.dataset, self.bwidth**-1)
-        points = np.dot(points, self.bwidth**-1)
+        dataset = np.dot(self.dataset, self.inv_bwidth)
+        points = np.dot(points, self.inv_bwidth)
         dtype = points.dtype
         if logpdf:
-            return _evaluate_logkde_args(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)
+            if grad:
+                #Final dot product is for correct scaling of grad w.r.t. bandwidth parameter 
+                return np.dot(GaussianKDE_loggrad(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype), self.inv_bwidth)
+            else:
+                return GaussianKDE_logpdf(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)
         else:
-            return _evaluate_kde_args(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)          
+            if grad:
+                #Final dot product is for correct scaling of grad w.r.t. bandwidth parameter
+                return np.dot(GaussianKDE_grad(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype), self.inv_bwidth)
+            else:
+                return GaussianKDE_pdf(points, dataset, self._bwidth_norm, self.logweights, self._logweights_norm, dtype)          
 
-    
     def sample(self, size = 1):
         centers = np.random.choice(self.n_centers, size=size, p=self.weights)
         displacements = np.random.multivariate_normal(
             np.zeros((self.dims,)),
-            (self.bwidth**2)*self.covariance,
+            np.diag(np.diag(self.inv_bwidth)**-1)**2,
             size=size
         )
         return self.dataset[centers] + displacements
