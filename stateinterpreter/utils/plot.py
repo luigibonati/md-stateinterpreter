@@ -113,18 +113,18 @@ def plot_classifier_complexity_vs_accuracy(classifier, feature_mode = False, ax 
     if ax is not None:
         ax1 = ax
     else:
-        fig, ax1 = plt.subplots(figsize=(3,2))
+        fig, ax1 = plt.subplots()
 
     ax2 = ax1.twinx()
     ax2.grid(alpha=0.3)
-    ax2.plot(np.log10(classifier._reg), num_groups, '-', color='steelblue')
-    ax1.plot(np.log10(classifier._reg), classifier._crossval, '-', color='tomato')
+    ax2.plot(np.log10(classifier._reg), num_groups, '--', color='fessa1')
+    ax1.plot(np.log10(classifier._reg), classifier._crossval, '-', color='fessa0')
     ax2.yaxis.set_major_locator(MaxNLocator(integer=True))
     ax1.set_xlabel(r"$\log_{10}(\lambda)$")
-    ax1.set_ylabel('Accuracy', color='r')
+    ax1.set_ylabel('Accuracy', color='fessa0')
     ax1.set_ylim(0,1.1)
     desc = "Groups" if classifier._groups is not None else "Features"
-    ax2.set_ylabel(f'Number of {desc}', color='b')
+    ax2.set_ylabel(f'Number of {desc}', color='fessa1')
     ax1.set_xmargin(0)
 
     if ax is not None:
@@ -282,10 +282,10 @@ def plot_states_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = 
                         _ = ax.text(mx, my, b, ha="center", va="center", color='k', fontsize='large')
 
 
-def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat, hist_offset = -0.2, n_bins = 50, ylog = False, height=0.75, width=6):
+def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat, hist_offset = -0.2, n_bins = 50, ylog = False, axs = None, height=1, width=6):
     #TODO MOVE PLOT KEYWORDS inTO DICT
 
-    features_per_class = [len(feat_list) for feat_list in relevant_feat.values()]
+    features_per_class = [ len(feat_list) for feat_list in relevant_feat.values() ]
 
     added_columns = False
     #Handle quadratic kernels
@@ -301,13 +301,26 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
     if added_columns:
         print("Warning: detected quadratic kenel features, added quadratic features to the input dataframe", file=sys.stderr)
 
-
-    fig,axs = plt.subplots(len(classes_names), 1,
+    if axs is None:
+        tight=True
+        fig,axs = plt.subplots(len(relevant_feat), 1,
                             figsize=(width, sum(features_per_class)*height ),
                             gridspec_kw={'height_ratios': features_per_class})
+        if len(relevant_feat) == 1:
+            axs = [axs]
+    else:
+        tight=False
 
-    for b, (basin, basin_name) in enumerate( classes_names.items() ):
-        feat_list = relevant_feat[basin_name]
+    #for b, (basin, basin_name) in enumerate( classes_names.items() ):
+    for b, (basin_name,feat_list) in enumerate(relevant_feat.items()) :
+        def get_key(dict, val):
+            for key, value in dict.items():
+                if val == value:
+                    return key
+
+        basin = get_key(classes_names,basin_name)
+
+        #feat_list = relevant_feat[basin_name]
 
         #fig,ax = plt.subplots( figsize = (4,0.5*len(feat_list)) )
         ax = axs[b]
@@ -330,7 +343,8 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
                     y = np.zeros_like(hist) + np.NaN
                     pos_idx = hist > 0
                     y[pos_idx] = np.log(hist[pos_idx]) / np.log(hist[pos_idx]).max()
-                color = 'tab:red' if basin == i else 'dimgray'
+                color = f'fessa{6-i}' #'tab:red' if basin == i else 'dimgray'
+                ax.plot(edges[:-1], y + h + hist_offset,color=color)
                 ax.fill_between(edges[:-1], y + h + hist_offset, y2=h + hist_offset, color=color, alpha=0.5) #, **kwargs)
 
             ax.axhline(y=h + hist_offset, xmin=0, xmax=1, color='k', linewidth=.2)
@@ -346,4 +360,5 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
         #ax.set_xlabel('Feature values')
         ax.set_title(f'{basin}: {basin_name}')
 
-    plt.tight_layout()
+    if tight:
+        plt.tight_layout()
