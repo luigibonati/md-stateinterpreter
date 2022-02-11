@@ -97,15 +97,18 @@ def _basin_selection(
     pts = np.copy(KDE.dataset)
     v = np.zeros_like(pts)
     beta = 0.9 #Default
-    learning_rate = np.diag(np.diag(KDE.inv_bwidth)**-1)
+    learning_rate = np.diag(np.diag(KDE.inv_bwidth)**-1)*0.5
     for _ in range(gradient_descent_iterates): 
-        v*= beta
+        v *= beta
         v += -(1 - beta)*KDE.grad(pts, logpdf=True)
         pts -= np.dot(v,learning_rate)
     norms = np.linalg.norm((pts[:,np.newaxis,:] - minima), axis=2)
     classes = np.argmin(norms, axis=1)
     fes_at_minima = - KDE.logpdf(minima)
-    ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])
+    if len(minima) == 1:
+        ref_fes = fes_at_minima
+    else:
+        ref_fes = np.asarray([fes_at_minima[idx] for idx in classes])
     fes_pts = - KDE.logpdf(KDE.dataset)
     mask = (fes_pts - ref_fes) < fes_cutoff
     df = pd.DataFrame(data=classes, columns=["labels"])
