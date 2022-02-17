@@ -162,6 +162,18 @@ class Classifier():
                 self._groups == u
                 for u in np.unique(self._groups)
             ]
+
+        # count number of features for each reg
+        num_feat = np.empty((_num_reg,))
+        for i,reg in enumerate(self._reg):
+            selected = self._get_selected(reg, feature_mode=False)
+            unique_idxs = set()
+            for state in selected.values():
+                for data in state:
+                    unique_idxs.add(data[0])
+            num_feat[i] = len(unique_idxs)
+        self._num_feat = num_feat
+
         self._computed = True
     
     def _purge(self):
@@ -173,6 +185,7 @@ class Classifier():
             del self._coeffs
             del self._crossval
             del self._classes_labels
+            del self._num_feat
             if self._groups is not None:
                 del self._groups_names
                 del self._groups_mask
@@ -221,6 +234,12 @@ class Classifier():
                 selected.pop(del_key)
         return selected
     
+    def get_accuracy(self):
+        return self._crossval
+    
+    def get_num_features(self):
+        return self._num_feat
+
     def feature_summary(self, reg):
         return self._get_selected(reg, feature_mode=True)
 
