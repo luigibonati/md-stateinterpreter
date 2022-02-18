@@ -53,16 +53,16 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
     if states_subset is None:
         states_subset = range(len(states_labels['labels'].unique()))
         if states_names is None:
-            states_names = states_labels['labels'].unique()
+            states_names = sorted(states_labels['labels'].unique())
 
     assert len(states_names) == len(states_subset), "Length mismatch between states_names and number of unique states."
 
     for idx, i in enumerate(states_subset):
         states[i] = states_names[idx]
-
+        
     for label in states_subset:
         #select label
-        df = descriptors.loc[ (states_labels['labels'] == label) & (states_labels['selection'] == True)]
+        df = descriptors.loc[ (states_labels['labels'] == states[label]) & (states_labels['selection'] == True)]
         #select descriptors and sample
         replace = False
         if n_configs > len(df):
@@ -161,8 +161,10 @@ class Classifier():
                 for u in np.unique(self._groups)
             ]
 
+        self._computed = True
+
         # count number of features for each reg
-        num_feat = np.empty((_num_reg,))
+        num_feat = np.empty((_num_reg,),dtype=int)
         for i,reg in enumerate(self._reg):
             selected = self._get_selected(reg, feature_mode=False)
             unique_idxs = set()
@@ -171,8 +173,6 @@ class Classifier():
                     unique_idxs.add(data[0])
             num_feat[i] = len(unique_idxs)
         self._num_feat = num_feat
-
-        self._computed = True
     
     def _purge(self):
         if __DEV__:
