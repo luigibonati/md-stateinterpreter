@@ -335,7 +335,7 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
             #coordinate = descriptors[feature_name]
             #hist, edges = np.histogram(coordinate, bins=n_bins)
             for i in classes_names.keys():
-                x_i = descriptors[ ( states_labels['labels'] == i ) & ( states_labels['selection'] ) ][feature_name]
+                x_i = descriptors[ ( states_labels['labels'] == classes_names[i] ) & ( states_labels['selection'] ) ][feature_name]
                 hist, edges = np.histogram(x_i, bins=n_bins)
                 if not ylog:
                     y = hist / hist.max()
