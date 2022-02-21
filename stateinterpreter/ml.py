@@ -51,10 +51,11 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
 
     if states_subset is None:
         states_subset = states_labels['labels'].unique()
+        states_subset = states_subset[states_subset != 'undefined' ]
 
     for label in states_subset:
         #select label
-        df = descriptors.loc[ (states_labels['labels'] == states[label]) & (states_labels['selection'] == True)]
+        df = descriptors.loc[ (states_labels['labels'] == label) & (states_labels['selection'] == True)]
         #select descriptors and sample
         replace = False
         if n_configs > len(df):
