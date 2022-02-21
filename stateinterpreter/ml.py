@@ -14,7 +14,7 @@ from ._configs import *
 
 __all__ = ["Classifier","prepare_training_dataset"]
 
-def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter = None, states_subset=None, states_names=None):
+def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter = None, states_subset=None):
     """Sample points from trajectory
 
     Args:
@@ -49,16 +49,8 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
     if not ('selection' in states_labels):
         states_labels['selection'] = np.ones(len(states_labels), dtype=bool)
 
-    states = dict()
     if states_subset is None:
-        states_subset = range(len(states_labels['labels'].unique()))
-        if states_names is None:
-            states_names = states_labels['labels'].unique()
-
-    assert len(states_names) == len(states_subset), "Length mismatch between states_names and number of unique states."
-
-    for idx, i in enumerate(states_subset):
-        states[i] = states_names[idx]
+        states_subset = states_labels['labels'].unique()
 
     for label in states_subset:
         #select label
@@ -74,13 +66,17 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
             config_i = df.sample(n=n_configs, replace=replace).values 
         config_list.append(config_i)
         labels.extend([label]*n_configs)
-    labels = np.array(labels, dtype=int)
+    labels = np.array(labels)
     configurations = np.vstack(config_list)
-    return (configurations, labels), features, states
+    return (configurations, labels), features
 
 class Classifier():
-    def __init__(self, dataset, features_names, classes_names, rescale=True, test_size=0.25):
+    def __init__(self, dataset, features_names, rescale=True, test_size=0.25):
         self._X, self._labels = dataset
+        _tmp_classes, self._labels = np.unique(self._labels, return_inverse=True)
+        self.classes = dict()
+        for _i, _class in enumerate(_tmp_classes):
+            self.classes[_i] = f"{_class}"
         self._rescale = rescale
         self._test_size = test_size
 
@@ -93,7 +89,6 @@ class Classifier():
         
         self._n_samples = self._train_in.shape[0]
         self.features = features_names
-        self.classes = classes_names
         self._computed = False
 
     def compute(self, reg, max_iter = 100,  quadratic_kernel=False, groups=None, warm_start = True):
@@ -277,7 +272,7 @@ class Classifier():
             X = self._X[:, mask]
             dset = (X, self._labels)
             pruned_features = self.features[mask]
-            return Classifier(dset, pruned_features, self.classes, self._rescale, self._test_size)
+            return Classifier(dset, pruned_features, self._rescale, self._test_size)
 
     def plot_regularization_path(self, reg):
         return plot_regularization_path(self, reg)
