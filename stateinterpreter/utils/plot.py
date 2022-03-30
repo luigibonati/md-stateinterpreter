@@ -282,7 +282,7 @@ def plot_states_features(cv_x, cv_y, descriptors, relevant_feat, state_labels = 
                         _ = ax.text(mx, my, b, ha="center", va="center", color='k', fontsize='large')
 
 
-def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat, hist_offset = -0.2, n_bins = 50, ylog = False, axs = None, height=1, width=6):
+def plot_histogram_features(descriptors,states_labels,classes_names,relevant_feat, hist_offset = -0.2, n_bins = 50, ylog = False, axs = None, height=1, width=6, colors=None):
     #TODO MOVE PLOT KEYWORDS inTO DICT
 
     features_per_class = [ len(feat_list) for feat_list in relevant_feat.values() ]
@@ -343,7 +343,10 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
                     y = np.zeros_like(hist) + np.NaN
                     pos_idx = hist > 0
                     y[pos_idx] = np.log(hist[pos_idx]) / np.log(hist[pos_idx]).max()
-                color = f'fessa{6-i}' #'tab:red' if basin == i else 'dimgray'
+                if colors is not None:
+                    color = colors[i]
+                else:
+                    color = f'fessa{6-i}' #'tab:red' if basin == i else 'dimgray'
                 ax.plot(edges[:-1], y + h + hist_offset,color=color)
                 ax.fill_between(edges[:-1], y + h + hist_offset, y2=h + hist_offset, color=color, alpha=0.5) #, **kwargs)
 

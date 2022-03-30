@@ -139,6 +139,14 @@ def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
 
     # Find acceptors (O r N)
     acceptors = traj.top.select("symbol O or symbol N")
+    #hbonded = [ at_i.index
+    #            for at_i, at_j in traj.top.bonds
+    #            if (at_j.element.symbol == "H") 
+    #]
+    #acceptors = [idx 
+    #            for idx in traj.top.select("symbol O or symbol N")
+    #            if idx not in hbonded
+    #            ]
     if __DEV__:
         print("Acceptors:", acceptors)
 
@@ -189,7 +197,7 @@ def _HYDROGEN_BONDS(traj, kind, _cached_dists = None):
         # labels
         # basename = 'hbc_'
         # names = [ basename+str(x)+'-'+str(y) for x,y in pairs]
-        label = lambda i, j: "HB_CONTACT %s%s -- %s%s" % (
+        label = lambda i, j: "HB_C %s%s -- %s%s" % (
             traj.top.atom(i),
             "s" if traj.top.atom(i).is_sidechain else "",
             traj.top.atom(j),
@@ -234,9 +242,10 @@ def _DIHEDRALS(traj, kind, sincos=True):
         # res = table['resSeq'][idx[0]]
         # name = 'dih_'+kind+'-'+str(res)
         res = table["resName"][idx[0]] + table["resSeq"][idx[0]].astype("str")
-        name = "BACKBONE " + kind + " " + res
-        if "chi" in kind:
-            name = "SIDECHAIN " + kind + " " + res
+        #name = "BACKBONE " + kind + " " + res
+        name = kind + " " + res
+        #if "chi" in kind:
+        #    name = "SIDECHAIN " + kind + " " + res
         names.append(name)
         info = {
                 'atoms': list(idx),
@@ -247,9 +256,10 @@ def _DIHEDRALS(traj, kind, sincos=True):
             for trig_transform in (np.sin, np.cos):
                 _trans_name = trig_transform.__name__ + "_"
                 # names.append('cos_(sin_)'+kind+'-'+str(res))
-                name = "BACKBONE " + _trans_name + kind + " " + res
-                if "chi" in kind:
-                    name = "SIDECHAIN " + _trans_name + kind + " " + res
+                #name = "BACKBONE " + _trans_name + kind + " " + res
+                name = _trans_name + kind + " " + res
+                #if "chi" in kind:
+                #    name = "SIDECHAIN " + _trans_name + kind + " " + res
                 #Dirty trick
                 eval(_trans_name + "names.append(name)")
                 descriptors_ids[name] = info
