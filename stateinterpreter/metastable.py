@@ -49,11 +49,12 @@ def identify_metastable_states(
             fes_cutoff=fes_cutoff/kBT
 
         # Retrieve logweights
-        w = _sanitize_logweights(logweights, colvar=colvar, kBT=kBT)
-
+        if logweights is not None:
+            assert ( isinstance(logweights,np.ndarray) ), 'Logweights must be a numpy array.'
+        
         # Compute KDE
         empirical_centers = colvar[selected_cvs].to_numpy()
-        KDE = gaussian_kde(empirical_centers,bandwidth=bandwidth,logweights=w)
+        KDE = gaussian_kde(empirical_centers,bandwidth=bandwidth,logweights=logweights)
 
         if __DEV__:
             print("DEV >>> Finding Local Minima") 
@@ -131,41 +132,12 @@ def approximate_FES(
     """
     if __DEV__:
         print("DEV >>> Approximating FES")
-    w = _sanitize_logweights(logweights, colvar=colvar, kBT=kBT)
+    if logweights is not None:
+        assert ( isinstance(logweights,np.ndarray) ), 'Logweights must be a numpy array.'
         
     empirical_centers = colvar[selected_cvs] if selected_cvs is not None else colvar
     empirical_centers = empirical_centers.to_numpy()
-    KDE = gaussian_kde(empirical_centers, bandwidth,logweights=w)
+    KDE = gaussian_kde(empirical_centers, bandwidth,logweights=logweights)
     return lambda x: -kBT*KDE.logpdf(x)
 
-def _sanitize_logweights(logweights, colvar=None, kBT=None):
-    if logweights is None:
-            w = None
-            if colvar is not None:
-                if ".bias" in colvar.columns:
-                    print(
-                        "WARNING: a field with .bias is present in colvar, but it is not used for the FES.",file=sys.stderr
-                    )
-    else:
-        if isinstance(logweights, str):
-            #Luigi do you think is ok to have multiple behaviours when loading logweights?
-            if colvar is None:
-                raise ValueError("colvar must be not None, when loading logweights from colvar file")
-            if kBT is None:
-                raise ValueError("kBT must be not None when loading logweights from colvar file")
-            if "*" in logweights:
-                w = colvar.filter(regex=logweights.replace('*','')).sum(axis=1).values / kBT
-            else:
-                w = colvar[logweights].values / kBT
-        elif isinstance(logweights, pd.DataFrame):
-            w = logweights.values
-        elif isinstance(logweights, np.ndarray):
-            w = logweights
-        else:
-            raise TypeError(
-                f"{logweights}: Accepted types are 'pandas.Dataframe', 'str' or 'numpy.ndarray' "
-            )
-        if w.ndim != 1:
-            raise ValueError(f"{logweights}: 1D array is required for logweights")
-    return w
 
