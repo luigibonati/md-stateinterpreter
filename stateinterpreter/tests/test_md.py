@@ -37,11 +37,11 @@ def test_chignolin_pipeline(sort_minima_by,n_cvs, sampling_scheme):
         'sampling': sampling_scheme
     }
     kBT = 2.8
-    states_labels = identify_metastable_states(colvar, selected_cvs, kBT, optimizer_kwargs = optimizer_kwargs, sort_minima_by=sort_minima_by)
+    states_labels = identify_metastable_states(colvar, selected_cvs, kBT, bandwidth=0.1, optimizer_kwargs = optimizer_kwargs, sort_minima_by=sort_minima_by)
 
-    dataset, features, states = prepare_training_dataset(descriptors,states_labels,10)
+    dataset, features = prepare_training_dataset(descriptors,states_labels,10)
 
-    classifier = Classifier(dataset,features,states)
+    classifier = Classifier(dataset,features)
     classifier.compute(0.1)
 
 if __name__ == "__main__":
