@@ -49,6 +49,9 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
     if not ('selection' in states_labels):
         states_labels['selection'] = np.ones(len(states_labels), dtype=bool)
 
+    # convert labels in string
+    states_labels['labels'] = states_labels['labels'].astype(str)
+
     if states_subset is None:
         states_subset = states_labels['labels'].unique()
         states_subset = states_subset[states_subset != 'undefined' ]
@@ -64,7 +67,7 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
         if regex_filter is not None:
             config_i = df.filter(regex=regex_filter).sample(n=n_configs, replace=replace).values   
         else:
-            config_i = df.sample(n=n_configs, replace=replace).values 
+            cxonfig_i = df.sample(n=n_configs, replace=replace).values 
         config_list.append(config_i)
         labels.extend([label]*n_configs)
     labels = np.array(labels)
@@ -130,7 +133,6 @@ class Classifier():
         crossval = np.empty((_num_reg,))
         _classes_labels = np.empty((_num_reg, _n_basins), dtype=np.int_)
 
-        
         for reg_idx in tqdm(range(len(reg)), desc='Optimizing Lasso Estimator'):
             model.set_params(**{_reg_name: reg[reg_idx]})
             model.fit(train_in,self._train_out)
