@@ -67,7 +67,7 @@ def prepare_training_dataset(descriptors, states_labels, n_configs, regex_filter
         if regex_filter is not None:
             config_i = df.filter(regex=regex_filter).sample(n=n_configs, replace=replace).values   
         else:
-            cxonfig_i = df.sample(n=n_configs, replace=replace).values 
+            config_i = df.sample(n=n_configs, replace=replace).values 
         config_list.append(config_i)
         labels.extend([label]*n_configs)
     labels = np.array(labels)
