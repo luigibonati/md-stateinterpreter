@@ -365,3 +365,99 @@ def plot_histogram_features(descriptors,states_labels,classes_names,relevant_fea
 
     if tight:
         plt.tight_layout()
+
+def plot_fes(cv,bandwidth,states_labels=None,logweights=None,kBT=2.5,cv_list=None,states_subset=None,num_samples=100,ax=None,prefix_label="",colors=None):
+    
+    if cv_list is not None:
+        cv = cv[cv_list]
+
+    empirical_centers = cv.to_numpy()
+    KDE = gaussian_kde(empirical_centers,bandwidth,logweights)
+
+    bounds = [(x.min(), x.max()) for x in KDE.dataset.T]
+    mesh = np.meshgrid(*[np.linspace(b[0], b[1], num_samples) for b in bounds])
+
+    positions = np.vstack([g.ravel() for g in mesh]).T
+    fes = -kBT*KDE.logpdf(positions)
+    fes -= fes.min()
+    if ax is None:
+        fig,ax = plt.subplots()
+    ax.plot(mesh[0],fes/kBT,color='dimgrey',linewidth=1.5)
+    ax.set_xlabel(cv.columns.values[0])
+    ax.set_ylabel('FES [$k_B$T]')
+    ax.set_xlim(bounds[0][0],bounds[0][1])
+    ax.set_ylim(0,)
+    
+    if states_labels is not None:
+        if states_subset is not None:
+            labels = states_subset
+        else:
+            labels = sorted(states_labels['labels'].unique())
+        for i,label in enumerate(labels):
+            mask = ( states_labels['labels'] == label ) & (states_labels['selection'] == True )
+            Min = cv[mask].min().values[0] 
+            Max = cv[mask].max().values[0] 
+            if colors is not None:
+                color = colors[i]
+            else:
+                color = f'fessa{6-i}'
+            ax.axvspan(Min,Max, alpha=0.5, color=color)
+            ax.text((Max+Min)/2,5,prefix_label+str(label),fontsize='medium',ha='center')
+
+
+def plot_fes_2d(colvar, state_labels, selected_cvs, n_iso_fes = 10, ev_iso_labels = 2, save_folder=None, ax = None, xlim=[-1,1.], ylim=[-1,1.], label_names = None, label_colors= None, **kde_kwargs):
+    states = state_labels['labels'].unique()
+
+    xlim=[-1,1.05]
+    ylim=[-1,1.05]
+
+    label_x = selected_cvs[0]
+    label_y = selected_cvs[1]
+
+    # FES ISOLINES
+    num_samples = 100
+
+    cmap = matplotlib.cm.get_cmap('Greys_r', n_iso_fes)
+    color_list = [cmap((i+1)/(n_iso_fes+3)) for i in range(n_iso_fes)]
+
+    empirical_centers = colvar[[label_x,label_y]].to_numpy()
+    KDE = gaussian_kde(empirical_centers,**kde_kwargs)
+
+    bounds = [(x.min(), x.max()) for x in KDE.dataset.T]
+    mesh = np.meshgrid(*[np.linspace(b[0], b[1], num_samples) for b in bounds])
+
+    positions = np.vstack([g.ravel() for g in mesh]).T
+    fes = -KDE.logpdf(positions).reshape(num_samples,num_samples)
+    fes -= fes.min()
+
+    CS = ax.contour(*mesh, fes, levels=np.linspace(0,n_iso_fes-1,n_iso_fes), colors = color_list)
+    ax.clabel(CS, CS.levels[::ev_iso_labels], fmt = lambda x: str(int(x))+ r'$k_{{\rm B}}T$', inline=True, fontsize=8)
+
+    # Add basins labels
+    x = colvar[label_x]
+    y = colvar[label_y]
+    z = state_labels['labels']
+    sel = state_labels['selection']
+
+    if label_names is None:
+        label = states
+    else:
+        label = label_names
+
+    if label_colors is None:
+        color=[paletteFessa[i] for i in range(len(states))]
+    else:
+        color = label_colors
+
+    for b in states:
+        mask = np.logical_and(sel, z == b)
+        mx,my = np.average(x[mask],weights=np.exp(kde_kwargs['logweights'][mask])), np.average(y[mask],weights=np.exp(kde_kwargs['logweights'][mask]))
+        #ax.scatter(mx,my,color=color_list[b],s=300,alpha=1)
+        
+        #if b>0:
+        #    ax.scatter(mx,my,color=color[b],s=550,alpha=0.5,facecolors=None,edgecolors=paletteFessa[6])
+        ax.scatter(mx,my,color=color[b],s=450,alpha=0.5,edgecolors=None)
+        _ = ax.text(mx, my, label[b], ha="center", va="center", color='k', fontsize='large')
+
+    ax.set_xlabel(selected_cvs[0])
+    ax.set_ylabel(selected_cvs[1])

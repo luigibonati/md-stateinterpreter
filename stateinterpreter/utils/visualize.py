@@ -4,6 +4,8 @@ import matplotlib.cm as cm
 import numpy as np
 from scipy.sparse import csr_matrix
 from .._configs import *
+from .plot import paletteFessa
+from time import sleep
 
 
 def visualize_features(trajectory, states_labels, classes_names, relevant_features, feats_info, state = 0, n_feat_per_state=3, representation = 'licorice'):
@@ -126,7 +128,7 @@ def compute_residue_score(classifier,reg,feats_info,n_residues):
         residue_score[state_name] = score 
     return residue_score
 
-def visualize_residue_score(trajectory, states_labels, classes_names, residue_score, representation = 'licorice', palette = 'Reds'):
+def visualize_residue_score(trajectory, states_labels, classes_names, residue_score, representation = 'licorice', palette = 'Reds', state_frames=None, relevant_features = None,features_info=None):
     """Visualize snapshots of each state coloring the residues with the score per each state.
 
     Parameters
@@ -149,8 +151,13 @@ def visualize_residue_score(trajectory, states_labels, classes_names, residue_sc
     nglview viewer
         View object
     """
-    # sample one frame per state
-    frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.keys() ]
+# sample one frame per state
+    if state_frames is None:
+        frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.values() ]
+        print('frames:', frames)
+    else:
+        frames = state_frames
+        
     traj = trajectory[frames]
     traj.superpose(traj[0])
 
@@ -163,19 +170,55 @@ def visualize_residue_score(trajectory, states_labels, classes_names, residue_sc
     elif representation == 'ball_and_stick' :
         view.add_ball_and_stick('(not hydrogen)')
 
+    for score in residue_score.values():
+        for res,rescore in enumerate(score):
+            if rescore>0:
+                resnum = str(res+1)
+                resnum.zfill(3)
+                view.add_ball_and_stick(f'{resnum} and (not hydrogen) and',opacity=0.75)
+                view.add_ball_and_stick(f'{resnum}',opacity=0.5)
+
+    # highlight selected features
+    if relevant_features is not None:
+        atom_ids = []
+        #features = relevant_features[ classes_names[state] ]
+        features = relevant_features[ next(iter(relevant_features)) ]
+        for i, feature in enumerate(features):
+            name = feature[2]
+            print(name,features_info[name]['atoms'])
+            atom_ids.append( features_info[name]['atoms'] )
+
+        #colors = iter(['orange','green', 'purple', 'yellow', 'red'])
+        # loop over relevant features
+        for ids in atom_ids:
+            ids_string = [str(p) for p in ids]
+            selection = '@'+','.join(ids_string)
+
+            color = paletteFessa[1] #3#6 #'orange' #next(colors)
+            if len(ids) == 2: # distance
+                #color = 'orange'
+                atom_pair = [ '@'+p for p in ids_string ]
+                view.add_distance(atom_pair=[atom_pair], color=color, label_visible=False)
+                #view.add_ball_and_stick(selection,color=color,opacity=0.75)
+            elif len(ids) == 4: # angle
+                #color = 'green'
+                view.add_ball_and_stick(selection,color=color,opacity=0.75)
+
     # get color palette
-    cmap = cm.get_cmap(palette, 11)
+    cmap = matplotlib.cm.get_cmap(palette, 11)
     palette = [matplotlib.colors.rgb2hex( cmap(i) ) for i in range(cmap.N)]
 
     # transform score in colors
     residue_colors = {}
-    for i, state in enumerate( classes_names.keys() ):
+    for i, state in enumerate( classes_names.values() ):
         colors = []
-        for i in residue_score[ classes_names[state] ]:
-            col = int (i*10)
+        for score in residue_score[ state ]:
+            col = int(score*5*10)
+            col = -1 if col > cmap.N-1 else col
+            #col = 0
             colors.append( palette[col] ) 
-        residue_colors[state] = colors
-
+        residue_colors[i] = colors
+    
     # define observer function to allow changing colors with frame
     def on_change(change):
         frame = change.new
@@ -205,3 +248,69 @@ def visualize_residue_score(trajectory, states_labels, classes_names, residue_sc
     view.observe(on_change, names=['frame'])
 
     return view
+
+def visualize_protein_features(trajectory, states_labels, classes_names, residue_score, representation = 'licorice', state_frames=None, relevant_features = None, features_info=None, all_atoms=False, color=None):
+    """Visualize snapshots of each state with the relevant features highlighted.
+    """
+    # sample one frame per state
+    if state_frames is None:
+        frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.values() ]
+        print('frames:', frames)
+    else:
+        frames = state_frames
+        
+    traj = trajectory[frames]
+    traj.superpose(traj[0])
+
+    view = nglview.show_mdtraj(traj, default=False)
+
+    if representation == 'licorice' :
+        view.add_licorice('(not hydrogen)')
+    elif representation == 'cartoon' :
+        view.add_cartoon('protein')
+    elif representation == 'ball_and_stick' :
+        view.add_ball_and_stick('(not hydrogen) and (backbone)')
+
+    if all_atoms:
+        
+        for score in residue_score.values():
+            for res,rescore in enumerate(score):
+                if rescore>0:
+                    resnum = str(res+1)
+                    resnum.zfill(3)
+                    view.add_ball_and_stick(f'{resnum} and (not hydrogen) and',opacity=0.75)
+                    #view.add_ball_and_stick(f'{resnum}',opacity=0.5)
+
+    # highlight selected features
+    if relevant_features is not None:
+        atom_ids = []
+        #features = relevant_features[ classes_names[state] ]
+        features = relevant_features[ next(iter(relevant_features)) ]
+        
+        if features_info is not None:
+            for i, feature in enumerate(features):
+                name = feature[2]
+                print(name,features_info[name]['atoms'])
+                atom_ids.append( features_info[name]['atoms'] )
+
+            #colors = iter(['orange','green', 'purple', 'yellow', 'red'])
+            colors=iter(paletteFessa)
+            # loop over relevant features
+            for ids in atom_ids:
+                ids_string = [str(p) for p in ids]
+                selection = '@'+','.join(ids_string)
+
+                if color is None:
+                    color = next(colors)
+
+                if len(ids) == 2: # distance
+                    #color = next(colors)
+                    atom_pair = [ '@'+p for p in ids_string ]
+                    view.add_distance(atom_pair=[atom_pair], color=color, label_visible=False)
+                    #view.add_ball_and_stick(selection,color=color,opacity=0.75)
+                elif len(ids) == 4: # angle
+                    #color = 'green'
+                    view.add_ball_and_stick(selection,color=color,opacity=0.75)
+
+    return view
+    
