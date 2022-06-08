@@ -18,6 +18,7 @@ dependencies:
   - nglview
   - cython
   - tqdm
+  - networkx
   
     # Testing
   - pytest

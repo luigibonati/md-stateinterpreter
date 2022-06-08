@@ -19,6 +19,7 @@ dependencies:
   - nglview
   - cython
   - nbsphinx
+  - networkx
 
   # Pip-only installs
   - pip:
