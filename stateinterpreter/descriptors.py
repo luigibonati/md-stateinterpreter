@@ -68,7 +68,7 @@ def compute_descriptors(traj, descriptors = ['ca', 'dihedrals', 'hbonds_distance
             print(names)
             print(descriptors_ids)
         else:
-            raise KeyError(f"descriptor: {d} not valid. Only 'ca','dihedrals','hbonds','disulfide' are allowed.")
+            raise KeyError(f"descriptor: {d} not valid. Only 'ca', 'dihedrals', 'hbonds_distances', 'hbonds_contacts','disulfide' are allowed.")
         
         if d != 'dihedrals': #(Done previously)
             _raw_data.append(res)
