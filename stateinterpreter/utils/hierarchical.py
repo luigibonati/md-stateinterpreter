@@ -10,7 +10,7 @@ def find_fes_fixed_points(centers, bandwidth, init_points, tol=1e-5, return_kde 
     
     kde = gaussian_kde(centers, bandwidth=bandwidth, logweights=logweights)
     dKDE = lambda x: -kde.grad(x, logpdf=True)
-    roots, converged, _ = opt.newton(dKDE,init_points, tol=tol*1e-2, full_output=True, disp=False)
+    roots, converged, _ = opt.newton(dKDE,init_points, maxiter=1000, tol=tol*1e-2, full_output=True, disp=False)
     b = roots[converged]
     b.sort()
     d = np.append(True, np.diff(b))
@@ -241,8 +241,8 @@ def populate_tree(T, parent_node, ticas, bandwidth, fusing_tolerance, logweights
     parent_mask = T.nodes[parent_node]['mask']
     if ticas.shape[1] >= 1:
         tica = ticas[parent_mask,0]
-        next_tica = ticas[:, 1:]
-        logweight = logweights[[parent_mask]]
+        next_tica = ticas[:, 1:]        
+        logweight = logweights[parent_mask]
     elif ticas.shape[1] == 0:
         return
     leafs = branch_tica(tica, bandwidth, fusing_tolerance=fusing_tolerance,logweights=logweight)

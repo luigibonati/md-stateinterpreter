@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import mdtraj as md
 import itertools
-from warnings import warn
 
 from .utils.io import load_dataframe
 from ._configs import *
@@ -30,8 +29,6 @@ def compute_descriptors(traj, descriptors = ['ca', 'dihedrals', 'hbonds_distance
     KeyError
         Trajectory needs to be set beforehand.
     """
-
-    descr_list = []
     #Cache dists for performance
     _cached_dists = False
     if ('hbonds_distances' in descriptors) and ('hbonds_contacts' in descriptors):

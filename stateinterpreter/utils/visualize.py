@@ -1,11 +1,14 @@
-import nglview
 import matplotlib
-import matplotlib.cm as cm
 import numpy as np
 from scipy.sparse import csr_matrix
 from .._configs import *
 from .plot import paletteFessa
 from time import sleep
+
+try:
+    import nglview
+except ImportError:
+    nglview = None 
 
 
 def visualize_features(trajectory, states_labels, classes_names, relevant_features, feats_info, state = 0, n_feat_per_state=3, representation = 'licorice'):
@@ -35,6 +38,8 @@ def visualize_features(trajectory, states_labels, classes_names, relevant_featur
     nglview viewer
         View object
     """
+    if nglview is None:
+        raise ImportError("nglview is not installed. Please install it to use this function.")
     # sample one frame per state
     frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.keys() ]
     traj = trajectory[frames]
@@ -151,6 +156,9 @@ def visualize_residue_score(trajectory, states_labels, classes_names, residue_sc
     nglview viewer
         View object
     """
+
+    if nglview is None:
+        raise ImportError("nglview is not installed. Please install it to use this function.")
 # sample one frame per state
     if state_frames is None:
         frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.values() ]
@@ -252,6 +260,8 @@ def visualize_residue_score(trajectory, states_labels, classes_names, residue_sc
 def visualize_protein_features(trajectory, states_labels, classes_names, residue_score, representation = 'licorice', state_frames=None, relevant_features = None, features_info=None, all_atoms=False, color=None):
     """Visualize snapshots of each state with the relevant features highlighted.
     """
+    if nglview is None:
+        raise ImportError("nglview is not installed. Please install it to use this function.")
     # sample one frame per state
     if state_frames is None:
         frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.values() ]

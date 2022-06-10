@@ -1,5 +1,7 @@
+from http.cookies import CookieError
 import numpy as np
 import pandas as pd
+from panel import state
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -161,7 +163,7 @@ class Classifier():
 
         self._computed = True
 
-        # count number of features for each reg
+        # Count number of features for each regularization value.
         num_feat = np.empty((_num_reg,),dtype=int)
         for i,reg in enumerate(self._reg):
             selected = self._get_selected(reg, feature_mode=False)
@@ -223,11 +225,10 @@ class Classifier():
                 #idx, weight, name
                 names = np.array(names)
                 selected[state_name]= list(zip(coef.indices[sort_perm], coef.data[sort_perm], names[sort_perm]))
-
-            #If only two states the learned models are the same.
-            if len(selected.keys()) == 2:
-                del_key = list(selected.keys())[0]
-                selected.pop(del_key)
+        #If only two states the learned models are the same.
+        if len(selected.keys()) == 2:
+            del_key = list(selected.keys())[0]
+            selected.pop(del_key)
         return selected
     
     def get_accuracy(self):
@@ -263,8 +264,7 @@ class Classifier():
         else:
             mask = np.array([False]*len(self.features))
             for idx in unique_idxs:
-                mask[idx] = True
-        
+                mask[idx] = True 
         if overwrite:
             self._train_in = self._train_in[:, mask]
             self._val_in = self._val_in[:, mask]
@@ -284,7 +284,7 @@ class Classifier():
         return plot_classifier_complexity_vs_accuracy(self)
     
     def save(self, filename):
-        pass
+        raise NotImplementedError("Saving is not implemented yet.")
 
 def quadratic_kernel_featuremap(X):
     n_pts, n_feats = X.shape

@@ -174,10 +174,10 @@ def plot_states(colvar, state_labels, selected_cvs, fes_isolines = False, n_iso_
             ax.clabel(CS, CS.levels[::ev_iso_labels], fmt = lambda x: str(int(x))+ r'$k_{{\rm B}}T$', inline=True, fontsize=8)
 
         # Hexbin plot
-        x = colvar[label_x]
-        y = colvar[label_y]
-        z = state_labels['labels']
-        sel = state_labels['selection']
+        x = colvar[label_x].values
+        y = colvar[label_y].values
+        z = state_labels['labels'].values
+        sel = state_labels['selection'].values
         not_sel = np.logical_not(sel)
 
         cmap = matplotlib.cm.get_cmap(cmap_name, n_states)
@@ -381,7 +381,7 @@ def plot_fes(cv,bandwidth,states_labels=None,logweights=None,kBT=2.5,cv_list=Non
     fes = -kBT*KDE.logpdf(positions)
     fes -= fes.min()
     if ax is None:
-        fig,ax = plt.subplots()
+        _ , ax = plt.subplots()
     ax.plot(mesh[0],fes/kBT,color='dimgrey',linewidth=1.5)
     ax.set_xlabel(cv.columns.values[0])
     ax.set_ylabel('FES [$k_B$T]')
@@ -393,16 +393,19 @@ def plot_fes(cv,bandwidth,states_labels=None,logweights=None,kBT=2.5,cv_list=Non
             labels = states_subset
         else:
             labels = sorted(states_labels['labels'].unique())
+        _pruned_states_labels = states_labels[states_labels['labels'] != 'undefined']
         for i,label in enumerate(labels):
-            mask = ( states_labels['labels'] == label ) & (states_labels['selection'] == True )
-            Min = cv[mask].min().values[0] 
-            Max = cv[mask].max().values[0] 
-            if colors is not None:
-                color = colors[i]
-            else:
-                color = f'fessa{6-i}'
-            ax.axvspan(Min,Max, alpha=0.5, color=color)
-            ax.text((Max+Min)/2,5,prefix_label+str(label),fontsize='medium',ha='center')
+            if label != 'undefined':
+                mask = ( _pruned_states_labels['labels'] == label ) & (_pruned_states_labels['selection'] == True )
+                
+                Min = cv[mask].min().values[0] 
+                Max = cv[mask].max().values[0] 
+                if colors is not None:
+                    color = colors[i]
+                else:
+                    color = f'fessa{6-i}'
+                ax.axvspan(Min,Max, alpha=0.5, color=color)
+                ax.text((Max+Min)/2,5,prefix_label+str(label),fontsize='medium',ha='center')
 
 
 def plot_fes_2d(colvar, state_labels, selected_cvs, n_iso_fes = 10, ev_iso_labels = 2, save_folder=None, ax = None, xlim=[-1,1.], ylim=[-1,1.], label_names = None, label_colors= None, **kde_kwargs):
@@ -429,7 +432,8 @@ def plot_fes_2d(colvar, state_labels, selected_cvs, n_iso_fes = 10, ev_iso_label
     positions = np.vstack([g.ravel() for g in mesh]).T
     fes = -KDE.logpdf(positions).reshape(num_samples,num_samples)
     fes -= fes.min()
-
+    if ax is None:
+        _, ax = plt.subplots()
     CS = ax.contour(*mesh, fes, levels=np.linspace(0,n_iso_fes-1,n_iso_fes), colors = color_list)
     ax.clabel(CS, CS.levels[::ev_iso_labels], fmt = lambda x: str(int(x))+ r'$k_{{\rm B}}T$', inline=True, fontsize=8)
 
