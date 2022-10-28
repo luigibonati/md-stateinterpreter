@@ -19,6 +19,7 @@ dependencies:
   - cython
   - tqdm
   - networkx
+  - panel
   
     # Testing
   - pytest

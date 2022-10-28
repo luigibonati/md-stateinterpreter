@@ -20,6 +20,7 @@ dependencies:
   - cython
   - nbsphinx
   - networkx
+  - panel
 
   # Pip-only installs
   - pip:
