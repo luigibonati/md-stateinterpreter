@@ -1,7 +1,7 @@
 Getting Started
 ===============
 
-This page details how to get started with mlcvs. 
+This page details how to get started with ``stateinterpreter``. 
 
 Installation
 ------------
@@ -19,7 +19,7 @@ To install ``stateinterpreter``, you will need an environment with the following
 * ``MDTraj`` (read MD trajectories)
 * ``NGLView`` (visualize trajectories)
 
-Once you have installed the requirements, you can install mlcvs by cloning the repository:
+Once you have installed the requirements, you can install ``stateinterpreter`` by cloning the repository:
 ::
 
     git clone https://github.com/luigibonati/md-stateinterpreter.git stateinterpreter
