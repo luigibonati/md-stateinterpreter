@@ -2,19 +2,15 @@ name: CI
 
 on:
   # GitHub has started calling new repo's first branch "main" https://github.com/github/renaming
-  # Existing codes likely still have "master" as the primary branch
-  # Both are tracked here to keep legacy and new codes working
+  # The cookiecutter uses the "--initial-branch" flag when it runs git-init
   push:
     branches:
-      - "master"
       - "main"
-      - "devel"
   pull_request:
     branches:
-      - "master"
       - "main"
   schedule:
-    # Weekly tests run on master by default:
+    # Weekly tests run on main by default:
     #   Scheduled workflows run on the latest commit on the default or base branch.
     #   (from https://help.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
     - cron: "0 0 * * 0"
@@ -25,20 +21,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [macOS-latest, ubuntu-latest, windows-latest]
         os: [macOS-latest, ubuntu-latest]
         python-version: [3.8, 3.9, "3.10"]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Additional info about the build
-      shell: bash
-      run: |
-        uname -a
-        df -h
-        ulimit -a
-
+      - name: Additional info about the build
+        shell: bash
+        run: |
+          uname -a
+          df -h
+          ulimit -a
 
       # More info on options: https://github.com/marketplace/actions/provision-with-micromamba
       - uses: mamba-org/provision-with-micromamba@main
@@ -51,8 +45,8 @@ jobs:
 
       - name: Install package
         # conda setup requires this special shell
-      shell: bash -l {0}
-      run: |
+        shell: bash -l {0}
+        run: |
         if [ "$RUNNER_OS" == "macOS" ]; then
               brew install libomp
               export CPP=/usr/local/opt/llvm/bin/clang;
@@ -62,17 +56,15 @@ jobs:
         python -m pip install -v -e .
         micromamba list
 
-    - name: Run tests
+      - name: Run tests
+        # conda setup requires this special shell
+        shell: bash -l {0}
+        run: |
+          pytest -v --cov=stateinterpreter --cov-report=xml --color=yes stateinterpreter/tests/
 
-      # conda setup requires this special shell
-      shell: bash -l {0}
-
-      run: |
-        pytest -v --cov=stateinterpreter --cov-report=xml --color=yes stateinterpreter/tests/
-
-    - name: CodeCov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+      - name: CodeCov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
