@@ -44,27 +44,27 @@ jobs:
             python=${{ matrix.python-version }}
 
       - name: Install package
-        # conda setup requires this special shell
-        shell: bash -l {0}
-        run: |
-        if [ "$RUNNER_OS" == "macOS" ]; then
-              brew install libomp
-              export CPP=/usr/local/opt/llvm/bin/clang;
-        else
-              echo "$RUNNER_OS not supported"
-        fi
-        python -m pip install -v -e .
-        micromamba list
+      # conda setup requires this special shell
+      shell: bash -l {0}
+      run: |
+      if [ "$RUNNER_OS" == "macOS" ]; then
+            brew install libomp
+            export CPP=/usr/local/opt/llvm/bin/clang;
+      else
+            echo "$RUNNER_OS not supported"
+      fi
+      python -m pip install -v -e .
+      micromamba list
 
-      - name: Run tests
-        # conda setup requires this special shell
-        shell: bash -l {0}
-        run: |
-          pytest -v --cov=stateinterpreter --cov-report=xml --color=yes stateinterpreter/tests/
+    - name: Run tests
+      # conda setup requires this special shell
+      shell: bash -l {0}
+      run: |
+        pytest -v --cov=stateinterpreter --cov-report=xml --color=yes stateinterpreter/tests/
 
-      - name: CodeCov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+    - name: CodeCov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
