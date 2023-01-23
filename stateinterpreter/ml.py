@@ -1,7 +1,6 @@
 from http.cookies import CookieError
 import numpy as np
 import pandas as pd
-from panel import state
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split

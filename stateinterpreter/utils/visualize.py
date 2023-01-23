@@ -5,11 +5,11 @@ from .._configs import *
 from .plot import paletteFessa
 from time import sleep
 
+nglview_is_installed = True
 try:
     import nglview
 except ImportError:
-    nglview = None 
-
+    nglview_is_installed = False 
 
 def visualize_features(trajectory, states_labels, classes_names, relevant_features, feats_info, state = 0, n_feat_per_state=3, representation = 'licorice'):
     """Visualize snapshots of each state highlighting the relevant features for a given state. 
@@ -38,7 +38,7 @@ def visualize_features(trajectory, states_labels, classes_names, relevant_featur
     nglview viewer
         View object
     """
-    if nglview is None:
+    if not nglview_is_installed :
         raise ImportError("nglview is not installed. Please install it to use this function.")
     # sample one frame per state
     frames = [states_labels [( states_labels['labels'] == i ) & ( states_labels['selection'] ) ].sample(1).index.values[0] for i in classes_names.keys() ]

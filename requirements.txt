@@ -1,0 +1,10 @@
+pandas
+numpy
+scipy
+matplotlib
+mdtraj
+nglview
+cython
+tqdm
+networkx
+group-lasso
