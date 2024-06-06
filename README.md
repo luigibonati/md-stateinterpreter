@@ -4,10 +4,15 @@ stateinterpreter
 [![GitHub Actions Build Status](https://github.com/luigibonati/md-stateinterpreter/workflows/CI/badge.svg)](https://github.com/luigibonati/md-stateinterpreter/actions?query=workflow%3ACI)
 [![codecov](https://codecov.o/gh/luigibonati/md-stateinterpreter/branch/main/graph/badge.svg)](https://codecov.io/gh/luigibonati/md-stateinterpreter/branch/main)
 
-
 Supporting code and material for the publication:
 
 _Novelli, Bonati, Pontil and Parrinello_, Characterizing Metastable States with the Help of Machine Learning, [JCTC](https://pubs.acs.org/doi/10.1021/acs.jctc.2c00393) (2022) 
+
+> [!IMPORTANT]
+> Check out also the [mlcolvar](https://mlcolvar.readthedocs.io) library, where some of the features presented in the paper have been implemented, together with up-to-date tutorials and examples.
+> 
+> [<img src="https://raw.githubusercontent.com/luigibonati/mlcolvar/main/docs/images/logo_name_black_big.png" width="200" />](https://mlcolvar.readthedocs.io)
+
 
 ## Getting started
 
